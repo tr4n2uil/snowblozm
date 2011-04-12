@@ -4,6 +4,6 @@
 interface Service {
 
 	// Get operation from name
-	public function 
+	public function getOperation($name);
 }
 ?>
