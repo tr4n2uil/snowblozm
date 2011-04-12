@@ -19,14 +19,14 @@ class ServiceKernel {
 		$rqs 	= 	$op->getRequestService();
 		$cs 	= 	$op->getContextService();
 		$ts	= 	$op->getTransformService();
-		$rps = 	$op->getResponseService();
+		$rps 	= 	$op->getResponseService();
 		
-		$model= $rqs->processRequest();
-		$context = $cs->getContext($model);
+		$model		= 	$rqs->processRequest();
+		$context 	= 	$cs->getContext($model);
 		
-		$result = $ts->transform($context, $model);
-		$context = $result[0];
-		$model = $result[1];
+		$result 		= 	$ts->transform($context, $model);
+		$context 	= 	$result[0];
+		$model 	= 	$result[1];
 		
 		$cs->setContext($context);
 		echo $rps->processResponse($model);
