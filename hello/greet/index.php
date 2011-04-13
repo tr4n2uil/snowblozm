@@ -1,10 +1,11 @@
 <?php 
 require_once(dirname(__FILE__).'/../../snowblozm/kernel/ServiceKernel.class.php');
-require_once(dirname(__FILE__).'/Greet.class.php');
+require_once(dirname(__FILE__).'/../../snowblozm/loader/ComponentLoader.class.php');
+
+$cl = new ComponentLoader();
+$op = $cl->load("services.hello.greet");
 
 $kernel = new ServiceKernel();
-$op = new Greet();
-//$kernel->configure($op);
 $kernel->start($op);
 
 ?>
