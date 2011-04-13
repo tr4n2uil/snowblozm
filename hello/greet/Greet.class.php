@@ -2,11 +2,18 @@
 require_once(dirname(__FILE__).'/../../snowblozm/interfaces.php');
 
 require_once(dirname(__FILE__).'/GreetRequest.class.php');
-require_once(dirname(__FILE__).'/GreetContext.class.php');
-require_once(dirname(__FILE__).'/GreetTransform.class.php');
 require_once(dirname(__FILE__).'/GreetResponse.class.php');
 
 class Greet implements Operation {
+	protected 
+		// adapter
+		$adapter;
+
+	// Constructor
+	public function __construct(){
+		$cl = new ComponentLoader();
+		$this->adapter = $cl->load("services.base.adapter");
+	}
 
 	// Operation interface
 	public function getRequestService(){
@@ -15,12 +22,12 @@ class Greet implements Operation {
 	
 	// Operation interface
 	public function getContextService(){
-		return new GreetContext();
+		return $this->adapter->getContextService();
 	}
 	
 	// Operation interface
 	public function getTransformService(){
-		return new GreetTransform();
+		return $this->adapter->getTransformService();
 	}
 	
 	// Operation interface
