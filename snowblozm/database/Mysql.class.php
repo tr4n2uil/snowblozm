@@ -1,5 +1,6 @@
 <?php 
-require_once(dirname(__FILE__).'/service/DataService.interface.php');
+require_once('../../init.php');
+require_once(SBROOT . 'service/DataService.interface.php');
 
 // Concrete MySQL implementation for Data services interface
 class Mysql implements DataService {

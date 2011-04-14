@@ -1,5 +1,6 @@
 <?php 
-require_once(dirname(__FILE__).'/../../snowblozm/interfaces.php');
+require_once('../../init.php');
+require_once(SBINTERFACES);
 
 require_once(dirname(__FILE__).'/GreetRequest.class.php');
 require_once(dirname(__FILE__).'/GreetResponse.class.php');
@@ -12,7 +13,7 @@ class Greet implements Operation {
 	// Constructor
 	public function __construct(){
 		$cl = new ComponentLoader();
-		$this->adapter = $cl->load("services.base.adapter");
+		$this->adapter = $cl->load("base.adapter", SBROOT);
 	}
 
 	// Operation interface

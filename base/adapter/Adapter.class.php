@@ -1,5 +1,5 @@
 <?php 
-require_once(dirname(__FILE__).'/../../snowblozm/interfaces.php');
+require_once(SBINTERFACES);
 
 require_once(dirname(__FILE__).'/AdapterRequest.class.php');
 require_once(dirname(__FILE__).'/AdapterContext.class.php');

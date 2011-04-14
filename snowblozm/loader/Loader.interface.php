@@ -4,7 +4,7 @@
 interface Loader {
 
 	// Loads the resource from uri as proxy
-	public function load($uri);
+	public function load($uri, $root);
 }
 
 ?>

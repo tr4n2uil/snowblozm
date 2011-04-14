@@ -1,8 +1,7 @@
 <?php 
-require_once(dirname(__FILE__).'/Component.interface.php');
 
 // Abstract interface for operations
-interface Operation extends Component {
+interface Component {
 
 	// Get the context service
 	public function getContextService();

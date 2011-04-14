@@ -2,6 +2,7 @@
 
 define( 'ROOT', dirname(__FILE__).'/');
 
+require_once(ROOT . 'kernel/Component.interface.php');
 require_once(ROOT . 'kernel/Operation.interface.php');
 require_once(ROOT . 'kernel/Service.interface.php');
 

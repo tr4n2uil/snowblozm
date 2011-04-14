@@ -1,5 +1,6 @@
 <?php 
-require_once(dirname(__FILE__).'/../interfaces.php');
+require_once('../../init.php');
+require_once(SBINTERFACES);
 
 // Provides core functionality of the kernel
 class ServiceKernel {

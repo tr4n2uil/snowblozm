@@ -1,5 +1,5 @@
 <?php 
-require_once(dirname(__FILE__).'/../../snowblozm/interfaces.php');
+require_once(SBINTERFACES);
 
 class AdapterTransform implements TransformService {
 

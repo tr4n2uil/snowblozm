@@ -1,9 +1,10 @@
 <?php 
-require_once(dirname(__FILE__).'/../../snowblozm/kernel/ServiceKernel.class.php');
-require_once(dirname(__FILE__).'/../../snowblozm/loader/ComponentLoader.class.php');
+require_once('../../init.php');
+require_once(SBKERNEL);
+require_once(SBCOMLOADER);
 
 $cl = new ComponentLoader();
-$op = $cl->load("services.base.adapter");
+$op = $cl->load("base.adapter", SBROOT);
 
 $kernel = new ServiceKernel();
 $kernel->start($op);

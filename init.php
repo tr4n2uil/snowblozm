@@ -1,6 +1,7 @@
-<?php
+<?php 
+require_once('snowblozm/config/PathManager.class.php');
 
-// Set up ROOT constant.
-define( ROOT, dirname(__FILE__).'/' );
+// Set up constants
+PathManager::setupConstants();
 
 ?>
