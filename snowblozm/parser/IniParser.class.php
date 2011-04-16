@@ -1,5 +1,5 @@
 <?php 
-require_once(dirname(__FILE__).'/Parser.interface.php');
+require_once('Parser.interface.php');
 
 // Concrete parser for .ini formatted files
 class IniParser implements Parser {

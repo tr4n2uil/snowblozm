@@ -10,9 +10,7 @@ class ComponentLoader implements Loader {
 		$file = $file . "/" . $operation . ".class.php";
 		
 		require_once($root . $file);
-		$class = new ReflectionClass($operation);
-		
-		return $class->newInstance();
+		return new $operation;
 	}
 }
 

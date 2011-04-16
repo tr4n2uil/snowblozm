@@ -1,10 +1,10 @@
 <?php 
 require_once(SBINTERFACES);
 
-require_once(dirname(__FILE__).'/AdapterRequest.class.php');
-require_once(dirname(__FILE__).'/AdapterContext.class.php');
-require_once(dirname(__FILE__).'/AdapterTransform.class.php');
-require_once(dirname(__FILE__).'/AdapterResponse.class.php');
+require_once('AdapterRequest.class.php');
+require_once('AdapterContext.class.php');
+require_once('AdapterTransform.class.php');
+require_once('AdapterResponse.class.php');
 
 class Adapter implements Operation {
 

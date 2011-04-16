@@ -1,9 +1,9 @@
 <?php 
-require_once('../../init.php');
 require_once(SBINTERFACES);
+require_once(SBCOMLOADER);
 
-require_once(dirname(__FILE__).'/GreetRequest.class.php');
-require_once(dirname(__FILE__).'/GreetResponse.class.php');
+require_once('GreetRequest.class.php');
+require_once('GreetResponse.class.php');
 
 class Greet implements Operation {
 	protected 
