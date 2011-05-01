@@ -1,7 +1,7 @@
 <?php 
 
 // snowblozm directory
-		define('SBROOT', $_SERVER['DOCUMENT_ROOT'] . '/services/snowblozm/');
+		define('SBROOT', dirname(__FILE__).'/' );
 		
 // system constants
 		define('SBINTERFACES', SBROOT . 'lib/interfaces.php');
