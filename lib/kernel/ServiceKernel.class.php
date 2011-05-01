@@ -15,13 +15,14 @@ class ServiceKernel {
 	}
 	
 	// Start the kernel and supervise the proceedings
-	public function start(Operation $op){
+	public function start(Operation $op, $model=null){
 		$rqs 	= 	$op->getRequestService();
 		$cs 	= 	$op->getContextService();
 		$ts	= 	$op->getTransformService();
 		$rps 	= 	$op->getResponseService();
 		
-		$model		= 	$rqs->processRequest();
+		if($model == null)
+			$model		= 	$rqs->processRequest();
 		$context 	= 	$cs->getContext($model);
 		
 		$result 		= 	$ts->transform($context, $model);
