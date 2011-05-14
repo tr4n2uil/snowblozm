@@ -5,11 +5,11 @@ class AdapterContext implements ContextService {
 
 	// ContextService interface
 	public function getContext($model){
-		return array();
+		return $model;
 	}
 	
 	// ContextService interface
-	public function setContext($context){
+	public function setContext($model){
 		
 	}
 }

@@ -4,7 +4,7 @@
 interface TransformService {
 
 	// Transform the model and context and return them
-	public function transform($context, $model);
+	public function transform($model);
 }
 
 ?>

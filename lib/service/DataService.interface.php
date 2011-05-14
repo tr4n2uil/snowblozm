@@ -7,7 +7,7 @@ interface DataService {
 	public function open($database);
 	
 	// execute query and get result/result-set
-	public function getResult($query);
+	public function getResult($query, $execute, $resulttype);
 	
 	// escape parameter strings array
 	public function escape($param);

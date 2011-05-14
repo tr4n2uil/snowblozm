@@ -1,6 +1,6 @@
 <?php 
-require_once('../../init.php');
-require_once(SBROOT . 'service/DataService.interface.php');
+
+require_once(SBROOT . 'lib/service/DataService.interface.php');
 
 // Concrete MySQL implementation for Data services interface
 class Mysql implements DataService {
@@ -24,13 +24,17 @@ class Mysql implements DataService {
 			}
 			die('Could not connect to database host');
 		}
-		@mysql_select_db('codefest', $this->conn)
+		@mysql_select_db($database, $this->conn)
 			or die('Could not select database');
 	}
 	
 	// DataService interface
-	public function getResult($query, $resulttype=MYSQL_NUM){
-		$resultset = @mysql_query($q, $this->conn);
+	public function getResult($query, $execute=false, $resulttype=MYSQL_NUM){
+		$resultset = @mysql_query($query, $this->conn);
+		if($resultset === false) 
+			return false;
+		if($execute)
+			return $resultset;
 		$result = array();
 		while( $rowset = mysql_fetch_array($resultset, $resulttype) ) {
 			array_push( $result, $rowset );
@@ -40,14 +44,13 @@ class Mysql implements DataService {
 	
 	// DataService interface
 	public function escape($param, $addslashes=false){
-		foreach($param as $f){
-			if( $addslashes==false ) {
-				if( get_magic_quotes_gpc() ) $f = stripslashes($f);
-			} else {
-				if( !get_magic_quotes_gpc() ) $f = addslashes($f);
-			}
-			$f = mysql_real_escape_string($f, $this->conn);
+		if( $addslashes==false ) {
+			if( get_magic_quotes_gpc() ) $param = stripslashes($param);
+		} else {
+			if( !get_magic_quotes_gpc() ) $param = addslashes($param);
 		}
+		$param = mysql_real_escape_string($param, $this->conn);
+		
 		return $param;
 	}
 	

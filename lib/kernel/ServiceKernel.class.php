@@ -17,20 +17,26 @@ class ServiceKernel {
 	// Start the kernel and supervise the proceedings
 	public function start(Operation $op, $model=null){
 		$rqs 	= 	$op->getRequestService();
-		$cs 	= 	$op->getContextService();
-		$ts	= 	$op->getTransformService();
 		$rps 	= 	$op->getResponseService();
 		
 		if($model == null)
 			$model		= 	$rqs->processRequest();
-		$context 	= 	$cs->getContext($model);
+			
+		$model = $this->run($op, $model);
 		
-		$result 		= 	$ts->transform($context, $model);
-		$context 	= 	$result[0];
-		$model 	= 	$result[1];
-		
-		$cs->setContext($context);
 		echo $rps->processResponse($model);
+	}
+	
+	// Run local service and return the result
+	public function run(Operation $op, $model){
+		$cs 	= 	$op->getContextService();
+		$ts	= 	$op->getTransformService();
+		
+		$model 	= 	$cs->getContext($model);
+		$model 		= 	$ts->transform($model);
+		$cs->setContext($model);
+		
+		return $model;
 	}
 }
 
