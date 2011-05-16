@@ -1,4 +1,5 @@
 <?php 
+
 require_once(dirname(__FILE__).'/Component.interface.php');
 
 // Abstract interface for operations

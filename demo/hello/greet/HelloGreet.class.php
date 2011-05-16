@@ -1,11 +1,12 @@
 <?php 
+
 require_once(SBINTERFACES);
 require_once(SBCOMLOADER);
 
-require_once('GreetRequest.class.php');
-require_once('GreetResponse.class.php');
+require_once('HelloGreetRequest.class.php');
+require_once('HelloGreetResponse.class.php');
 
-class Greet implements Operation {
+class HelloGreet implements Operation {
 	protected 
 		// adapter
 		$adapter;
@@ -18,7 +19,7 @@ class Greet implements Operation {
 
 	// Operation interface
 	public function getRequestService(){
-		return new GreetRequest();
+		return new HelloGreetRequest();
 	}
 	
 	// Operation interface
@@ -33,7 +34,7 @@ class Greet implements Operation {
 	
 	// Operation interface
 	public function getResponseService(){
-		return new GreetResponse();
+		return new HelloGreetResponse();
 	}
 }
 

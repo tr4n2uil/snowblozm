@@ -1,4 +1,5 @@
 <?php 
+
 require_once('Parser.interface.php');
 
 // Concrete parser for .ini formatted files

@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 // Abstract interface for loaders
 interface Loader {

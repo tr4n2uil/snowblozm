@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 class Random {
 	public static function getNumber($min=-1, $max=-1) {

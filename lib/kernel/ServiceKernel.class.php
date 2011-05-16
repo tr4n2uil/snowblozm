@@ -1,4 +1,5 @@
 <?php 
+
 require_once(SBINTERFACES);
 
 // Provides core functionality of the kernel

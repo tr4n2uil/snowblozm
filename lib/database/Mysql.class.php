@@ -9,14 +9,14 @@ class Mysql implements DataService {
 		$conn;
 	
 	// Constructor
-	public function __construct($database){
-		$this->open($database);
+	public function __construct($database, $user, $pass, $host){
+		$this->open($database, $user, $pass, $host);
 	}
 
 	// DataService interface : should be private
-	public function open($database){
+	public function open($database, $user, $pass, $host){
 		// TODO Implement the credentials in ini file
-		$this->conn = @mysql_connect('localhost', 'root', 'krishna');
+		$this->conn = @mysql_connect($host, $user, $pass);
 		if( $this->conn==false ) {
 			$err = mysql_errno();
 			if( $err==1203 ) {
@@ -34,7 +34,7 @@ class Mysql implements DataService {
 		if($resultset === false) 
 			return false;
 		if($execute)
-			return $resultset;
+			return mysql_affected_rows($this->conn);
 		$result = array();
 		while( $rowset = mysql_fetch_array($resultset, $resulttype) ) {
 			array_push( $result, $rowset );

@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 // Abstract interface for Transform service
 interface TransformService {

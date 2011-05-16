@@ -1,7 +1,8 @@
 <?php 
+
 require_once(SBINTERFACES);
 
-class AdapterRequest implements RequestService {
+class BaseAdapterRequest implements RequestService {
 	
 	// RequestService interface
 	public function processRequest(){

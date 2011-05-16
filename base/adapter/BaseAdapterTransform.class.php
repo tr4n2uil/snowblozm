@@ -1,7 +1,8 @@
 <?php 
+
 require_once(SBINTERFACES);
 
-class AdapterTransform implements TransformService {
+class BaseAdapterTransform implements TransformService {
 
 	// TransformService interface
 	public function transform($model){

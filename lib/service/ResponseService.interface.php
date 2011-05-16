@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 // Abstract interface for Response service
 interface ResponseService {

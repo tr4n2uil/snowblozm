@@ -1,7 +1,8 @@
 <?php 
+
 require_once(SBINTERFACES);
 
-class AdapterContext implements ContextService {
+class BaseAdapterContext implements ContextService {
 
 	// ContextService interface
 	public function getContext($model){

@@ -1,7 +1,8 @@
 <?php 
+
 require_once(SBINTERFACES);
 
-class GreetRequest implements RequestService {
+class HelloGreetRequest implements RequestService {
 	
 	// RequestService interface
 	public function processRequest(){

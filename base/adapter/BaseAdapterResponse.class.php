@@ -1,11 +1,12 @@
 <?php 
+
 require_once(SBINTERFACES);
 
-class GreetResponse implements ResponseService {
+class BaseAdapterResponse implements ResponseService {
 	
 	// ResponseService interface
 	public function processResponse($model){
-		$view = "<h1>Hello World ".$model['name']."</h1>";
+		$view = "<h1>Hello World!</h1>";
 		return $view;
 	}
 }

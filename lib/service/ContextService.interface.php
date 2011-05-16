@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 // Abstract interface for Context service
 interface ContextService {
