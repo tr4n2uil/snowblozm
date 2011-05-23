@@ -12,14 +12,18 @@ class Mail {
 		self::$from = $from;
 	}
 	
-	public static function send($to, $sub, $msg, $hdr){
+	public static function send($to, $sub, $msg){
 		if(self::$delegate)
-			return self::delegateto($to, $sub, $msg, $hdr);
-		else
-			return mail($to, $sub, $msg ,$hdr, self::$value);
+			return self::delegateto($to, $sub, $msg);
+		else {
+			$headers = "From: ".self::$from;
+			$headers .= "\r\nReply-To: ".self::$from;
+			$headers .= "\r\nX-Mailer: PHP/".phpversion();
+			return mail($to, $sub, $msg ,$headers, self::$value);
+		}
 	}
 	
-	private static function delegateto($to, $sub, $msg, $hdr) 
+	private static function delegateto($to, $sub, $msg) 
 	{
         $params  = array(
             'to' => $to,
@@ -29,6 +33,7 @@ class Mail {
 			'smtpuser' => self::$user,
 			'smtppass' => self::$pass
         );
+		//print_r($params);
 		$curl = new Curl(self::$value, $params);
 		return $curl->send();
 	}

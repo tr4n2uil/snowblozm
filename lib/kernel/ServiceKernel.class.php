@@ -21,11 +21,14 @@ class ServiceKernel {
 		$rps 	= 	$op->getResponseService();
 		
 		if($model == null)
-			$model		= 	$rqs->processRequest();
-			
-		$model = $this->run($op, $model);
+			$model	= $rqs->processRequest();
+		else
+			$model['valid'] = true;
 		
-		echo $rps->processResponse($model);
+		if($model['valid'] === true)
+			$model = $this->run($op, $model);
+		
+			echo $rps->processResponse($model);
 	}
 	
 	// Run local service and return the result
@@ -33,9 +36,14 @@ class ServiceKernel {
 		$cs 	= 	$op->getContextService();
 		$ts	= 	$op->getTransformService();
 		
-		$model 	= 	$cs->getContext($model);
-		$model 		= 	$ts->transform($model);
-		$cs->setContext($model);
+		$model['valid'] = true;
+		$model = $cs->getContext($model);
+		
+		if($model['valid'] === true)
+			$model = $ts->transform($model);
+		
+		if($model['valid'] === true)
+			$cs->setContext($model);
 		
 		return $model;
 	}

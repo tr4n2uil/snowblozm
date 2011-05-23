@@ -6,7 +6,7 @@ class BaseAdapterRequest implements RequestService {
 	
 	// RequestService interface
 	public function processRequest(){
-		return array();
+		return array('valid' => true);
 	}
 }
 

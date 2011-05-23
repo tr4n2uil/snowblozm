@@ -14,7 +14,7 @@ class Curl {
 		}
 		
 		public function send(){
-echo "Curl : ".$this->url." "; print_r($this->params);
+//echo "Curl : ".$this->url." "; print_r($this->params);
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $this->url);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -27,7 +27,8 @@ echo "Curl : ".$this->url." "; print_r($this->params);
 			if ($result === false || $this->info['http_code'] != 200) {
 				$this->err =curl_error($ch);
 				curl_close($ch);
-				return "Curl Error : ".$this->err;
+				echo "Curl Error : ".$this->err;
+				return false;
 			}
 			curl_close($ch);
 			return $result;

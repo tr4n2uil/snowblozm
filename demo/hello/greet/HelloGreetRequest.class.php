@@ -6,8 +6,9 @@ class HelloGreetRequest implements RequestService {
 	
 	// RequestService interface
 	public function processRequest(){
-		$array['name'] = $_GET['name'];
-		return $array;
+		$model['name'] = $_GET['name'];
+		$model['valid'] = true;
+		return $model;
 	}
 }
 
