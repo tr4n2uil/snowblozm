@@ -43,7 +43,7 @@ class ServiceKernel {
 			$model = $ts->transform($model);
 		
 		if($model['valid'] === true)
-			$cs->setContext($model);
+			$model = $cs->setContext($model);
 		
 		return $model;
 	}

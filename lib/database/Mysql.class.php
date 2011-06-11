@@ -29,7 +29,7 @@ class Mysql implements DataService {
 	}
 	
 	// DataService interface
-	public function getResult($query, $execute=false, $resulttype=MYSQL_NUM){
+	public function getResult($query, $execute=false, $resulttype=MYSQL_BOTH){
 		$resultset = @mysql_query($query, $this->conn);
 		if($resultset === false) 
 			return false;
