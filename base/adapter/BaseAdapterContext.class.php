@@ -11,7 +11,7 @@ class BaseAdapterContext implements ContextService {
 	
 	// ContextService interface
 	public function setContext($model){
-		
+		return $model;
 	}
 }
 
