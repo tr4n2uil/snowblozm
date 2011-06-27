@@ -28,7 +28,7 @@ class ServiceKernel {
 		if($model['valid'] === true)
 			$model = $this->run($op, $model);
 		
-			echo $rps->processResponse($model);
+		return $rps->processResponse($model);
 	}
 	
 	// Run local service and return the result
