@@ -2,13 +2,31 @@
 
 require_once(dirname(__FILE__).'/Component.interface.php');
 
-// Abstract interface for operations
+/**
+ *	@interface Operation
+ *	@desc Abstract interface for operation
+ *
+ *	@author Vibhaj Rajan <vibhaj8@gmail.com>
+ *
+**/
 interface Operation extends Component {
 
-	// Get the request service
+	/**
+	 *	@method getRequestService
+	 *	@desc Get the request service
+	 *
+	 *	@return $rs RequestService
+	 *
+	**/
 	public function getRequestService();
 	
-	// Get the response service
+	/**
+	 *	@method getResponseService
+	 *	@desc Get the response service
+	 *
+	 *	@return $rs ResponseService
+	 *
+	**/
 	public function getResponseService();
 }
 

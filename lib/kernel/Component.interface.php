@@ -1,12 +1,30 @@
 <?php 
 
-// Abstract interface for operations
+/**
+ *	@interface Component
+ *	@desc Abstract interface for component
+ *
+ *	@author Vibhaj Rajan <vibhaj8@gmail.com>
+ *
+**/
 interface Component {
 
-	// Get the context service
+	/**
+	 *	@method getContextService
+	 *	@desc Get the context service
+	 *
+	 *	@return $cs ContextService
+	 *
+	**/
 	public function getContextService();
 	
-	// Get the transform service
+	/**
+	 *	@method getTransformService
+	 *	@desc Get the transform service
+	 *
+	 *	@return $ts TransformService
+	 *
+	**/
 	public function getTransformService();
 }
 

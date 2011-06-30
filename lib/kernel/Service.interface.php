@@ -2,7 +2,7 @@
 
 /**
  *	@interface Service
- *	@desc Abstract interface for services
+ *	@desc Abstract interface for services and workflows (service compositions)
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -20,5 +20,6 @@ interface Service {
 	 *
 	**/
 	public function run($message, $memory);
+	
 }
 ?>
