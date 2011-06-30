@@ -8,7 +8,8 @@ class UtilTimeResponse implements ResponseService {
 	public function processResponse($model){
 		$view = "<h1>Time :  ".$model['current-time']."</h1>";
 		$view .= "<h2>".$model['current-time-formatted']."</h2>";
-		return $view;
+		echo $view;
+		return $model;
 	}
 }
 
