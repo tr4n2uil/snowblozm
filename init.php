@@ -4,6 +4,7 @@
  * 	snowblozm directory
 **/
 		define('SBROOT', dirname(__FILE__).'/' );
+		define('SBMDLROOT', SBROOT.'module/' );
 
 /** 
  *	utility constants
@@ -23,6 +24,7 @@
  *	enhanced (v2) stystem constants
 **/
 		define('SBSERVICE', SBROOT . 'lib/kernel/Service.interface.php');
-		define('SBWKERNEL', SBROOT . 'lib/kernel/WorkflowKernel.class.php');
+		define('SBWFKERNEL', SBROOT . 'lib/kernel/WorkflowKernel.class.php');
+		define('SBMDLLOADER', SBROOT . 'lib/loader/ModuleLoader.class.php');
 
 ?>

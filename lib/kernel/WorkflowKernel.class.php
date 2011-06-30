@@ -4,7 +4,7 @@ require_once(SBSERVICE);
 
 /**
  *	@class WorkflowKernel
- *	@desc Provides core functionality of the enhanced kernel for executing service workflows
+ *	@desc Provides core functionality of the enhanced kernel for executing services and workflows
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -12,8 +12,12 @@ require_once(SBSERVICE);
 class WorkflowKernel {
 	
 	/** 
-	 *	@method run
-	 *	@desc Runs a workflow by using its definition object with Service interface
+	 *	@method execute
+	 *	@desc Runs a workflow by using its definition array
+	 *				workflow [{
+	 *					service => ...,
+	 *					... params ...
+	 *				}]
 	 *
 	 *	@param $cmp Component
 	 *	@param $model object
@@ -21,38 +25,30 @@ class WorkflowKernel {
 	 *	@return $model object
 	 *
 	**/
-	public function run(Component $cmp, $model){
-		$cs 	= 	$cmp->getContextService();
-		$ts	= 	$cmp->getTransformService();
+	public function execute($workflow, $memory = array('valid' => true)){
+		
+		foreach($workflow as $defn){
+			/**
+			 *	Read the service instance
+			**/
+			$service = $defn['service'];
+			
+			/**
+			 *	Run the service with the message (defn itself) and memory
+			**/
+			$memory = $service->run($defn, $memory);
+			
+			/**
+			 *	Break on invalid state
+			**/
+			if(!$memory['valid'])
+				break;
+		}
 		
 		/**
-		 *	Set valid flag
+		 *	Return memory
 		**/
-		if(!isset($model['valid']))
-			$model['valid'] = true;
-		
-		/**
-		 *	Get context using ContextService
-		**/
-		if($model['valid'] === true)
-			$model = $cs->getContext($model);
-		
-		/**
-		 *	Transform using TransformService
-		**/
-		if($model['valid'] === true)
-			$model = $ts->transform($model);
-		
-		/**
-		 *	Set context using ContextService
-		**/
-		if($model['valid'] === true)
-			$model = $cs->setContext($model);
-		
-		/**
-		 *	Return $model
-		**/
-		return $model;
+		return $memory;
 	}
 	
 }

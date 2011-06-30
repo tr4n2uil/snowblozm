@@ -15,14 +15,13 @@ class ComponentLoader implements Loader {
 	 *	@interface Loader interface
 	**/
 	public function load($uri, $root){
-		$file = str_replace(".", "/", $uri);
-		$operation =  ucfirst(substr(strrchr($uri, "."), 1));
-		$ns = ucfirst(substr($uri, 0, strpos($uri, ".")));
-		$operation = $ns.$operation;
-		$file = $file . "/" . $operation . ".class.php";
+		list($service, $operation) = explode('.' ,$uri);
 		
-		require_once($root . $file);
-		return new $operation;
+		$path = $root.$service.'/'.$operation.'/';
+		$class = ucfirst($service).ucfirst($operation);
+		
+		require_once($path . $class . '.class.php');
+		return new $class;
 	}
 	
 }
