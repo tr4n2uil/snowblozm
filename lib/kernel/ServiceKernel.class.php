@@ -37,7 +37,7 @@ class ServiceKernel {
 		 *	Run the component part of the operation
 		**/
 		if($model['valid'] === true)
-			$model = $this->run($op, $model);
+			$model = $this->run($op, $model, false);
 		
 		/**
 		 *	Process response and return $model
@@ -55,14 +55,14 @@ class ServiceKernel {
 	 *	@return $model object
 	 *
 	**/
-	public function run(Component $cmp, $model){
+	public function run(Component $cmp, $model, $set = true){
 		$cs 	= 	$cmp->getContextService();
 		$ts	= 	$cmp->getTransformService();
 		
 		/**
 		 *	Set valid flag
 		**/
-		if(!isset($model['valid']))
+		if($set)
 			$model['valid'] = true;
 		
 		/**

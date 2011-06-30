@@ -1,50 +1,60 @@
 <?php 
 
-require_once(SBINTERFACES);
+require_once(SBSERVICE);
 
 /**
- *	@class ServiceKernel
+ *	@class WorkflowKernel
+ *	@desc Provides core functionality of the enhanced kernel for executing service workflows
  *
- *	@desc Provides core functionality of the kernel
+ *	@author Vibhaj Rajan <vibhaj8@gmail.com>
+ *
 **/
-class ServiceKernel {
+class WorkflowKernel {
 	
 	/** 
-	 *	Start the kernel and run the service operation
+	 *	@method run
+	 *	@desc Runs a workflow by using its definition object with Service interface
+	 *
+	 *	@param $cmp Component
+	 *	@param $model object
+	 *
+	 *	@return $model object
+	 *
 	**/
-	public function start(Operation $op, $model=null){
-		$rqs 	= 	$op->getRequestService();
-		$rps 	= 	$op->getResponseService();
+	public function run(Component $cmp, $model){
+		$cs 	= 	$cmp->getContextService();
+		$ts	= 	$cmp->getTransformService();
 		
-		if($model == null)
-			$model	= $rqs->processRequest();
-		else
+		/**
+		 *	Set valid flag
+		**/
+		if(!isset($model['valid']))
 			$model['valid'] = true;
 		
+		/**
+		 *	Get context using ContextService
+		**/
 		if($model['valid'] === true)
-			$model = $this->run($op, $model);
+			$model = $cs->getContext($model);
 		
-		return $rps->processResponse($model);
-	}
-	
-	/** 
-	 *	Run local component and return the result
-	**/
-	public function run(Component $op, $model){
-		$cs 	= 	$op->getContextService();
-		$ts	= 	$op->getTransformService();
-		
-		$model['valid'] = true;
-		$model = $cs->getContext($model);
-		
+		/**
+		 *	Transform using TransformService
+		**/
 		if($model['valid'] === true)
 			$model = $ts->transform($model);
 		
+		/**
+		 *	Set context using ContextService
+		**/
 		if($model['valid'] === true)
 			$model = $cs->setContext($model);
 		
+		/**
+		 *	Return $model
+		**/
 		return $model;
 	}
+	
 }
 
 ?>

@@ -14,7 +14,5 @@ require_once(ROOT . 'service/DataService.interface.php');
 
 require_once(ROOT . 'loader/Loader.interface.php');
 
-require_once(ROOT . 'parser/Parser.interface.php');
-
 
 ?>

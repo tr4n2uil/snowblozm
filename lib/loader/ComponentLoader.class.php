@@ -2,9 +2,18 @@
 
 require_once('Loader.interface.php');
 
+/**
+ *	@class ComponentLoader
+ *	@desc Loads local component and returns instance
+ *
+ *	@author Vibhaj Rajan <vibhaj8@gmail.com>
+ *
+ **/
 class ComponentLoader implements Loader {
 	
-	// Loader interface
+	/** 
+	 *	@interface Loader interface
+	**/
 	public function load($uri, $root){
 		$file = str_replace(".", "/", $uri);
 		$operation =  ucfirst(substr(strrchr($uri, "."), 1));
@@ -15,6 +24,7 @@ class ComponentLoader implements Loader {
 		require_once($root . $file);
 		return new $operation;
 	}
+	
 }
 
 ?>

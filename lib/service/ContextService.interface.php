@@ -1,12 +1,34 @@
 <?php 
 
-// Abstract interface for Context service
+/**
+ *	@interface ContextService
+ *	@desc Abstract interface for context services 
+ *
+ *	@author Vibhaj Rajan <vibhaj8@gmail.com>
+ *
+**/
 interface ContextService {
 
-	// Generates the context from model
+	/** 
+	 *	@method getContext
+	 *	@desc generates the context from model
+	 *
+	 *	@param $model object State
+	 *
+	 *	@return $model object
+	 *
+	**/
 	public function getContext($model);
 	
-	// Writes back context
+	/** 
+	 *	@method setContext
+	 *	@desc saves the context from model
+	 *
+	 *	@param $model object State
+	 *
+	 *	@return $model object
+	 *
+	**/
 	public function setContext($context);
 }
 

@@ -2,20 +2,32 @@
 
 require_once(SBROOT . 'lib/service/DataService.interface.php');
 
-// Concrete MySQL implementation for Data services interface
+/** 
+ *	@class Mysql
+ *	@desc Concrete MySQL implementation for Data services interface
+ *
+ *	@author Vibhaj Rajan <vibhaj8@gmail.com>
+ *
+ *	@acknowledgements J R Harshath (Codefest 2010 website code)
+ *
+**/
 class Mysql implements DataService {
-	protected 
-		// connection resource
-		$conn;
+	/** 
+	 *	@var $conn Connection resource
+	**/
+	protected $conn;
 	
-	// Constructor
+	/** 
+	 *	@constructor 
+	**/
 	public function __construct($database, $user, $pass, $host){
 		$this->open($database, $user, $pass, $host);
 	}
 
-	// DataService interface : should be private
+	/** 
+	 *	@interface DataService
+	**/
 	public function open($database, $user, $pass, $host){
-		// TODO Implement the credentials in ini file
 		$this->conn = @mysql_connect($host, $user, $pass);
 		if( $this->conn==false ) {
 			$err = mysql_errno();
@@ -28,7 +40,9 @@ class Mysql implements DataService {
 			or die('Could not select database');
 	}
 	
-	// DataService interface
+	/** 
+	 *	@interface DataService
+	**/
 	public function getResult($query, $execute=false, $resulttype=MYSQL_BOTH){
 		$resultset = @mysql_query($query, $this->conn);
 		if($resultset === false) 
@@ -42,7 +56,9 @@ class Mysql implements DataService {
 		return $result;
 	}
 	
-	// DataService interface
+	/** 
+	 *	@interface DataService
+	**/
 	public function escape($param, $addslashes=false){
 		if( $addslashes==false ) {
 			if( get_magic_quotes_gpc() ) $param = stripslashes($param);
@@ -54,17 +70,23 @@ class Mysql implements DataService {
 		return $param;
 	}
 	
-	// DataService interface
+	/** 
+	 *	@interface DataService
+	**/
 	public function getAutoId(){
 		return mysql_insert_id($this->conn);
 	}
 	
-	// DataService interface
+	/** 
+	 *	@interface DataService
+	**/
 	public function close(){
 		return mysql_close($this->conn);
 	}
 	
-	// DataService interface
+	/** 
+	 *	@interface DataService
+	**/
 	public function getError(){
 		return mysql_error($this->conn);
 	}
