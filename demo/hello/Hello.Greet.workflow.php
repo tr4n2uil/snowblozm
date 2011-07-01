@@ -11,9 +11,14 @@ class HelloGreetWorkflow implements Service {
 		$kernel = new WorkflowKernel();
 		$workflow = array();
 		
+		$type = isset($message['type']) ? $message['type'] : (isset($memory['type']) ? $memory['type'] : 'post.json');
+		$type = explode('.', $type);
+		if(count($type) == 1)
+			$type[1] = $type[0];
+		
 		$mdl = array('service' => $ml->load('request.read.service', SBROOT));
 		$mdl['params'] = array('name');
-		$mdl['type'] = 'get';
+		$mdl['type'] = $type[0];
 		array_push($workflow, $mdl);
 		
 		$mdl = array('service' => $ml->load('hello.greet.service', SBROOT.'demo/'));
@@ -23,7 +28,7 @@ class HelloGreetWorkflow implements Service {
 
 		$mdl = array('service' => $ml->load('response.write.service', SBROOT));
 		$mdl['params'] = array('view' => 'message');
-		$mdl['type'] = 'json';
+		$mdl['type'] = $type[1];
 		
 		return $kernel->run($mdl, $memory);
 	}

@@ -7,6 +7,7 @@ require_once(SBSERVICE);
  *
  *	@param params array Response keys [message]
  *	@param type string Request type [message] optional default 'json' ('json, 'xml', 'html', 'plain', 'memory', 'wddx')
+ *	@param successmsg string Success message [message|memory] optional default 'Successfully Executed'
  *
  *	@return response values [echo]
  *
@@ -24,6 +25,7 @@ class ResponseWriteService implements Service {
 		$result = array();
 		$default = array('valid' => 'valid', 'msg' => 'msg', 'status' => 'status', 'details' => 'details');
 		$params = isset($message['params']) ? array_merge($default, $message['params']) : $default;
+		$successmsg = isset($message['successmsg']) ? $message['successmsg'] : (isset($memory['successmsg']) ? $memory['successmsg'] : 'Successfully Executed');
 		
 		foreach($params as $key => $value){
 			if(!isset($memory[$key])){
@@ -31,6 +33,9 @@ class ResponseWriteService implements Service {
 			}
 			$result[$value] = $memory[$key];
 		}
+		
+		if($result['valid'])
+			$result['msg'] = $successmsg;
 		
 		switch($type){
 			case 'json' :
