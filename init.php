@@ -4,7 +4,6 @@
  * 	snowblozm directory
 **/
 		define('SBROOT', dirname(__FILE__).'/' );
-		define('SBMDLROOT', SBROOT.'module/' );
 
 /** 
  *	utility constants

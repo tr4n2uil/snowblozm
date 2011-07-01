@@ -1,7 +1,7 @@
 <?php 
 require_once(SBSERVICE);
 
-class UtilTime implements Service {
+class UtilTimeService implements Service {
 	
 	/**
 	 *	@interface Service

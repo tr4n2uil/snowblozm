@@ -15,15 +15,17 @@ class ModuleLoader implements Loader {
 	 *	@interface Loader interface
 	**/
 	public function load($uri, $root){
-		list($service, $operation) = explode('.' ,$uri);
+		list($service, $operation, $type) = explode('.' ,$uri);
+		
+		$path = $root.$service.'/';
 		
 		$service = ucfirst($service);
 		$operation = ucfirst($operation);
 		
-		$path = $root.$service.'.'.$operation;
-		$class = $service.$operation;
+		$path = $path.$service.'.'.$operation.'.'.$type;
+		$class = $service.$operation.ucfirst($type);
 		
-		require_once($path . '.service.php');
+		require_once($path . '.php');
 		return new $class;
 	}
 	

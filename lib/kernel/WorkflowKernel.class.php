@@ -19,10 +19,10 @@ class WorkflowKernel {
 	 *					... params ...
 	 *				}]
 	 *
-	 *	@param $cmp Component
-	 *	@param $model object
+	 *	@param $workflow Workflow definition array
+	 *	@param $memory object optional default array('valid' = true)
 	 *
-	 *	@return $model object
+	 *	@return $memory object
 	 *
 	**/
 	public function execute($workflow, $memory = array('valid' => true)){
@@ -49,6 +49,32 @@ class WorkflowKernel {
 		 *	Return memory
 		**/
 		return $memory;
+	}
+	
+	/** 
+	 *	@method run
+	 *	@desc Runs a service by using its definition object
+	 *				service {
+	 *					service => ...,
+	 *					... params ...
+	 *				}
+	 *
+	 *	@param $defn Service definition
+	 *	@param $memory object ooptional default array('valid' => true)
+	 *
+	 *	@return $memory object
+	 *
+	**/
+	public function run($defn, $memory = array('valid' => true)){
+		/**
+		 *	Read the service instance
+		**/
+		$service = $defn['service'];
+			
+		/**
+		 *	Run the service with the message (defn itself) and memory
+		**/
+		return $service->run($defn, $memory);
 	}
 	
 }

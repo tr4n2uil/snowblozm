@@ -2,18 +2,18 @@
 require_once(SBSERVICE);
 
 /**
- *	@class RequestRead
+ *	@class RequestReadService
  *	@desc Reads HTTP request parameters sent by GET or POST
  *
- *	@param $params array Request keys [message]
- *	@param $type string Request type [message] optional default 'post' ('get, 'post')
+ *	@param params array Request keys [message]
+ *	@param type string Request type [message] optional default 'post' ('get, 'post')
  *
  *	@return request values [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *	
 **/
-class RequestRead implements Service {
+class RequestReadService implements Service {
 	
 	/**
 	 *	@interface Service
