@@ -3,10 +3,10 @@ require_once(SBSERVICE);
 
 /**
  *	@class RequestReadService
- *	@desc Reads HTTP request parameters sent by GET or POST
+ *	@desc Reads HTTP request parameters sent by GET POST JSON XML MEMORY WDDX
  *
  *	@param params array Request keys [message]
- *	@param type string Request type [message] optional default 'post' ('get, 'post')
+ *	@param type string Request type [message] optional default 'post' ('get, 'post', 'json', 'xml', 'memory', 'wddx')
  *
  *	@return request values [memory]
  *
@@ -28,6 +28,21 @@ class RequestReadService implements Service {
 			case 'post' :
 				$request = $_POST;
 				break;
+			case 'memory' :
+				$request = $memory;
+				break;
+			case 'json' :
+				$data = file_get_contents('php://input');
+				$request = json_decode($data, true);
+				break;
+			case 'xml' :
+				$data = file_get_contents('php://input');
+				$request = $this->xml_decode($data);
+				break;
+			case 'wddx' :
+				$data = file_get_contents('php://input');
+				$request = wddx_deserialize($data);
+				break;
 			default :
 				break;
 		}
@@ -39,7 +54,7 @@ class RequestReadService implements Service {
 				$memory['valid'] = false;
 				$memory['msg'] = 'Invalid Request';
 				$memory['status'] = 501;
-				$memory['details'] = 'Value not found for '.$param;
+				$memory['details'] = 'Value not found for '.$param.' @request.read.service';
 				return $memory;
 			}
 			$memory[$param] = $request[$param];
@@ -50,6 +65,11 @@ class RequestReadService implements Service {
 		$memory['status'] = 200;
 		$memory['details'] = 'Successfully executed';
 		return $memory;
+	}
+	
+	public function xml_decode($data){
+		$xmldata = (array) @simplexml_load_string($data);
+		return $xmldata;
 	}
 	
 }

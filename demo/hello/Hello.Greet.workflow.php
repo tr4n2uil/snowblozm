@@ -18,8 +18,14 @@ class HelloGreetWorkflow implements Service {
 		
 		$mdl = array('service' => $ml->load('hello.greet.service', SBROOT.'demo/'));
 		array_push($workflow, $mdl);
+		
+		$memory = $kernel->execute($workflow);
 
-		return $kernel->execute($workflow);
+		$mdl = array('service' => $ml->load('response.write.service', SBROOT));
+		$mdl['params'] = array('view' => 'message');
+		$mdl['type'] = 'json';
+		
+		return $kernel->run($mdl, $memory);
 	}
 	
 }

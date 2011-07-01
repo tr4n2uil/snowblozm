@@ -25,18 +25,14 @@ class WorkflowKernel {
 	 *	@return $memory object
 	 *
 	**/
-	public function execute($workflow, $memory = array('valid' => true)){
+	public function execute($workflow, $memory = array()){
+		$memory['valid'] = isset($memory['valid']) ? $memory['valid'] : true;
 		
-		foreach($workflow as $defn){
-			/**
-			 *	Read the service instance
-			**/
-			$service = $defn['service'];
-			
+		foreach($workflow as $defn){			
 			/**
 			 *	Run the service with the message (defn itself) and memory
 			**/
-			$memory = $service->run($defn, $memory);
+			$memory = $this->run($defn, $memory);
 			
 			/**
 			 *	Break on invalid state
@@ -65,7 +61,9 @@ class WorkflowKernel {
 	 *	@return $memory object
 	 *
 	**/
-	public function run($defn, $memory = array('valid' => true)){
+	public function run($defn, $memory = array()){
+		$memory['valid'] = isset($memory['valid']) ? $memory['valid'] : true;
+		
 		/**
 		 *	Read the service instance
 		**/
