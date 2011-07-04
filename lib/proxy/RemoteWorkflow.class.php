@@ -4,7 +4,7 @@ require_once(SBSERVICE);
 
 /**
  *	@class RemoteWorkflow
- *	@desc Proxy worflow for executing remote workflows
+ *	@desc Proxy workflow for executing remote workflows
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *

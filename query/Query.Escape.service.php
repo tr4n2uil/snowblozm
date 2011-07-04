@@ -6,10 +6,10 @@ require_once(SBMYSQL);
  *	@class QueryEscapeService
  *	@desc Escapes all strings in the array
  *
- *	@param params array Array of strings to escape [message] optional default input
+ *	@param params array Array of strings to escape [message] optional default input-'conn'
  *	@param conn resource DataService instance [memory]
  *
- *	@return result values as 'safe'.param [memory]
+ *	@return result values as param itself [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *	
@@ -23,8 +23,11 @@ class QueryEscapeService implements Service {
 		$conn = $memory['conn'];
 		$params = isset($message['params']) ? $message['params'] : $message['input'];
 		
+		if(isset($params['conn']))
+			unset($params['conn']);
+		
 		foreach($params as $key){
-			$memory['safe'.$key] = $conn->escape($memory[$key]);
+			$memory[$key] = $conn->escape($memory[$key]);
 		}
 
 		$memory['valid'] = true;

@@ -19,7 +19,7 @@ class Snowblozm {
 	 *	@desc Adds a service provider definition array
 	 *
 	 *	@param spname string ServiceProvider name
-	 *	@param spdef array (root, location, type)
+	 *	@param spdef array (root, location, type, map, key)
 	 *
 	**/
 	public static function add($spname, $spdef){

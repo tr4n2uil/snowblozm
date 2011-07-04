@@ -5,8 +5,8 @@ require_once(SBSERVICE);
  *	@class StringSubstituteService
  *	@desc Substitutes ${key} in base string with value from memory for all keys in params array
  *
- *	@param params array Array of key to use for substitutions [message]
- *	@param basestr string Base string to use for substitutions [message]
+ *	@param params array Array of key to use for substitutions [message] optional default input
+ *	@param data string Base string to use for substitutions [message]
  *
  *	@return result string String with substitutions done [memory]
  *
@@ -19,8 +19,8 @@ class StringSubstituteService implements Service {
 	 *	@interface Service
 	**/
 	public function run($message, $memory){
-		$basestr = $message['basestr'];
-		$params = isset($message['params']) ? $message['params'] : array();
+		$data = $message['data'];
+		$params = isset($message['params']) ? $message['params'] : $message['input'];
 		
 		foreach($params as $key){
 			if(!isset($memory[$key])){
@@ -30,10 +30,10 @@ class StringSubstituteService implements Service {
 				$memory['details'] = 'Value not found for '.$key.' @string.substitute.service';
 				return $memory;
 			}
-			$result = str_replace('${'.$key.'}', $memory[$key], $basestr);
+			$data = str_replace('${'.$key.'}', $memory[$key], $data);
 		}
 
-		$memory['result'] = $result;
+		$memory['result'] = $data;
 		$memory['valid'] = true;
 		$memory['msg'] = 'Valid String Substitution';
 		$memory['status'] = 200;

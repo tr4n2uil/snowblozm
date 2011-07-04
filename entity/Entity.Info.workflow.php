@@ -9,7 +9,13 @@ require_once(SBSERVICE);
  *	@param table string Table name [message] optional default entity.'s'
  *	@param id string Entity ID key [message]
  *
+ *	@param request-type string Request type [message] ('get, 'post', 'memory', 'json', 'xml', 'wddx')
+ *	@param response-type string Response type [message] ('memory', 'json, 'xml', 'wddx', 'html', 'plain')
+ *	@param conn resource DataService instance [memory]
+ *
  *	@return entity array Entity information [memory]
+ *
+ *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
 class EntityInfoWorkflow implements Service {
@@ -18,47 +24,36 @@ class EntityInfoWorkflow implements Service {
 	 *	@interface Service
 	**/
 	public function run($message, $memory){
-		$ml = new ModuleLoader();
 		$kernel = new WorkflowKernel();
-		$workflow = array();
 		
 		$entity = $message['entity'];
 		$id = $message['id'];
 		$table = isset($message['table']) ? $message['table'] : $entity.'s';
 		
-		$type = isset($message['type']) ? $message['type'] : (isset($memory['type']) ? $memory['type'] : 'post.json');
-		$type = explode('.', $type);
-		if(count($type) == 1)
-			$type[1] = $type[0];
-		
-		$mdl = array('service' => $ml->load('request.read.service', SBROOT));
-		$mdl['params'] = array($id);
-		$mdl['type'] = $type[0];
-		array_push($workflow, $mdl);
-		
-		$mdl = array('service' => $ml->load('string.substitute.service', SBROOT));
-		$mdl['basestr'] = 'select * from '.$table.' where '.$id.'=${'.$id.'};';
-		$mdl['params'] = array($id);
-		$mdl['resultkey'] = 'query';
-		array_push($workflow, $mdl);
-		
-		$mdl = array('service' => $ml->load('query.execute.service', SBROOT));
-		array_push($workflow, $mdl);
-		
-		$mdl = array('service' => $ml->load('value.equal.service', SBROOT));
-		$mdl['key'] = 'sqlrowcount';
-		$mdl['value'] = 1;
-		$mdl['errormsg'] = 'Invalid '.ucfirst($entity).' ID';
-		array_push($workflow, $mdl);
+		$workflow = array(
+		array(
+			'service' => 'sb.request.read.service',
+			'output' => array($id => $id),
+			'type' => $message['request-type']
+		),
+		array(
+			'service' => 'sb.query.execute.workflow',
+			'input' => array($id => $id, 'conn' => 'conn'),
+			'output' => array('sqlresult' => $entity),
+			'query' => 'select * from '.$table.' where '.$id.'=${'.$id.'};',
+			'errormsg' => 'Invalid '.ucfirst($entity).' ID'
+		));
 		
 		$memory = $kernel->execute($workflow, $memory);
 
-		$mdl = array('service' => $ml->load('response.write.service', SBROOT));
-		$mdl['params'] = array('sqlresult' => $entity);
-		$mdl['type'] = $type[1];
+		$mdl = array(
+			'service' => 'sb.response.write.service',
+			'input' => array($entity => $entity),
+			'strict' => false,
+			'type' => $message['response-type']
+		);
 		
-		$memory = $kernel->run($mdl, $memory);
-		return $memory;
+		return $kernel->run($mdl, $memory);
 	}
 	
 }

@@ -6,8 +6,9 @@ require_once(SBMYSQL);
  *	@class QueryExecuteService
  *	@desc Executes a query and returns result set if flag is true and returns affected row count
  *
- *	@param flag boolean Is result set unexpected [message] optional default false
  *	@param query string SQL Query [message|memory]
+ *	@param flag boolean Is result set unexpected [message] optional default false
+ *	@param conn resource DataService instance [memory]
  *
  *	@return sqlresult array SQL Query ResultSet [memory]
  *	@return sqlrowcount integer resultset or affected row count [memory]

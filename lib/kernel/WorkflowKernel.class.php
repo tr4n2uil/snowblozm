@@ -88,7 +88,7 @@ class WorkflowKernel {
 				$memory['valid'] = false;
 				$memory['msg'] = 'Invalid Service Request';
 				$memory['status'] = 500;
-				$memory['details'] = 'Value not found for '.$key.' @WorkflowKernel/run';
+				$memory['details'] = 'Value not found for '.$key.' @WorkflowKernel/run '.$defn['service'];
 				return $memory;
 			}
 			$request[$value] = $memory[$key];
@@ -129,7 +129,7 @@ class WorkflowKernel {
 				$memory['valid'] = false;
 				$memory['msg'] = 'Invalid Service Response';
 				$memory['status'] = 501;
-				$memory['details'] = 'Value not found for '.$key.' @WorkflowKernel/run';
+				$memory['details'] = 'Value not found for '.$key.' @WorkflowKernel/run '.$defn['service'];
 				return $memory;
 			}
 			$memory[$value] = $response[$key];

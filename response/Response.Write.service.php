@@ -5,7 +5,7 @@ require_once(SBSERVICE);
  *	@class ResponseWriteService
  *	@desc Writes HTTP response in JSON XML HTML PLAIN MEMORY WDDX
  *
- *	@param type string Request type [message] optional default 'json' ('json, 'xml', 'html', 'plain', 'memory', 'wddx')
+ *	@param type string Request type [message] optional default 'json' ('memory', 'json, 'xml', 'wddx', 'html', 'plain')
  *	@param successmsg string Success message [message|memory] optional default 'Successfully Executed'
  *
  *	@return response values [echo]
@@ -23,7 +23,7 @@ class ResponseWriteService implements Service {
 		
 		$result = $memory;
 		$successmsg = isset($message['successmsg']) ? $message['successmsg'] : (isset($memory['successmsg']) ? $memory['successmsg'] : 'Successfully Executed');
-		
+
 		if($result['valid'])
 			$result['msg'] = $successmsg;
 		
@@ -35,7 +35,7 @@ class ResponseWriteService implements Service {
 				$mdl = array(
 					'service' => 'sb.data.encode.service',
 					'output' => array('result' => 'result'),
-					'data' => $memory,
+					'data' => $result,
 					'type' => $type
 				);
 				$memory = $kernel->run($mdl, $memory);
