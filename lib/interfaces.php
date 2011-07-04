@@ -2,15 +2,15 @@
 
 define( 'ROOT', dirname(__FILE__).'/');
 
-require_once(ROOT . 'kernel/Component.interface.php');
-require_once(ROOT . 'kernel/Operation.interface.php');
-require_once(ROOT . 'kernel/Service.interface.php');
+require_once(ROOT . 'interface/Component.interface.php');
+require_once(ROOT . 'interface/Operation.interface.php');
+require_once(ROOT . 'interface/Service.interface.php');
 
-require_once(ROOT . 'service/RequestService.interface.php');
-require_once(ROOT . 'service/ContextService.interface.php');
-require_once(ROOT . 'service/TransformService.interface.php');
-require_once(ROOT . 'service/ResponseService.interface.php');
-require_once(ROOT . 'service/DataService.interface.php');
+require_once(ROOT . 'interface/RequestService.interface.php');
+require_once(ROOT . 'interface/ContextService.interface.php');
+require_once(ROOT . 'interface/TransformService.interface.php');
+require_once(ROOT . 'interface/ResponseService.interface.php');
+require_once(ROOT . 'interface/DataService.interface.php');
 
 require_once(ROOT . 'loader/Loader.interface.php');
 

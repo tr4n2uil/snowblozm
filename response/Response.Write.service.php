@@ -5,7 +5,6 @@ require_once(SBSERVICE);
  *	@class ResponseWriteService
  *	@desc Writes HTTP response in JSON XML HTML PLAIN MEMORY WDDX
  *
- *	@param params array Response keys [message]
  *	@param type string Request type [message] optional default 'json' ('json, 'xml', 'html', 'plain', 'memory', 'wddx')
  *	@param successmsg string Success message [message|memory] optional default 'Successfully Executed'
  *
@@ -22,41 +21,46 @@ class ResponseWriteService implements Service {
 	public function run($message, $memory){
 		$type = isset($message['type']) ? $message['type'] : 'json';
 		
-		$result = array();
-		$default = array('valid' => 'valid', 'msg' => 'msg', 'status' => 'status', 'details' => 'details');
-		$params = isset($message['params']) ? array_merge($default, $message['params']) : $default;
+		$result = $memory;
 		$successmsg = isset($message['successmsg']) ? $message['successmsg'] : (isset($memory['successmsg']) ? $memory['successmsg'] : 'Successfully Executed');
-		
-		foreach($params as $key => $value){
-			if(!isset($memory[$key])){
-				continue;
-			}
-			$result[$value] = $memory[$key];
-		}
 		
 		if($result['valid'])
 			$result['msg'] = $successmsg;
 		
 		switch($type){
 			case 'json' :
-				echo json_encode($result);
-				break;
 			case 'xml' :
-				echo $this->xml_encode($result);
+			case 'wddx' :
+				$kernel = new WorkflowKernel();
+				$mdl = array(
+					'service' => 'sb.data.encode.service',
+					'output' => array('result' => 'result'),
+					'data' => $memory,
+					'type' => $type
+				);
+				$memory = $kernel->run($mdl, $memory);
+				
+				if(!$memory['valid']){
+					echo $memory['details'];
+				}
+				
+				echo $memory['result'];
 				break;
+				
 			case 'memory' :
 				$memory['result'] = $result;
 				break;
+				
 			case 'html' :
 				echo $this->html_encode($result);
 				break;
-			case 'wddx' :
-				echo wddx_serialize_value($result);
-				break;
+				
 			case 'plain' :
 				echo var_dump($result);
 				break;
+				
 			default :
+				echo 'Please check response data type. '.$type.' not supported';
 				break;
 		}
 
@@ -66,30 +70,6 @@ class ResponseWriteService implements Service {
 		$memory['details'] = 'Successfully executed';
 		return $memory;
 	}
-	
-	public function xml_encode($data){
-		$xml = new XmlWriter();
-		$xml->openMemory();
-		$xml->startDocument('1.0', 'UTF-8');
-		$xml->startElement('root');
-		
-		@$this->write($xml, $data);
-
-		$xml->endElement();
-		return $xml->outputMemory(true);
-	}
-	
-	private function write(XMLWriter $xml, $data){
-		foreach($data as $key => $value){
-			if(is_array($value)){
-				$xml->startElement($key);
-				@$this->write($xml, $value);
-				$xml->endElement();
-				continue;
-			}
-			$xml->writeElement($key, $value);
-		}
-	} 
 	
 	public function html_encode($data){
 		return 'Not implemented yet';

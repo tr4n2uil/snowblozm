@@ -6,6 +6,23 @@
 		define('SBROOT', dirname(__FILE__).'/' );
 
 /** 
+ *	enhanced (v2) system constants
+**/
+		define('SBCORE', SBROOT . 'lib/core/Snowblozm.class.php');
+		define('SBSERVICE', SBROOT . 'lib/interface/Service.interface.php');
+		define('SBWFKERNEL', SBROOT . 'lib/kernel/WorkflowKernel.class.php');
+		define('SBRMTWF', SBROOT . 'lib/proxy/RemoteWorkflow.class.php');
+		
+/** 
+ *	enhanced (v2) system initialization
+**/
+		require_once(SBCORE);
+		Snowblozm::add('sb', array(
+			'root' => SBROOT,
+			'location' => 'local'
+		));
+		
+/** 
  *	utility constants
 **/
 		define('SBMYSQL', SBROOT . 'lib/database/Mysql.class.php');
@@ -19,11 +36,5 @@
 		define('SBKERNEL', SBROOT . 'lib/kernel/ServiceKernel.class.php');
 		define('SBCOMLOADER', SBROOT . 'lib/loader/ComponentLoader.class.php');
 
-/** 
- *	enhanced (v2) stystem constants
-**/
-		define('SBSERVICE', SBROOT . 'lib/kernel/Service.interface.php');
-		define('SBWFKERNEL', SBROOT . 'lib/kernel/WorkflowKernel.class.php');
-		define('SBMDLLOADER', SBROOT . 'lib/loader/ModuleLoader.class.php');
 
 ?>

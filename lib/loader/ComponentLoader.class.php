@@ -1,6 +1,6 @@
 <?php 
 
-require_once('Loader.interface.php');
+require_once(SBROOT . 'lib/interface/Loader.interface.php');
 
 /**
  *	@class ComponentLoader

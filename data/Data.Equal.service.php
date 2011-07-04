@@ -2,33 +2,33 @@
 require_once(SBSERVICE);
 
 /**
- *	@class ValueEqualService
+ *	@class DataEqualService
  *	@desc Checks for equality and gives error message as configured
  *
- *	@param key string Key to value in memory [message]
- *	@param value string Value to check [message]
+ *	@param data mixed Data to be checked [message|memory]
+ *	@param value mixed Value to check against [message|memory]
  *	@param not boolean Is error on non-equalilty [message] optional default true
  *	@param errormsg string Error message [message]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *	
 **/
-class ValueEqualService implements Service {
+class DataEqualService implements Service {
 	
 	/**
 	 *	@interface Service
 	**/
 	public function run($message, $memory){
-		$key = $message['key'];
-		$value = $message['value'];
+		$data = isset($message['data']) ? $message['data'] : $memory['data'];
+		$value = isset($message['value']) ? $message['value'] : $memory['value'];
 		$not = isset($message['not']) ? $message['not'] : true;
 		$errormsg = $message['errormsg'];
 		
-		if($not ^ ($memory[$key] == $value)){
+		if($not ^ ($data == $value)){
 			$memory['valid'] = false;
 			$memory['msg'] = $errormsg;
 			$memory['status'] = 505;
-			$memory['details'] = 'Value not equal to '.$value.' @value.equal.service';
+			$memory['details'] = 'Data not equal to value : '.$value.' @data.equal.service';
 			return $memory;
 		}
 

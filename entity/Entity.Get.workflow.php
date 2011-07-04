@@ -70,7 +70,8 @@ class EntityGetWorkflow implements Service {
 		$memory = $kernel->execute($workflow, $memory);
 
 		$mdl = array('service' => $ml->load('response.write.service', SBROOT));
-		$mdl['params'] = array('sqlresult' => $entity);
+		if(!isset($message['not']) || $message['not'])
+			$mdl['params'] = array('sqlresult' => $entity);
 		if(isset($message['successmsg']))
 			$mdl['successmsg'] = $message['successmsg'];
 		$mdl['type'] = $type[1];

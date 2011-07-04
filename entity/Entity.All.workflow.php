@@ -64,7 +64,7 @@ class EntityAllWorkflow implements Service {
 		$memory = $kernel->execute($workflow, $memory);
 
 		$mdl = array('service' => $ml->load('response.write.service', SBROOT));
-		$mdl['params'] = array('sqlresult' => $entity);
+		$mdl['params'] = array('sqlresult' => $table);
 		$mdl['type'] = $type[1];
 		
 		$memory = $kernel->run($mdl, $memory);

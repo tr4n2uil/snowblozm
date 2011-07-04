@@ -33,7 +33,7 @@ class WorkflowKernel {
 			 *	Run the service with the message (defn itself) and memory
 			**/
 			$memory = $this->run($defn, $memory);
-			
+
 			/**
 			 *	Break on invalid state
 			**/
@@ -63,16 +63,82 @@ class WorkflowKernel {
 	**/
 	public function run($defn, $memory = array()){
 		$memory['valid'] = isset($memory['valid']) ? $memory['valid'] : true;
+		$default = array('valid', 'msg', 'status', 'details');
 		
 		/**
-		 *	Read the service instance
+		 *	Read the service uri and load an instance
 		**/
-		$service = $defn['service'];
+		$service = Snowblozm::load($defn['service']);
+		
+		/**
+		 *	Read the service input
+		**/
+		$input = isset($defn['input']) ? $defn['input'] : array();
+		$strict = isset($defn['strict']) ? $defn['strict'] : true;
+		
+		/**
+		 *	Construct service request
+		**/
+		$request = array();
+		
+		foreach($input as $key => $value){
+			if(!isset($memory[$key])){
+				if(!$strict) continue;
+				
+				$memory['valid'] = false;
+				$memory['msg'] = 'Invalid Service Request';
+				$memory['status'] = 500;
+				$memory['details'] = 'Value not found for '.$key.' @WorkflowKernel/run';
+				return $memory;
+			}
+			$request[$value] = $memory[$key];
+		}
+		
+		foreach($default as $key){
+			if(isset($memory[$key])){
+				$request[$key] = $memory[$key];
+			}
+		}
 			
 		/**
-		 *	Run the service with the message (defn itself) and memory
+		 *	Run the service with the message (defn itself) and request as memory
 		**/
-		return $service->run($defn, $memory);
+		$response = $service->run($defn, $request);
+		
+		/**
+		 *	Read the service output
+		**/
+		$output = isset($defn['output']) && $response['valid'] ? $defn['output'] : array();
+		
+		/**
+		 *	Read service response into memory
+		**/
+		foreach($default as $key){
+			if(isset($response[$key])){
+				$memory[$key] = $response[$key];
+			}
+		}
+		
+		if(!$memory['valid'])
+			return $memory;
+		
+		foreach($output as $key => $value){
+			if(!isset($response[$key])){
+				if(!$strict) continue;
+				
+				$memory['valid'] = false;
+				$memory['msg'] = 'Invalid Service Response';
+				$memory['status'] = 501;
+				$memory['details'] = 'Value not found for '.$key.' @WorkflowKernel/run';
+				return $memory;
+			}
+			$memory[$value] = $response[$key];
+		}
+		
+		/**
+		 *	Return the memory
+		**/
+		return $memory;
 	}
 	
 }

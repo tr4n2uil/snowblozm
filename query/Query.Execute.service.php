@@ -4,7 +4,7 @@ require_once(SBMYSQL);
 
 /**
  *	@class QueryExecuteService
- *	@desc Executes a query and returns result set if flag is true, else returns affected row count
+ *	@desc Executes a query and returns result set if flag is true and returns affected row count
  *
  *	@param flag boolean Is result set unexpected [message] optional default false
  *	@param query string SQL Query [message|memory]
@@ -29,12 +29,13 @@ class QueryExecuteService implements Service {
 		if($result === false){
 			$memory['valid'] = false;
 			$memory['msg'] = 'Error in Database';
-			$memory['status'] = 504;
-			$memory['details'] = 'Error @query.execute.service : '.$conn->getError();
+			$memory['status'] = 503;
+			$memory['details'] = 'Error : '.$conn->getError().' @query.execute.service';
 			return $memory;
 		}
 		
 		if($flag){
+			$memory['sqlresult'] = $result;
 			$memory['sqlrowcount'] = $result;
 		}
 		else {
