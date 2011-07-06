@@ -12,7 +12,7 @@ require_once(ROOT . 'interface/TransformService.interface.php');
 require_once(ROOT . 'interface/ResponseService.interface.php');
 require_once(ROOT . 'interface/DataService.interface.php');
 
-require_once(ROOT . 'loader/Loader.interface.php');
+require_once(ROOT . 'interface/Loader.interface.php');
 
 
 ?>

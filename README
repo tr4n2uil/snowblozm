@@ -6,23 +6,40 @@ Simplified Service Oriented Architecture
 Vibhaj Rajan
 vibhaj8@gmail.com
 
-Kernels
-	ServiceKernel (v1)
-	WorkflowKernel (v2)
-Loaders
-	ComponentLoader (v1)
-	ModuleLoader (v2)
-Services
-	query.escape
-	query.execute
-	request.read
-	response.write
-	string.substitute
-	value.equal
-DataServices
-	Mysql
-Classes
-	Curl
-	Mail
-	Random
-	Time
+Enhanced (v2)
+	Classes	
+		Snowblozm
+		RemoteWorkflow
+		WorkflowKernel
+	Services	
+		curl.execute
+		data.encode
+		data.decode
+		data.equal
+		query.escape
+		query.execute
+		request.read
+		response.write
+		string.substitute
+	Workflows
+		entity.all
+		entity.get
+		entity.info
+		entit.remove
+		query.execute
+	DataServices
+		Mysql
+
+Initial (v1)
+	Classes
+		ServiceKernel
+		ComponentLoader
+	Services 
+		base.adapter
+	DataServices
+		Mysql
+	Utility
+		Curl
+		Mail
+		Random
+		Time

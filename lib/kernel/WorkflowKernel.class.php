@@ -16,11 +16,14 @@ class WorkflowKernel {
 	 *	@desc Runs a workflow by using its definition array
 	 *				workflow [{
 	 *					service => ...,
+	 *					input => ...,
+	 *					output => ...,
+	 *					strict => ...,
 	 *					... params ...
 	 *				}]
 	 *
 	 *	@param $workflow Workflow definition array
-	 *	@param $memory object optional default array('valid' = true)
+	 *	@param $memory object optional default array()
 	 *
 	 *	@return $memory object
 	 *
@@ -28,17 +31,22 @@ class WorkflowKernel {
 	public function execute($workflow, $memory = array()){
 		$memory['valid'] = isset($memory['valid']) ? $memory['valid'] : true;
 		
-		foreach($workflow as $defn){			
+		foreach($workflow as $defn){
+			/**
+			 *	Check for strictness
+			**/
+			$strict = isset($defn['strict']) ? $defn['strict'] : true;
+			
+			/**
+			 *	Continue on invalid state
+			**/
+			if(!$memory['valid'] && $strict)
+				continue;
+			
 			/**
 			 *	Run the service with the message (defn itself) and memory
 			**/
 			$memory = $this->run($defn, $memory);
-
-			/**
-			 *	Break on invalid state
-			**/
-			if(!$memory['valid'])
-				break;
 		}
 		
 		/**
@@ -52,6 +60,9 @@ class WorkflowKernel {
 	 *	@desc Runs a service by using its definition object
 	 *				service {
 	 *					service => ...,
+	 *					input => ...,
+	 *					output => ...,
+	 *					strict => ...,
 	 *					... params ...
 	 *				}
 	 *
