@@ -43,17 +43,22 @@ class Mysql implements DataService {
 	/** 
 	 *	@interface DataService
 	**/
-	public function getResult($query, $execute=false, $resulttype=MYSQL_BOTH){
+	public function getResult($query, $type=0, $resulttype=MYSQL_BOTH){
 		$resultset = @mysql_query($query, $this->conn);
 		if($resultset === false) 
 			return false;
-		if($execute)
-			return mysql_affected_rows($this->conn);
-		$result = array();
-		while( $rowset = mysql_fetch_array($resultset, $resulttype) ) {
-			array_push( $result, $rowset );
+		switch($type){
+			case 0 :
+				$result = array();
+				while( $rowset = mysql_fetch_array($resultset, $resulttype) ) {
+					array_push( $result, $rowset );
+				}
+				return $result;
+			case 1 :
+				return mysql_affected_rows($this->conn);
+			case 2 : 
+				return mysql_insert_id($this->conn);
 		}
-		return $result;
 	}
 	
 	/** 

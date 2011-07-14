@@ -2,30 +2,26 @@
 require_once(SBSERVICE);
 
 /**
- *	@class EntityGetWorkflow
- *	@desc Returns the information for entity satisfying conditions
+ *	@class EntityEditWorkflow
+ *	@desc Edits entity information
  *
  *	@param entity string Entity name [message]
  *	@param table string Table name [message] optional default entity.'s'
  *	@param sqlcnd string SQL condition [message]
- *	@param sqlprj string SQL projection [message] optional default *
  *	@param reqparam array Request parameters [message]
  *	@param escparam array Escape parameters [message] optional default array()
  *	@param qryparam array Query parameters [message] optional default reqparam
- *	@param not boolean Value check nonequal [message] optional default true
- *	@param errormsg string Error message if unique entity not found [message] optional default 'Invalid Credentials'
+ *	@param errormsg string Error message if unique entity not found [message] optional default 'Invalid $entity'
  *	@param successmsg string Success message [message] optional default 'Successfully executed'
  *
  *	@param request-type string Request type [message] ('get, 'post', 'memory', 'json', 'xml', 'wddx')
  *	@param response-type string Response type [message] ('memory', 'json, 'xml', 'wddx', 'html', 'plain')
  *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
  *
- *	@return entity array Entity information [memory]
- *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class EntityGetWorkflow implements Service {
+class EntityEditWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
@@ -36,13 +32,11 @@ class EntityGetWorkflow implements Service {
 		$entity = $message['entity'];
 		$table = isset($message['table']) ? $message['table'] : $entity.'s';
 		$sqlcnd = $message['sqlcnd'];
-		$sqlprj = isset($message['sqlprj']) ? $message['sqlprj'] : '*';
 		$reqparam = isset($message['reqparam']) ? $message['reqparam'] : array();
 		$escparam = isset($message['escparam']) ? $message['escparam'] : array();
 		$qryparam = isset($message['qryparam']) ? $message['qryparam'] : $reqparam;
-		$not = isset($message['not']) ? $message['not'] : true;
-		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Invalid Credentials';
-		$successmsg = isset($message['successmsg']) ? $message['successmsg'] : 'Successfully executed';
+		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Invalid '.ucfirst($entity);
+		$successmsg = isset($message['successmsg']) ? $message['successmsg'] : ucfirst($entity).' edited successfully';
 		
 		$workflow = array(
 		array(
@@ -54,15 +48,14 @@ class EntityGetWorkflow implements Service {
 			'service' => 'sb.query.execute.workflow',
 			'input' => array_merge($qryparam, array('conn' => 'conn')),
 			'output' => array('sqlresult' => $entity),
-			'query' => 'select '.$sqlprj.' from '.$table.' '.$sqlcnd.';',
+			'query' => 'update '.$table.' '.$sqlcnd.';',
+			'rstype' => 1,
 			'escparam' => $escparam,
-			'count' => 1,
-			'not' => $not,
 			'errormsg' => $errormsg
 		),
 		array(
 			'service' => 'sb.response.write.service',
-			'input' => ($not ? array($entity => $entity) : array()),
+			'input' => array($entity => $entity),
 			'strict' => false,
 			'successmsg' => $successmsg,
 			'type' => $message['response-type']

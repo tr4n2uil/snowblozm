@@ -16,7 +16,7 @@ class HelloGreetWorkflow implements Service {
 			'type' => $message['request-type']
 		),
 		array(
-			'service' => 'sb-local-demo.hello.greet.service',
+			'service' => 'sbdemo.hello.greet.service',
 			'input' => array('name' => 'name'),
 			'output' => array('view' => 'message')
 		));

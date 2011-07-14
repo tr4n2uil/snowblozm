@@ -92,6 +92,11 @@ class WorkflowKernel {
 		**/
 		$request = array();
 		
+		/**
+		 *	@debug
+		**/
+		//echo $defn['service'].' IN '.json_encode($memory).'<br />';
+		
 		foreach($input as $key => $value){
 			if(!isset($memory[$key])){
 				if(!$strict) continue;
@@ -145,6 +150,11 @@ class WorkflowKernel {
 			}
 			$memory[$value] = $response[$key];
 		}
+		
+		/**
+		 *	@debug
+		**/
+		//echo $defn['service'].' OUT '.json_encode($memory).'<br />';
 		
 		/**
 		 *	Return the memory

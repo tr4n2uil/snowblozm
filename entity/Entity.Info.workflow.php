@@ -8,10 +8,11 @@ require_once(SBSERVICE);
  *	@param entity string Entity name [message]
  *	@param table string Table name [message] optional default entity.'s'
  *	@param id string Entity ID key [message]
+ *	@param sqlprj string SQL projection [message] optional default *
  *
  *	@param request-type string Request type [message] ('get, 'post', 'memory', 'json', 'xml', 'wddx')
  *	@param response-type string Response type [message] ('memory', 'json, 'xml', 'wddx', 'html', 'plain')
- *	@param conn resource DataService instance [memory]
+ *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
  *
  *	@return entity array Entity information [memory]
  *
@@ -29,6 +30,7 @@ class EntityInfoWorkflow implements Service {
 		$entity = $message['entity'];
 		$id = $message['id'];
 		$table = isset($message['table']) ? $message['table'] : $entity.'s';
+		$sqlprj = isset($message['sqlprj']) ? $message['sqlprj'] : '*';
 		
 		$workflow = array(
 		array(
@@ -40,20 +42,17 @@ class EntityInfoWorkflow implements Service {
 			'service' => 'sb.query.execute.workflow',
 			'input' => array($id => $id, 'conn' => 'conn'),
 			'output' => array('sqlresult' => $entity),
-			'query' => 'select * from '.$table.' where '.$id.'=${'.$id.'};',
+			'query' => 'select '.$sqlprj.' from '.$table.' where '.$id.'=${'.$id.'};',
 			'errormsg' => 'Invalid '.ucfirst($entity).' ID'
-		));
-		
-		$memory = $kernel->execute($workflow, $memory);
-
-		$mdl = array(
+		),
+		array(
 			'service' => 'sb.response.write.service',
 			'input' => array($entity => $entity),
 			'strict' => false,
 			'type' => $message['response-type']
-		);
+		));
 		
-		return $kernel->run($mdl, $memory);
+		return $kernel->execute($workflow, $memory);
 	}
 	
 }

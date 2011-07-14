@@ -5,9 +5,9 @@ require_once(SBSERVICE);
  *	@class QueryExecuteWorkflow
  *	@desc Executes query by performing escapes and substitutions and validates result
  *
-  *	@param conn resource DataService instance [memory]
+  *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
  *	@param query string SQL Query to be executed with substitutions [message|memory]
- *	@param flag boolean Is result set unexpected [message] optional default false
+ *	@param rstype integer type of result [message] optional default 0
  *	@param escparam array Escape parameters [message] optional default array()
  *	@param qryparam array Query parameters [message] optional default input-'query'
  *	@param count integer Validation count [message] optional default 1
@@ -29,7 +29,7 @@ class QueryExecuteWorkflow implements Service {
 		$kernel = new WorkflowKernel();
 		
 		$query = isset($message['query']) ? $message['query'] : $memory['query'];
-		$flag = isset($message['flag']) ? $message['flag'] : false;
+		$rstype = isset($message['rstype']) ? $message['rstype'] : 0;
 		$escparam = isset($message['escparam']) ? $message['escparam'] : array();
 		$qryparam = isset($message['qryparam']) ? $message['qryparam'] : $message['input'];
 		$count = isset($message['count']) ? $message['count'] : 1;
@@ -38,11 +38,22 @@ class QueryExecuteWorkflow implements Service {
 		
 		if(isset($qryparam['query'])) 
 			unset($qryparam['query']);
+			
 		if(isset($qryparam['conn'])) 
 			unset($qryparam['conn']);
 			
 		$escout = $escparam;
 		$escparam['conn'] = 'conn';
+		
+		$conn = $memory['conn'];
+		switch($conn['type']){
+			case 'mysql' :
+			default :
+				require_once(SBMYSQL);
+				$dataservice = new Mysql($conn['database'], $conn['user'], $conn['pass'], $conn['host']);
+				break;
+		}
+		$memory['conn'] = $dataservice;
 		
 		$workflow = array(
 		array(
@@ -60,7 +71,7 @@ class QueryExecuteWorkflow implements Service {
 			'service' => 'sb.query.execute.service',
 			'input' => array('query' => 'query', 'conn' => 'conn'),
 			'output' => array('sqlresult' => 'sqlresult', 'sqlrowcount' => 'sqlrc'),
-			'flag' => $flag
+			'rstype' => $rstype
 		),
 		array(
 			'service' => 'sb.data.equal.service',
@@ -70,7 +81,10 @@ class QueryExecuteWorkflow implements Service {
 			'errormsg' => $errormsg
 		));
 		
-		return $kernel->execute($workflow, $memory);
+		$memory = $kernel->execute($workflow, $memory);
+		$dataservice->close();
+		
+		return $memory;
 	}
 	
 }

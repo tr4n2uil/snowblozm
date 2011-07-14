@@ -17,9 +17,23 @@
  *	enhanced (v2) system initialization
 **/
 		require_once(SBCORE);
+		
 		Snowblozm::add('sb', array(
 			'root' => SBROOT,
 			'location' => 'local'
+		));
+		
+		Snowblozm::add('sbdemo', array(
+			'root' => SBROOT.'demo/v2/',
+			'location' => 'local'
+		));
+		
+		Snowblozm::add('sbremote', array(
+			'root' => 'http://localhost/iitbhucse/launch.php?uri=',
+			'location' => 'remote',
+			'type' => 'json',
+			'map' => 'sbdemo',
+			'key' => ''
 		));
 		
 /** 

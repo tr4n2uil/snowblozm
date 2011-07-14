@@ -4,10 +4,10 @@ require_once(SBMYSQL);
 
 /**
  *	@class QueryExecuteService
- *	@desc Executes a query and returns result set if flag is true and returns affected row count
+ *	@desc Executes a query and returns result according to rstype
  *
  *	@param query string SQL Query [message|memory]
- *	@param flag boolean Is result set unexpected [message] optional default false
+ *	@param rstype integer type of result [message] optional default 0
  *	@param conn resource DataService instance [memory]
  *
  *	@return sqlresult array SQL Query ResultSet [memory]
@@ -24,9 +24,10 @@ class QueryExecuteService implements Service {
 	public function run($message, $memory){
 		$conn = $memory['conn'];
 		$query = isset($message['query']) ? $message['query'] : $memory['query'];
-		$flag = isset($message['flag']) ? $message['flag'] : false;
+		$rstype = isset($message['rstype']) ? $message['rstype'] : 0;
 		
-		$result = $conn->getResult($query, $flag);
+		$result = $conn->getResult($query, $rstype);
+		
 		if($result === false){
 			$memory['valid'] = false;
 			$memory['msg'] = 'Error in Database';
@@ -35,13 +36,25 @@ class QueryExecuteService implements Service {
 			return $memory;
 		}
 		
-		if($flag){
-			$memory['sqlresult'] = $result;
-			$memory['sqlrowcount'] = $result;
-		}
-		else {
-			$memory['sqlresult'] = $result;
-			$memory['sqlrowcount'] = count($result);
+		switch($rstype){
+			case 0 :
+				$memory['sqlresult'] = $result;
+				$memory['sqlrowcount'] = count($result);
+				break;
+			case 1 :
+				$memory['sqlresult'] = $result;
+				$memory['sqlrowcount'] = $result;
+				break;
+			case 2 :
+				$memory['sqlresult'] = $result;
+				$memory['sqlrowcount'] = 1;
+				break;
+			default :
+				$memory['valid'] = false;
+				$memory['msg'] = 'Invalid Result Type';
+				$memory['status'] = 503;
+				$memory['details'] = 'Result type : '.$rstype.' not supported @query.execute.service';
+				return $memory;
 		}
 		
 		$memory['valid'] = true;

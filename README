@@ -22,7 +22,9 @@ Enhanced (v2)
 		response.write
 		string.substitute
 	Workflows
+		entity.add
 		entity.all
+		entity.edit
 		entity.get
 		entity.info
 		entit.remove

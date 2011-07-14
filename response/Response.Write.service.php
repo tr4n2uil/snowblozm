@@ -26,6 +26,9 @@ class ResponseWriteService implements Service {
 
 		if($result['valid'])
 			$result['msg'] = $successmsg;
+			
+		if(isset($result['successmsg']))
+			unset($result['successmsg']);
 		
 		switch($type){
 			case 'json' :

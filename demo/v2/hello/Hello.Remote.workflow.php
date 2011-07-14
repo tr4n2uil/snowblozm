@@ -16,7 +16,7 @@ class HelloRemoteWorkflow implements Service {
 			'type' => $message['request-type']
 		),
 		array(
-			'service' => 'sb-remote-demo.hello.greet.service',
+			'service' => 'sbremote.hello.greet.service',
 			'input' => array('name' => 'name'),
 			'output' => array('message' => 'message')
 		));
