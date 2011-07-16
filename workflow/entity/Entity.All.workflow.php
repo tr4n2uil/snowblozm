@@ -11,6 +11,7 @@ require_once(SBSERVICE);
  *	@param reqparam array Request parameters [message] optional default array()
  *	@param escparam array Escape parameters [message] optional default array()
  *	@param qryparam array Query parameters [message] optional default reqparam
+ *	@param errormsg string Error message [message] optional default 'Error in Database'
  *
  *	@param request-type string Request type [message] ('get, 'post', 'memory', 'json', 'xml', 'wddx')
  *	@param response-type string Response type [message] ('memory', 'json, 'xml', 'wddx', 'html', 'plain')
@@ -36,6 +37,7 @@ class EntityAllWorkflow implements Service {
 		$reqparam = isset($message['reqparam']) ? $message['reqparam'] : array();
 		$escparam = isset($message['escparam']) ? $message['escparam'] : array();
 		$qryparam = isset($message['qryparam']) ? $message['qryparam'] : $reqparam;
+		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Error in Database';
 		
 		$workflow = array(
 		array(
@@ -51,7 +53,7 @@ class EntityAllWorkflow implements Service {
 			'escparam' => $escparam,
 			'count' => 0,
 			'not' => false,
-			'errormsg' => 'Error in Database'
+			'errormsg' => $errormsg
 		),
 		array(
 			'service' => 'sb.response.write.service',

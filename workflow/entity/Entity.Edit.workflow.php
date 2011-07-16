@@ -11,7 +11,7 @@ require_once(SBSERVICE);
  *	@param reqparam array Request parameters [message]
  *	@param escparam array Escape parameters [message] optional default array()
  *	@param qryparam array Query parameters [message] optional default reqparam
- *	@param errormsg string Error message if unique entity not found [message] optional default 'Invalid $entity'
+ *	@param errormsg string Error message if unique entity not found [message] optional default 'Invalid $entity / Not Permitted / No Changes'
  *	@param successmsg string Success message [message] optional default 'Successfully executed'
  *
  *	@param request-type string Request type [message] ('get, 'post', 'memory', 'json', 'xml', 'wddx')
@@ -35,7 +35,7 @@ class EntityEditWorkflow implements Service {
 		$reqparam = isset($message['reqparam']) ? $message['reqparam'] : array();
 		$escparam = isset($message['escparam']) ? $message['escparam'] : array();
 		$qryparam = isset($message['qryparam']) ? $message['qryparam'] : $reqparam;
-		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Invalid '.ucfirst($entity).' / Not permitted';
+		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Invalid '.ucfirst($entity).' / Not Permitted / No Changes';
 		$successmsg = isset($message['successmsg']) ? $message['successmsg'] : ucfirst($entity).' edited successfully';
 		
 		$workflow = array(
