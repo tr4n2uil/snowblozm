@@ -52,7 +52,7 @@
 /** 
  *	utility constants (v1)
 **/		
-		define('SBMYSQL', SBROOT . 'lib/database/Mysql.class.php');
+		//define('SBMYSQL', SBROOT . 'lib/database/Mysql.class.php');
 		define('SBMAIL', SBROOT . 'lib/util/Mail.class.php');
 		define('SBTIME', SBROOT . 'lib/util/Time.class.php');
 
