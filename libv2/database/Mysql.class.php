@@ -1,6 +1,6 @@
 <?php 
 
-require_once(SBROOT . 'lib/interface/DataService.interface.php');
+require_once(SBROOT . 'libv2/interface/DataService.interface.php');
 
 /** 
  *	@class Mysql

@@ -25,7 +25,7 @@ class RandomStringService implements Service {
 		$result = '';
 		$charsetlen = strlen($charset)-1;
 
-		for($i = 0 ; $i < $len; $i++){
+		for($i = 0; $i < $length; $i++){
 			$result .= $charset[ mt_rand(0,$charsetlen) ];
 		}
 	

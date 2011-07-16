@@ -35,7 +35,7 @@ class EntityEditWorkflow implements Service {
 		$reqparam = isset($message['reqparam']) ? $message['reqparam'] : array();
 		$escparam = isset($message['escparam']) ? $message['escparam'] : array();
 		$qryparam = isset($message['qryparam']) ? $message['qryparam'] : $reqparam;
-		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Invalid '.ucfirst($entity);
+		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Invalid '.ucfirst($entity).' / Not permitted';
 		$successmsg = isset($message['successmsg']) ? $message['successmsg'] : ucfirst($entity).' edited successfully';
 		
 		$workflow = array(
@@ -55,7 +55,6 @@ class EntityEditWorkflow implements Service {
 		),
 		array(
 			'service' => 'sb.response.write.service',
-			'input' => array($entity => $entity),
 			'strict' => false,
 			'successmsg' => $successmsg,
 			'type' => $message['response-type']
