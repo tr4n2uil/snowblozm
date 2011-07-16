@@ -11,16 +11,22 @@ Enhanced (v2)
 		Snowblozm
 		RemoteWorkflow
 		WorkflowKernel
+	DataServices
+		Mysql
 	Services	
 		curl.execute
 		data.encode
 		data.decode
 		data.equal
+		mail.send
 		query.escape
 		query.execute
+		random.number
+		random.string
 		request.read
 		response.write
 		string.substitute
+		time.get
 	Workflows
 		entity.add
 		entity.all
@@ -29,8 +35,6 @@ Enhanced (v2)
 		entity.info
 		entit.remove
 		query.execute
-	DataServices
-		Mysql
 
 Initial (v1)
 	Classes
