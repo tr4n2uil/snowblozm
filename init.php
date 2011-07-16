@@ -8,10 +8,10 @@
 /** 
  *	enhanced (v2) system constants
 **/
-		define('SBCORE', SBROOT . 'lib/core/Snowblozm.class.php');
-		define('SBSERVICE', SBROOT . 'lib/interface/Service.interface.php');
-		define('SBWFKERNEL', SBROOT . 'lib/kernel/WorkflowKernel.class.php');
-		define('SBRMTWF', SBROOT . 'lib/proxy/RemoteWorkflow.class.php');
+		define('SBCORE', SBROOT . 'libv2/core/Snowblozm.class.php');
+		define('SBSERVICE', SBROOT . 'libv2/interface/Service.interface.php');
+		define('SBWFKERNEL', SBROOT . 'libv2/kernel/WorkflowKernel.class.php');
+		define('SBRMTWF', SBROOT . 'libv2/proxy/RemoteWorkflow.class.php');
 		
 /** 
  *	enhanced (v2) system initialization
@@ -37,11 +37,10 @@
 		));
 		
 /** 
- *	utility constants
+ *	utility constants (v2)
 **/
-		define('SBMYSQL', SBROOT . 'lib/database/Mysql.class.php');
-		define('SBMAIL', SBROOT . 'lib/util/Mail.class.php');
-		define('SBTIME', SBROOT . 'lib/util/Time.class.php');
+		define('SBMYSQL', SBROOT . 'libv2/database/Mysql.class.php');
+
 		
 /** 
  *	initial (v1) system constants
@@ -49,6 +48,13 @@
 		define('SBINTERFACES', SBROOT . 'lib/interfaces.php');
 		define('SBKERNEL', SBROOT . 'lib/kernel/ServiceKernel.class.php');
 		define('SBCOMLOADER', SBROOT . 'lib/loader/ComponentLoader.class.php');
+
+/** 
+ *	utility constants (v1)
+**/		
+		define('SBMYSQL', SBROOT . 'lib/database/Mysql.class.php');
+		define('SBMAIL', SBROOT . 'lib/util/Mail.class.php');
+		define('SBTIME', SBROOT . 'lib/util/Time.class.php');
 
 
 ?>
