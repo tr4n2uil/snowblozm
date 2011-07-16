@@ -19,7 +19,7 @@
 		require_once(SBCORE);
 		
 		Snowblozm::add('sb', array(
-			'root' => SBROOT,
+			'root' => SBROOT.'workflow/',
 			'location' => 'local'
 		));
 		
