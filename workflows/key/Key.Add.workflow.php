@@ -2,20 +2,20 @@
 require_once(SBSERVICE);
 
 /**
- *	@class ServicekeyAddWorkflow
- *	@desc Adds new servicekey
+ *	@class KeyAddWorkflow
+ *	@desc Adds new service key
  *
- *	@param keyvalue string Servicekey value [memory]
+ *	@param keyvalue string Key value [memory]
  *	@param owner long int Owner ID [memory]
  *
  *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
  *
- *	@return return id long int Servicekey ID [memory]
+ *	@return return id long int Key ID [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class ServicekeyAddWorkflow implements Service {
+class KeyAddWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
@@ -27,7 +27,7 @@ class ServicekeyAddWorkflow implements Service {
 			'service' => 'sb.relation.insert.workflow',
 			'input' => array('conn' => 'conn', 'keyvalue' => 'keyvalue', 'owner' => 'owner'),
 			'output' => array('id' => 'id'),
-			'relation' => 'servicekeys',
+			'relation' => 'sb-keys',
 			'sqlcnd' => "(keyvalue, owner) values ('\${keyvalue}', \${owner});",
 			'escparam' => array('keyvalue' => 'keyvalue')
 		);

@@ -2,20 +2,20 @@
 require_once(SBSERVICE);
 
 /**
- *	@class KeychainAddWorkflow
- *	@desc Adds key to keychain
+ *	@class ArtifactAddWorkflow
+ *	@desc Adds artifact child to parent collection
  *
- *	@param keyid long int Key ID [memory]
- *	@param chainid long int Keychain ID [memory]
+ *	@param child long int Artifact ID [memory]
+ *	@param parent long int Artifact ID [memory]
  *
  *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
  *
- *	@return return id long int Keychain member ID [memory]
+ *	@return return id long int Collection member ID [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class KeychainAddWorkflow implements Service {
+class ArtifactAddWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
@@ -25,10 +25,10 @@ class KeychainAddWorkflow implements Service {
 		
 		$mdl = array(
 			'service' => 'sb.relation.insert.workflow',
-			'input' => array('conn' => 'conn', 'chainid' => 'chainid', 'keyid' => 'keyid'),
+			'input' => array('conn' => 'conn', 'child' => 'child', 'parent' => 'parent'),
 			'output' => array('id' => 'id'),
-			'relation' => 'sb-members',
-			'sqlcnd' => "(chainid, keyid) values ('\${chainid}', \${keyid});"
+			'relation' => 'sb-collections',
+			'sqlcnd' => "(child, parent) values (\${child}, \${parent});"
 		);
 		
 		return $kernel->run($mdl, $memory);

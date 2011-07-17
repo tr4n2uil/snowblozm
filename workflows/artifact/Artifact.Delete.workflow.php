@@ -2,10 +2,10 @@
 require_once(SBSERVICE);
 
 /**
- *	@class KeychainDeleteWorkflow
- *	@desc Removes keychain using ID
+ *	@class ArtifactDeleteWorkflow
+ *	@desc Removes artifact using ID
  *
- *	@param chainid long int Keychain ID [memory]
+ *	@param artid long int Artifact ID [memory]
  *	@param owner long int Owner ID [memory]
  *	@param admin integer Is admin [memory]
  *
@@ -24,10 +24,10 @@ class KeychainDeleteWorkflow implements Service {
 		
 		$mdl = array(
 			'service' => 'sb.relation.delete.workflow',
-			'input' => array('conn' => 'conn', 'chainid' => 'chainid', 'owner' => 'owner', 'admin' => 'admin'),
-			'relation' => 'sb-chains',
-			'sqlcnd' => "where chainid=\${chainid} and (\${admin} or owner=\${owner});",
-			'errormsg' => 'Invalid Keychain ID / Not Permitted'
+			'input' => array('conn' => 'conn', 'artid' => 'artid', 'owner' => 'owner', 'admin' => 'admin'),
+			'relation' => 'sb-artifacts',
+			'sqlcnd' => "where artid=\${artid} and (\${admin} or owner=\${owner});",
+			'errormsg' => 'Invalid Artifact ID / Not Permitted'
 		);
 		
 		return $kernel->run($mdl, $memory);

@@ -2,21 +2,21 @@
 require_once(SBSERVICE);
 
 /**
- *	@class ServicekeyAuthenticateWorkflow
+ *	@class KeyAuthenticateWorkflow
  *	@desc Validates key/challenge and selects owner
  *
- *	@param key string Usage key [memory]
+ *	@param key string Usage key [memory] (service key md5 hashed with challenge)
  *	@param challenge string Challenge string [memory]
  *
  *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
  *
  *	@return owner long int Owner ID [memory]
- *	@return keyid long int Servicekey ID [memory]
+ *	@return keyid long int Key ID [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class ServicekeyAuthenticateWorkflow implements Service {
+class KeyAuthenticateWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
@@ -29,7 +29,7 @@ class ServicekeyAuthenticateWorkflow implements Service {
 			'service' => 'sb.relation.unique.workflow',
 			'input' => array('conn' => 'conn', 'key' => 'key', 'challenge' => 'challenge'),
 			'output' => array('result' => 'key'),
-			'relation' => 'servicekeys',
+			'relation' => 'sb-keys',
 			'sqlcnd' => "where MD5(concat(keyvalue, '\${challenge}'))='\${key}';",
 			'sqlprj' => 'owner',
 			'escparam' => array('key' => 'key', 'challenge' => 'challenge'),

@@ -26,8 +26,8 @@ class KeychainRemoveWorkflow implements Service {
 		$mdl = array(
 			'service' => 'sb.relation.delete.workflow',
 			'input' => array('conn' => 'conn', 'keyid' => 'keyid', 'chainid' => 'chainid', 'owner' => 'owner', 'admin' => 'admin'),
-			'relation' => 'keychainmembers',
-			'sqlcnd' => "where keyid=\${keyid} and chainid=(select chainid from keychains where chainid=\${chainid} and (\${admin} or owner=\${owner}));",
+			'relation' => 'sb-members',
+			'sqlcnd' => "where keyid=\${keyid} and chainid=(select chainid from sb-chains where chainid=\${chainid} and (\${admin} or owner=\${owner}));",
 			'errormsg' => 'Invalid Keychain ID / Not Permitted'
 		);
 		

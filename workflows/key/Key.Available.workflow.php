@@ -2,17 +2,17 @@
 require_once(SBSERVICE);
 
 /**
- *	@class ServicekeyAvailableWorkflow
- *	@desc Checks for availability of servicekey value
+ *	@class KeyAvailableWorkflow
+ *	@desc Checks for availability of service key value
  *
- *	@param keyvalue string Service key value [memory]
+ *	@param keyvalue string Key value [memory]
  *
  *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class ServicekeyAvailableWorkflow implements Service {
+class KeyAvailableWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
@@ -23,12 +23,12 @@ class ServicekeyAvailableWorkflow implements Service {
 		$mdl = array(
 			'service' => 'sb.relation.unique.workflow',
 			'input' => array('conn' => 'conn', 'keyvalue' => 'keyvalue'),
-			'relation' => 'servicekeys',
+			'relation' => 'sb-keys',
 			'sqlcnd' => "where keyvalue='\${keyvalue}';",
 			'sqlprj' => 'owner',
 			'escparam' => array('keyvalue' => 'keyvalue'),
 			'not' => false,
-			'errormsg' => 'Servicekey not available'
+			'errormsg' => 'Service key not available'
 		);
 		
 		return $kernel->run($mdl, $memory);
