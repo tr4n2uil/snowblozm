@@ -2,11 +2,10 @@
 require_once(SBSERVICE);
 
 /**
- *	@class ServicekeyRemoveWorkflow
- *	@desc Removes servicekey using ID
+ *	@class KeychainDeleteWorkflow
+ *	@desc Removes keychain using ID
  *
- *	@param keyid long int Key ID [memory]
- *	@param keyvalue string Servicekey value [memory]
+ *	@param chainid long int Keychain ID [memory]
  *	@param owner long int Owner ID [memory]
  *	@param admin integer Is admin [memory]
  *
@@ -15,7 +14,7 @@ require_once(SBSERVICE);
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class ServicekeyRemoveWorkflow implements Service {
+class KeychainDeleteWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
@@ -25,10 +24,10 @@ class ServicekeyRemoveWorkflow implements Service {
 		
 		$mdl = array(
 			'service' => 'sb.relation.delete.workflow',
-			'input' => array('conn' => 'conn', 'keyid' => 'keyid', 'owner' => 'owner', 'admin' => 'admin'),
-			'relation' => 'servicekeys',
-			'sqlcnd' => "where keyid=\${keyid} and (\${admin} or owner=\${owner});",
-			'errormsg' => 'Invalid Servicekey ID / Not Permitted'
+			'input' => array('conn' => 'conn', 'chainid' => 'chainid', 'owner' => 'owner', 'admin' => 'admin'),
+			'relation' => 'keychains',
+			'sqlcnd' => "where chainid=\${chainid} and (\${admin} or owner=\${owner});",
+			'errormsg' => 'Invalid Keychain ID / Not Permitted'
 		);
 		
 		return $kernel->run($mdl, $memory);

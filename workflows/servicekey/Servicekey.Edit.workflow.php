@@ -28,7 +28,8 @@ class ServicekeyEditWorkflow implements Service {
 			'input' => array('conn' => 'conn', 'keyid' => 'keyid', 'keyvalue' => 'keyvalue', 'owner' => 'owner', 'admin' => 'admin'),
 			'relation' => 'servicekeys',
 			'sqlcnd' => "set keyvalue='\${keyvalue}' where keyid=\${keyid} and (\${admin} or owner=\${owner});",
-			'escparam' => array('keyvalue' => 'keyvalue')
+			'escparam' => array('keyvalue' => 'keyvalue'),
+			'errormsg' => 'Invalid Servicekey ID / Not Permitted'
 		);
 		
 		return $kernel->run($mdl, $memory);
