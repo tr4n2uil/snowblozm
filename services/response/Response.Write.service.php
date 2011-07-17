@@ -36,7 +36,7 @@ class ResponseWriteService implements Service {
 			case 'wddx' :
 				$kernel = new WorkflowKernel();
 				$mdl = array(
-					'service' => 'sb.data.encode.service',
+					'service' => 'sbcore.data.encode.service',
 					'output' => array('result' => 'result'),
 					'data' => $result,
 					'type' => $type

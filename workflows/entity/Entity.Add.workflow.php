@@ -2,28 +2,25 @@
 require_once(SBSERVICE);
 
 /**
- *	@class EntityAllWorkflow
- *	@desc Returns the information for all entity
+ *	@class EntityAddWorkflow
+ *	@desc Adds new entity information
  *
  *	@param entity string Entity name [message]
+ *	@param table string Table name [message] optional default entity.'s'
  *	@param sqlcnd string SQL condition [message]
- *	@param sqlprj string SQL projection [message] optional default *
- *	@param reqparam array Request parameters [message] optional default array()
+ *	@param reqparam array Request parameters [message]
  *	@param defparam array Default params [message] optional default array()
  *	@param escparam array Escape parameters [message] optional default array()
  *	@param qryparam array Query parameters [message] optional default reqparam
- *	@param errormsg string Error message [message] optional default 'Error in Database'
  *
  *	@param request-type string Request type [message] ('get, 'post', 'memory', 'json', 'xml', 'wddx')
  *	@param response-type string Response type [message] ('memory', 'json, 'xml', 'wddx', 'html', 'plain')
- *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
- *
- *	@return table array Entity information [memory]
+  *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class EntityAllWorkflow implements Service {
+class EntityAddWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
@@ -34,16 +31,14 @@ class EntityAllWorkflow implements Service {
 		$entity = $message['entity'];
 		$table = isset($message['table']) ? $message['table'] : $entity.'s';
 		$sqlcnd = $message['sqlcnd'];
-		$sqlprj = isset($message['sqlprj']) ? $message['sqlprj'] : '*';
 		$reqparam = isset($message['reqparam']) ? $message['reqparam'] : array();
 		$defparam = isset($message['defparam']) ? $message['defparam'] : array();
 		$escparam = isset($message['escparam']) ? $message['escparam'] : array();
 		$qryparam = isset($message['qryparam']) ? $message['qryparam'] : $reqparam;
-		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Error in Database';
 		
 		$workflow = array(
 		array(
-			'service' => 'sb.request.read.service',
+			'service' => 'sbcore.request.read.service',
 			'output' => $reqparam,
 			'defparam' => $defparam,
 			'type' => $message['request-type']
@@ -51,16 +46,19 @@ class EntityAllWorkflow implements Service {
 		array(
 			'service' => 'sb.query.execute.workflow',
 			'input' => array_merge($qryparam, array('conn' => 'conn')),
-			'output' => array('sqlresult' => $table),
-			'query' => 'select '.$sqlprj.' from '.$table.' '.$sqlcnd.';',
+			'output' => array('sqlresult' => $entity),
+			'query' => 'insert into '.$table.' '.$sqlcnd.';',
+			'rstype' => 2,
 			'escparam' => $escparam,
-			'count' => 0,
-			'not' => false,
-			'errormsg' => $errormsg
+		),array(
+			'service' => 'sbcore.string.substitute.service',
+			'input' => array($entity => 'id'),
+			'output' => array('result' => 'successmsg'),
+			'data' => ucfirst($entity).' added successfully ID : ${id}'
 		),
 		array(
-			'service' => 'sb.response.write.service',
-			'input' => array($table => $table),
+			'service' => 'sbcore.response.write.service',
+			'input' => array('sqlresult' => 'id', 'successmsg' => 'successmsg'),
 			'strict' => false,
 			'type' => $message['response-type']
 		));

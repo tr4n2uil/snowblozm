@@ -43,7 +43,7 @@ class RequestReadService implements Service {
 				case 'wddx' :
 					$kernel = new WorkflowKernel();
 					$mdl = array(
-						'service' => 'sb.data.decode.service',
+						'service' => 'sbcore.data.decode.service',
 						'output' => array('result' => 'result'),
 						'data' => file_get_contents('php://input'),
 						'type' => $type

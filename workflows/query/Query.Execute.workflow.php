@@ -7,7 +7,7 @@ require_once(SBSERVICE);
  *
   *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
  *	@param query string SQL Query to be executed with substitutions [message|memory]
- *	@param rstype integer type of result [message] optional default 0
+ *	@param rstype integer type of result [message] optional default 0 
  *	@param escparam array Escape parameters [message] optional default array()
  *	@param numparam array Number parameters [message] optional default qryparam-escparam
  *	@param qryparam array Query parameters [message] optional default input-'query'
@@ -60,28 +60,28 @@ class QueryExecuteWorkflow implements Service {
 		
 		$workflow = array(
 		array(
-			'service' => 'sb.data.numeric.service',
+			'service' => 'sbcore.data.numeric.service',
 			'input' => $numparam
 		),
 		array(
-			'service' => 'sb.query.escape.service',
+			'service' => 'sbcore.query.escape.service',
 			'input' => $escparam,
 			'output' => $escparam
 		),
 		array(
-			'service' => 'sb.string.substitute.service',
+			'service' => 'sbcore.string.substitute.service',
 			'input' => $qryparam,
 			'output' => array('result' => 'query'),
 			'data' => $query
 		),
 		array(
-			'service' => 'sb.query.execute.service',
+			'service' => 'sbcore.query.execute.service',
 			'input' => array('query' => 'query', 'conn' => 'conn'),
 			'output' => array('sqlresult' => 'sqlresult', 'sqlrowcount' => 'sqlrc'),
 			'rstype' => $rstype
 		),
 		array(
-			'service' => 'sb.data.equal.service',
+			'service' => 'sbcore.data.equal.service',
 			'input' => array('sqlrc' => 'data'),
 			'value' => $count,
 			'not' => $not,

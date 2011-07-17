@@ -48,7 +48,7 @@ class EntityGetWorkflow implements Service {
 		
 		$workflow = array(
 		array(
-			'service' => 'sb.request.read.service',
+			'service' => 'sbcore.request.read.service',
 			'output' => $reqparam,
 			'defparam' => $defparam,
 			'type' => $message['request-type']
@@ -64,14 +64,14 @@ class EntityGetWorkflow implements Service {
 			'errormsg' => $errormsg
 		),
 		array(
-			'service' => 'sb.data.select.service',
+			'service' => 'sbcore.data.select.service',
 			'input' => array($entity => $entity),
 			'output' => array($entity => $entity),
 			'params' => array($entity.'.0' => $entity),
 			'type' => $message['request-type']
 		),
 		array(
-			'service' => 'sb.response.write.service',
+			'service' => 'sbcore.response.write.service',
 			'input' => ($not ? array($entity => $entity) : array()),
 			'strict' => false,
 			'successmsg' => $successmsg,

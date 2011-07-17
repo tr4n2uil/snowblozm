@@ -36,20 +36,20 @@ class RemoteWorkflow implements Service {
 		
 		$workflow = array(
 		array(
-			'service' => 'sb.data.encode.service',
+			'service' => 'sbcore.data.encode.service',
 			'output' => array('result' => 'data'),
 			'data' => $memory,
 			'type' => $type
 		),
 		array(
-			'service' => 'sb.curl.execute.service',
+			'service' => 'sbcore.curl.execute.service',
 			'input' => array('data' => 'data'),
 			'output' => array('response' => 'data'),
 			'url' => $this->root.$this->uri,
 			'plain' => true
 		),
 		array(
-			'service' => 'sb.data.decode.service',
+			'service' => 'sbcore.data.decode.service',
 			'input' => array('data' => 'data'),
 			'output' => array('result' => 'result'),
 			'type' => $type
