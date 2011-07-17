@@ -10,6 +10,7 @@ require_once(SBSERVICE);
  *	@param sqlcnd string SQL condition [message]
  *	@param sqlprj string SQL projection [message] optional default *
  *	@param reqparam array Request parameters [message]
+ *	@param defparam array Default params [message] optional default array()
  *	@param escparam array Escape parameters [message] optional default array()
  *	@param qryparam array Query parameters [message] optional default reqparam
  *	@param not boolean Value check nonequal [message] optional default true
@@ -38,6 +39,7 @@ class EntityGetWorkflow implements Service {
 		$sqlcnd = $message['sqlcnd'];
 		$sqlprj = isset($message['sqlprj']) ? $message['sqlprj'] : '*';
 		$reqparam = isset($message['reqparam']) ? $message['reqparam'] : array();
+		$defparam = isset($message['defparam']) ? $message['defparam'] : array();
 		$escparam = isset($message['escparam']) ? $message['escparam'] : array();
 		$qryparam = isset($message['qryparam']) ? $message['qryparam'] : $reqparam;
 		$not = isset($message['not']) ? $message['not'] : true;
@@ -48,6 +50,7 @@ class EntityGetWorkflow implements Service {
 		array(
 			'service' => 'sb.request.read.service',
 			'output' => $reqparam,
+			'defparam' => $defparam,
 			'type' => $message['request-type']
 		),
 		array(

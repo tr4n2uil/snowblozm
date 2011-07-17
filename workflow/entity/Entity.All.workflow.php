@@ -9,6 +9,7 @@ require_once(SBSERVICE);
  *	@param sqlcnd string SQL condition [message]
  *	@param sqlprj string SQL projection [message] optional default *
  *	@param reqparam array Request parameters [message] optional default array()
+ *	@param defparam array Default params [message] optional default array()
  *	@param escparam array Escape parameters [message] optional default array()
  *	@param qryparam array Query parameters [message] optional default reqparam
  *	@param errormsg string Error message [message] optional default 'Error in Database'
@@ -35,6 +36,7 @@ class EntityAllWorkflow implements Service {
 		$sqlcnd = $message['sqlcnd'];
 		$sqlprj = isset($message['sqlprj']) ? $message['sqlprj'] : '*';
 		$reqparam = isset($message['reqparam']) ? $message['reqparam'] : array();
+		$defparam = isset($message['defparam']) ? $message['defparam'] : array();
 		$escparam = isset($message['escparam']) ? $message['escparam'] : array();
 		$qryparam = isset($message['qryparam']) ? $message['qryparam'] : $reqparam;
 		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Error in Database';
@@ -43,6 +45,7 @@ class EntityAllWorkflow implements Service {
 		array(
 			'service' => 'sb.request.read.service',
 			'output' => $reqparam,
+			'defparam' => $defparam,
 			'type' => $message['request-type']
 		),
 		array(

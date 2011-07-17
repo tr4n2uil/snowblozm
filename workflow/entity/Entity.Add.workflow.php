@@ -9,6 +9,7 @@ require_once(SBSERVICE);
  *	@param table string Table name [message] optional default entity.'s'
  *	@param sqlcnd string SQL condition [message]
  *	@param reqparam array Request parameters [message]
+ *	@param defparam array Default params [message] optional default array()
  *	@param escparam array Escape parameters [message] optional default array()
  *	@param qryparam array Query parameters [message] optional default reqparam
  *
@@ -31,6 +32,7 @@ class EntityAddWorkflow implements Service {
 		$table = isset($message['table']) ? $message['table'] : $entity.'s';
 		$sqlcnd = $message['sqlcnd'];
 		$reqparam = isset($message['reqparam']) ? $message['reqparam'] : array();
+		$defparam = isset($message['defparam']) ? $message['defparam'] : array();
 		$escparam = isset($message['escparam']) ? $message['escparam'] : array();
 		$qryparam = isset($message['qryparam']) ? $message['qryparam'] : $reqparam;
 		
@@ -38,6 +40,7 @@ class EntityAddWorkflow implements Service {
 		array(
 			'service' => 'sb.request.read.service',
 			'output' => $reqparam,
+			'defparam' => $defparam,
 			'type' => $message['request-type']
 		),
 		array(

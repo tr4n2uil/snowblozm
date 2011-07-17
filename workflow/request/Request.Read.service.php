@@ -6,6 +6,7 @@ require_once(SBSERVICE);
  *	@desc Reads HTTP request parameters sent by GET POST JSON XML MEMORY WDDX
  *
  *	@param params array Request keys [message] optional default output
+ *	@param defparam array Default params [message] optional default array()
  *	@param type string Request type [message] optional default 'post' ('get, 'post', 'memory', 'json', 'xml', 'wddx')
  *
  *	@return request values [memory]
@@ -21,6 +22,7 @@ class RequestReadService implements Service {
 	public function run($message, $memory){
 		$type = isset($message['type']) ? $message['type'] : 'post';
 		$params = isset($message['params']) ? $message['params'] : $message['output'];
+		$defparam = isset($message['defparam']) ? $message['defparam'] : array();
 		
 		if(count($params) != 0){
 			switch($type){
@@ -64,6 +66,10 @@ class RequestReadService implements Service {
 
 			foreach($params as $param){
 				if(!isset($request[$param])){
+					if(isset($defparam[$param])){
+						$memory[$param] = $defparam[$param];
+						continue;
+					}
 					$memory['valid'] = false;
 					$memory['msg'] = 'Invalid Request';
 					$memory['status'] = 501;

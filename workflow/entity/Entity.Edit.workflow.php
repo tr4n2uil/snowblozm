@@ -9,6 +9,7 @@ require_once(SBSERVICE);
  *	@param table string Table name [message] optional default entity.'s'
  *	@param sqlcnd string SQL condition [message]
  *	@param reqparam array Request parameters [message]
+ *	@param defparam array Default params [message] optional default array()
  *	@param escparam array Escape parameters [message] optional default array()
  *	@param qryparam array Query parameters [message] optional default reqparam
  *	@param errormsg string Error message if unique entity not found [message] optional default 'Invalid $entity / Not Permitted / No Changes'
@@ -34,6 +35,7 @@ class EntityEditWorkflow implements Service {
 		$sqlcnd = $message['sqlcnd'];
 		$reqparam = isset($message['reqparam']) ? $message['reqparam'] : array();
 		$escparam = isset($message['escparam']) ? $message['escparam'] : array();
+		$defparam = isset($message['defparam']) ? $message['defparam'] : array();
 		$qryparam = isset($message['qryparam']) ? $message['qryparam'] : $reqparam;
 		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Invalid '.ucfirst($entity).' / Not Permitted / No Changes';
 		$successmsg = isset($message['successmsg']) ? $message['successmsg'] : ucfirst($entity).' edited successfully';
@@ -42,6 +44,7 @@ class EntityEditWorkflow implements Service {
 		array(
 			'service' => 'sb.request.read.service',
 			'output' => $reqparam,
+			'defparam' => $defparam,
 			'type' => $message['request-type']
 		),
 		array(
