@@ -12,7 +12,6 @@ require_once(SBSERVICE);
  *	@param escparam array Escape parameters [message] optional default array()
  *	@param not boolean Value check nonequal [message] optional default true
  *	@param errormsg string Error message [message] optional default 'Error in Database'
- *	@param attribute string Column name [message] optional default ''
  *
  *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
  *
@@ -36,7 +35,6 @@ class RelationUniqueWorkflow implements Service {
 		$escparam = isset($message['escparam']) ? $message['escparam'] : array();
 		$not = isset($message['not']) ? $message['not'] : true;
 		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Error in Database';
-		$attribute = isset($message['attribute']) ? '.'.$message['attribute'] : '';
 		
 		$workflow = array(
 		array(
@@ -52,7 +50,7 @@ class RelationUniqueWorkflow implements Service {
 			'service' => 'sbcore.data.select.service',
 			'input' => array($relation => $relation),
 			'output' => array($relation => $relation),
-			'params' => array($relation.'.0'.$attribute => 'result')
+			'params' => array($relation.'.0' => 'result')
 		));
 		
 		return $kernel->execute($workflow, $memory);
