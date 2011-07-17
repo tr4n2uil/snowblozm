@@ -64,6 +64,13 @@ class EntityGetWorkflow implements Service {
 			'errormsg' => $errormsg
 		),
 		array(
+			'service' => 'sb.data.select.service',
+			'input' => array($entity => $entity),
+			'output' => array($entity => $entity),
+			'params' => array($entity.'.0' => $entity),
+			'type' => $message['request-type']
+		),
+		array(
 			'service' => 'sb.response.write.service',
 			'input' => ($not ? array($entity => $entity) : array()),
 			'strict' => false,

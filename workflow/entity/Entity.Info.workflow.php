@@ -46,6 +46,13 @@ class EntityInfoWorkflow implements Service {
 			'errormsg' => 'Invalid '.ucfirst($entity).' ID'
 		),
 		array(
+			'service' => 'sb.data.select.service',
+			'input' => array($entity => $entity),
+			'output' => array($entity => $entity),
+			'params' => array($entity.'.0' => $entity),
+			'type' => $message['request-type']
+		),
+		array(
 			'service' => 'sb.response.write.service',
 			'input' => array($entity => $entity),
 			'strict' => false,
