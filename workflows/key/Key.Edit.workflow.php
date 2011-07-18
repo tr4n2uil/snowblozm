@@ -26,7 +26,7 @@ class KeyEditWorkflow implements Service {
 		$mdl = array(
 			'service' => 'sb.relation.update.workflow',
 			'input' => array('conn' => 'conn', 'keyid' => 'keyid', 'keyvalue' => 'keyvalue', 'owner' => 'owner', 'admin' => 'admin'),
-			'relation' => 'sb-keys',
+			'relation' => 'sbkeys',
 			'sqlcnd' => "set keyvalue='\${keyvalue}' where keyid=\${keyid} and (\${admin} or owner=\${owner});",
 			'escparam' => array('keyvalue' => 'keyvalue'),
 			'errormsg' => 'Invalid Service Key ID / Not Permitted'

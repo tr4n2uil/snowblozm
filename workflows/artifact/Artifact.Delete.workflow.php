@@ -25,7 +25,7 @@ class KeychainDeleteWorkflow implements Service {
 		$mdl = array(
 			'service' => 'sb.relation.delete.workflow',
 			'input' => array('conn' => 'conn', 'artid' => 'artid', 'owner' => 'owner', 'admin' => 'admin'),
-			'relation' => 'sb-artifacts',
+			'relation' => 'sbartifacts',
 			'sqlcnd' => "where artid=\${artid} and (\${admin} or owner=\${owner});",
 			'errormsg' => 'Invalid Artifact ID / Not Permitted'
 		);

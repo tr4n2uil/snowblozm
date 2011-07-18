@@ -27,7 +27,7 @@ class ArtifactAddWorkflow implements Service {
 			'service' => 'sb.relation.insert.workflow',
 			'input' => array('conn' => 'conn', 'child' => 'child', 'parent' => 'parent'),
 			'output' => array('id' => 'id'),
-			'relation' => 'sb-collections',
+			'relation' => 'sbcollections',
 			'sqlcnd' => "(child, parent) values (\${child}, \${parent});"
 		);
 		

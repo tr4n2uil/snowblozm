@@ -27,7 +27,7 @@ class KeychainCreateWorkflow implements Service {
 			'service' => 'sb.relation.insert.workflow',
 			'input' => array('conn' => 'conn', 'chainname' => 'chainname', 'owner' => 'owner'),
 			'output' => array('id' => 'id'),
-			'relation' => 'sb-chains',
+			'relation' => 'sbchains',
 			'sqlcnd' => "(chainname, owner) values ('\${chainname}', \${owner});",
 			'escparam' => array('chainname' => 'chainname')
 		);

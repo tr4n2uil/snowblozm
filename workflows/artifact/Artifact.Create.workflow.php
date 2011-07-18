@@ -27,7 +27,7 @@ class ArtifactCreateWorkflow implements Service {
 			'service' => 'sb.relation.insert.workflow',
 			'input' => array('conn' => 'conn', 'chainid' => 'chainid', 'owner' => 'owner'),
 			'output' => array('id' => 'id'),
-			'relation' => 'sb-artifacts',
+			'relation' => 'sbartifacts',
 			'sqlcnd' => "(chainid, owner) values (\${chainid}, \${owner});"
 		);
 		

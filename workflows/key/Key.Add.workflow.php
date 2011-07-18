@@ -27,7 +27,7 @@ class KeyAddWorkflow implements Service {
 			'service' => 'sb.relation.insert.workflow',
 			'input' => array('conn' => 'conn', 'keyvalue' => 'keyvalue', 'owner' => 'owner'),
 			'output' => array('id' => 'id'),
-			'relation' => 'sb-keys',
+			'relation' => 'sbkeys',
 			'sqlcnd' => "(keyvalue, owner) values ('\${keyvalue}', \${owner});",
 			'escparam' => array('keyvalue' => 'keyvalue')
 		);

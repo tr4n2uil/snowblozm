@@ -27,7 +27,7 @@ class KeychainAddWorkflow implements Service {
 			'service' => 'sb.relation.insert.workflow',
 			'input' => array('conn' => 'conn', 'chainid' => 'chainid', 'keyid' => 'keyid'),
 			'output' => array('id' => 'id'),
-			'relation' => 'sb-members',
+			'relation' => 'sbmembers',
 			'sqlcnd' => "(chainid, keyid) values ('\${chainid}', \${keyid});"
 		);
 		

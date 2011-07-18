@@ -28,7 +28,7 @@ class KeychainAuthenticateWorkflow implements Service {
 			'service' => 'sb.relation.unique.workflow',
 			'input' => array('conn' => 'conn', 'keyid' => 'keyid', 'chainid' => 'chainid'),
 			'output' => array('result' => 'result'),
-			'relation' => 'sb-members',
+			'relation' => 'sbmembers',
 			'sqlcnd' => "where keyid=\${keyid} and chainid=\${chainid};",
 			'sqlprj' => 'count(keyid) as admin'
 		),

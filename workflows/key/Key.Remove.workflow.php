@@ -26,7 +26,7 @@ class KeyRemoveWorkflow implements Service {
 		$mdl = array(
 			'service' => 'sb.relation.delete.workflow',
 			'input' => array('conn' => 'conn', 'keyid' => 'keyid', 'owner' => 'owner', 'admin' => 'admin'),
-			'relation' => 'sb-keys',
+			'relation' => 'sbkeys',
 			'sqlcnd' => "where keyid=\${keyid} and (\${admin} or owner=\${owner});",
 			'errormsg' => 'Invalid Servicekey ID / Not Permitted'
 		);

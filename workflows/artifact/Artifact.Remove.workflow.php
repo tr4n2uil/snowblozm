@@ -26,8 +26,8 @@ class ArtifactRemoveWorkflow implements Service {
 		$mdl = array(
 			'service' => 'sb.relation.delete.workflow',
 			'input' => array('conn' => 'conn', 'child' => 'child', 'parent' => 'parent', 'owner' => 'owner', 'admin' => 'admin'),
-			'relation' => 'sb-collections',
-			'sqlcnd' => "where child=\${child} and parent=(select artid from sb-artifacts where artid=\${parent} and (\${admin} or owner=\${owner}));",
+			'relation' => 'sbcollections',
+			'sqlcnd' => "where child=\${child} and parent=(select artid from sbartifacts where artid=\${parent} and (\${admin} or owner=\${owner}));",
 			'errormsg' => 'Invalid Artifact ID / Not Permitted'
 		);
 		

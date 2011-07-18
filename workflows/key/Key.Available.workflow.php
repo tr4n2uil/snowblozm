@@ -23,7 +23,7 @@ class KeyAvailableWorkflow implements Service {
 		$mdl = array(
 			'service' => 'sb.relation.unique.workflow',
 			'input' => array('conn' => 'conn', 'keyvalue' => 'keyvalue'),
-			'relation' => 'sb-keys',
+			'relation' => 'sbkeys',
 			'sqlcnd' => "where keyvalue='\${keyvalue}';",
 			'sqlprj' => 'owner',
 			'escparam' => array('keyvalue' => 'keyvalue'),

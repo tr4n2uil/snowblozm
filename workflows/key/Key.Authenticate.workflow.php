@@ -29,7 +29,7 @@ class KeyAuthenticateWorkflow implements Service {
 			'service' => 'sb.relation.unique.workflow',
 			'input' => array('conn' => 'conn', 'key' => 'key', 'challenge' => 'challenge'),
 			'output' => array('result' => 'key'),
-			'relation' => 'sb-keys',
+			'relation' => 'sbkeys',
 			'sqlcnd' => "where MD5(concat(keyvalue, '\${challenge}'))='\${key}';",
 			'sqlprj' => 'owner',
 			'escparam' => array('key' => 'key', 'challenge' => 'challenge'),
