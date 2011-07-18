@@ -2,20 +2,20 @@
 require_once(SBSERVICE);
 
 /**
- *	@class KeychainCreateWorkflow
- *	@desc Creates new keychain
+ *	@class ChainCreateWorkflow
+ *	@desc Creates new chain
  *
  *	@param chainname string Keychain name [memory]
- *	@param owner long int Owner ID [memory]
+ *	@param masterkey long int Key ID [memory]
  *
  *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
  *
- *	@return return id long int Keychain ID [memory]
+ *	@return return id long int Chain ID [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class KeychainCreateWorkflow implements Service {
+class ChainCreateWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
@@ -25,10 +25,10 @@ class KeychainCreateWorkflow implements Service {
 		
 		$mdl = array(
 			'service' => 'sb.relation.insert.workflow',
-			'input' => array('conn' => 'conn', 'chainname' => 'chainname', 'owner' => 'owner'),
+			'input' => array('conn' => 'conn', 'chainname' => 'chainname', 'masterkey' => 'masterkey'),
 			'output' => array('id' => 'id'),
 			'relation' => 'sbchains',
-			'sqlcnd' => "(chainname, owner) values ('\${chainname}', \${owner});",
+			'sqlcnd' => "(chainname, masterkey) values ('\${chainname}', \${masterkey});",
 			'escparam' => array('chainname' => 'chainname')
 		);
 		

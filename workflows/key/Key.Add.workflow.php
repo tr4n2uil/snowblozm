@@ -6,7 +6,6 @@ require_once(SBSERVICE);
  *	@desc Adds new service key
  *
  *	@param keyvalue string Key value [memory]
- *	@param owner long int Owner ID [memory]
  *
  *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
  *
@@ -25,10 +24,10 @@ class KeyAddWorkflow implements Service {
 		
 		$mdl = array(
 			'service' => 'sb.relation.insert.workflow',
-			'input' => array('conn' => 'conn', 'keyvalue' => 'keyvalue', 'owner' => 'owner'),
+			'input' => array('conn' => 'conn', 'keyvalue' => 'keyvalue'),
 			'output' => array('id' => 'id'),
 			'relation' => 'sbkeys',
-			'sqlcnd' => "(keyvalue, owner) values ('\${keyvalue}', \${owner});",
+			'sqlcnd' => "(keyvalue) values ('\${keyvalue}');",
 			'escparam' => array('keyvalue' => 'keyvalue')
 		);
 		

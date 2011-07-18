@@ -7,8 +7,6 @@ require_once(SBSERVICE);
  *
  *	@param keyid long int Key ID [memory]
  *	@param keyvalue string Key value [memory]
- *	@param owner long int Owner ID [memory]
- *	@param admin integer Is admin [memory]
  *
  *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
  *
@@ -25,11 +23,11 @@ class KeyEditWorkflow implements Service {
 		
 		$mdl = array(
 			'service' => 'sb.relation.update.workflow',
-			'input' => array('conn' => 'conn', 'keyid' => 'keyid', 'keyvalue' => 'keyvalue', 'owner' => 'owner', 'admin' => 'admin'),
+			'input' => array('conn' => 'conn', 'keyid' => 'keyid', 'keyvalue' => 'keyvalue'),
 			'relation' => 'sbkeys',
-			'sqlcnd' => "set keyvalue='\${keyvalue}' where keyid=\${keyid} and (\${admin} or owner=\${owner});",
+			'sqlcnd' => "set keyvalue='\${keyvalue}' where keyid=\${keyid};",
 			'escparam' => array('keyvalue' => 'keyvalue'),
-			'errormsg' => 'Invalid Service Key ID / Not Permitted'
+			'errormsg' => 'Invalid Service Key ID'
 		);
 		
 		return $kernel->run($mdl, $memory);

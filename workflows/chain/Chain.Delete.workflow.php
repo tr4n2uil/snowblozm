@@ -2,11 +2,11 @@
 require_once(SBSERVICE);
 
 /**
- *	@class KeychainDeleteWorkflow
- *	@desc Removes keychain using ID
+ *	@class ChainDeleteWorkflow
+ *	@desc Removes chain using ID
  *
- *	@param chainid long int Keychain ID [memory]
- *	@param owner long int Owner ID [memory]
+ *	@param chainid long int Chain ID [memory]
+ *	@param masterkey long int Key ID [memory]
  *	@param admin integer Is admin [memory]
  *
  *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
@@ -14,7 +14,7 @@ require_once(SBSERVICE);
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class KeychainDeleteWorkflow implements Service {
+class ChainDeleteWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
@@ -24,10 +24,10 @@ class KeychainDeleteWorkflow implements Service {
 		
 		$mdl = array(
 			'service' => 'sb.relation.delete.workflow',
-			'input' => array('conn' => 'conn', 'chainid' => 'chainid', 'owner' => 'owner', 'admin' => 'admin'),
+			'input' => array('conn' => 'conn', 'chainid' => 'chainid', 'masterkey' => 'masterkey', 'admin' => 'admin'),
 			'relation' => 'sbchains',
-			'sqlcnd' => "where chainid=\${chainid} and (\${admin} or owner=\${owner});",
-			'errormsg' => 'Invalid Keychain ID / Not Permitted'
+			'sqlcnd' => "where chainid=\${chainid} and (\${admin} or masterkey=\${masterkey});",
+			'errormsg' => 'Invalid Chain ID / Not Permitted'
 		);
 		
 		return $kernel->run($mdl, $memory);

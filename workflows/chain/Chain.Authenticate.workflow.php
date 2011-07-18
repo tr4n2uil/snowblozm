@@ -2,11 +2,11 @@
 require_once(SBSERVICE);
 
 /**
- *	@class KeychainAuthenticateWorkflow
- *	@desc Authenticates membership of key ID in keychain and sets admin flag in memory
+ *	@class ChainAuthenticateWorkflow
+ *	@desc Authenticates key ID in chain and sets admin flag in memory
  *
- *	@param keyid long int Servicekey ID [memory]
- *	@param chainid long int Keychain ID [memory]
+ *	@param keyid long int Key ID [memory]
+ *	@param chainid long int Chain ID [memory]
  *
  *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
  *
@@ -15,7 +15,7 @@ require_once(SBSERVICE);
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class KeychainAuthenticateWorkflow implements Service {
+class ChainAuthenticateWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
