@@ -2,8 +2,8 @@
 require_once(SBSERVICE);
 
 /**
- *	@class DataDecodeService
- *	@desc Decodes JSON XML WDDX data into array (supports copy of GET and POST data)
+ *	@class DataDecryptWorkflow
+ *	@desc Decrypts AES encrypted data into memory
  *
  *	@param type string Request type [message] optional default 'json' ('get', 'post', 'json', 'xml', 'wddx')
  *	@param data string Data to be decoded [message|memory] optional default '' when type=('get', 'post')
@@ -33,10 +33,10 @@ class DataDecodeService implements Service {
 		
 		switch($type){
 			case 'get' :
-				$result = $_GET;
+				$request = $_GET;
 				break;
 			case 'post' :
-				$result = $_POST;
+				$request = $_POST;
 				break;
 			case 'json' :
 				$result = json_decode($data, true);
@@ -76,7 +76,9 @@ class DataDecodeService implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array('result');
+		return array(
+			'required' => array('result')
+		);
 	}
 	
 }

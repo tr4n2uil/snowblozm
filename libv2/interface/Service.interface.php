@@ -21,5 +21,23 @@ interface Service {
 	**/
 	public function run($message, $memory);
 	
+	/** 
+	 *	@method input
+	 *	@desc returns input array for the service
+	 *
+	 *	@return $input array ('required', 'optional')
+	 *
+	**/
+	public function input();
+	
+	/** 
+	 *	@method output
+	 *	@desc returns output array for the service (other than default ('valid', 'msg', 'status', 'details'))
+	 *
+	 *	@return $output array
+	 *
+	**/
+	public function output();
+	
 }
 ?>

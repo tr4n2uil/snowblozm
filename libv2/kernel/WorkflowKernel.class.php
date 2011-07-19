@@ -19,7 +19,7 @@ class WorkflowKernel {
 	 *					input => ...,
 	 *					output => ...,
 	 *					strict => ...,
-	 *					... params ...
+	 *					... message params ...
 	 *				}]
 	 *
 	 *	@param $workflow Workflow definition array
@@ -38,7 +38,7 @@ class WorkflowKernel {
 			$strict = isset($defn['strict']) ? $defn['strict'] : true;
 			
 			/**
-			 *	Continue on invalid state
+			 *	Continue on invalid state if strict
 			**/
 			if(!$memory['valid'] && $strict)
 				continue;
@@ -85,7 +85,9 @@ class WorkflowKernel {
 		 *	Read the service input
 		**/
 		$input = isset($defn['input']) ? $defn['input'] : array();
-		$strict = isset($defn['strict']) ? $defn['strict'] : true;
+		$sin = $service->input();
+		$sinreq = isset($sin['required']) ? $sin['required'] : array();
+		$sinopt = isset($sin['optional']) ? $sin['optional'] : array();
 		
 		/**
 		 *	Construct service request
@@ -97,19 +99,36 @@ class WorkflowKernel {
 		**/
 		//echo $defn['service'].' IN '.json_encode($memory).'<br />';
 		
-		foreach($input as $key => $value){
-			if(!isset($memory[$key])){
-				if(!$strict) continue;
-				
+		/**
+		 *	Copy required input
+		**/
+		foreach($sinreq as $key){
+			$param = isset($input[$key]) ? $input[$key] : $key;
+			if(!isset($memory[$param])){				
 				$memory['valid'] = false;
-				$memory['msg'] = 'Invalid Service Request';
+				$memory['msg'] = 'Invalid Service Input Parameters';
 				$memory['status'] = 500;
-				$memory['details'] = 'Value not found for '.$key.' @WorkflowKernel/run '.$defn['service'];
+				$memory['details'] = 'Value not found for '.$key.' @'.$defn['service'];
 				return $memory;
 			}
-			$request[$value] = $memory[$key];
+			$request[$key] = $memory[$param];
 		}
 		
+		/**
+		 *	Copy optional input
+		**/
+		foreach($sinopt as $key => $value){
+			$param = isset($input[$key]) ? $input[$key] : $key;
+			if(!isset($memory[$param])){				
+				$request[$key] = $value;
+				continue;
+			}
+			$request[$key] = $memory[$param];
+		}
+		
+		/**
+		 *	Copy default input
+		**/
 		foreach($default as $key){
 			if(isset($memory[$key])){
 				$request[$key] = $memory[$key];
@@ -125,9 +144,12 @@ class WorkflowKernel {
 		 *	Read the service output
 		**/
 		$output = isset($defn['output']) && $response['valid'] ? $defn['output'] : array();
+		$sout = $service->output();
+		//$soutreq = isset($sout['required']) ? $sout['required'] : array();
+		//$soutopt = isset($sout['optional']) ? $sout['optional'] : array();
 		
 		/**
-		 *	Read service response into memory
+		 *	Copy default output
 		**/
 		foreach($default as $key){
 			if(isset($response[$key])){
@@ -138,18 +160,32 @@ class WorkflowKernel {
 		if(!$memory['valid'])
 			return $memory;
 		
-		foreach($output as $key => $value){
-			if(!isset($response[$key])){
-				if(!$strict) continue;
-				
+		/**
+		 *	Copy required output
+		**/
+		foreach($sout as $key){
+			$param = isset($output[$key]) ? $output[$key] : $key;
+			if(!isset($response[$key])){				
 				$memory['valid'] = false;
-				$memory['msg'] = 'Invalid Service Response';
+				$memory['msg'] = 'Invalid Service Output Parameters';
 				$memory['status'] = 501;
-				$memory['details'] = 'Value not found for '.$key.' @WorkflowKernel/run '.$defn['service'];
+				$memory['details'] = 'Value not found for '.$key.' @'.$defn['service'];
 				return $memory;
 			}
-			$memory[$value] = $response[$key];
+			$memory[$param] = $response[$key];
 		}
+		
+		/**
+		 *	Copy optional output
+		**
+		foreach($soutopt as $key => $value){
+			$param = isset($output[$key]) ? $output[$key] : $key;
+			if(!isset($response[$key])){				
+				$memory[$param] = $value;
+				continue;
+			}
+			$memory[$param] = $response[$key];
+		}*/
 		
 		/**
 		 *	@debug

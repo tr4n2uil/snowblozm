@@ -3,9 +3,9 @@ require_once(SBSERVICE);
 
 /**
  *	@class DataEncodeService
- *	@desc Encodes array into JSON XML WDDX data
+ *	@desc Encodes array into JSON XML WDDX PLAIN HTML data
  *
- *	@param type string Request type [message] optional default 'json' ('json, 'xml', 'wddx')
+ *	@param type string Request type [message] optional default 'json' ('json, 'xml', 'wddx', 'plain', 'html')
  *	@param data array Data to be encoded [message|memory]
  *
  *	@return result string Encoded data [memory]
@@ -14,6 +14,15 @@ require_once(SBSERVICE);
  *	
 **/
 class DataEncodeService implements Service {
+	
+	/**
+	 *	@interface Service
+	**/
+	public function input(){
+		return array(
+			'optional' => array('data' => '')
+		);
+	}
 	
 	/**
 	 *	@interface Service
@@ -31,6 +40,12 @@ class DataEncodeService implements Service {
 				break;
 			case 'wddx' :
 				$result = wddx_serialize_value($data);
+				break;
+			case 'plain' :
+				$result = var_dump($data);
+				break;
+			case 'html' :
+				$result = $this->html_encode($data);
 				break;
 			default :
 				$memory['valid'] = false;
@@ -57,6 +72,13 @@ class DataEncodeService implements Service {
 		return $memory;
 	}
 	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array('result');
+	}
+	
 	public function xml_encode($data){
 		$xml = new XmlWriter();
 		$xml->openMemory();
@@ -81,6 +103,10 @@ class DataEncodeService implements Service {
 			$xml->writeElement($key, $value);
 		}
 	} 
+	
+	public function html_encode($data){
+		return 'Not implemented yet';
+	}
 	
 }
 

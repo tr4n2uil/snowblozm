@@ -3,12 +3,9 @@ require_once(SBSERVICE);
 
 /**
  *	@class ResponseWriteService
- *	@desc Writes HTTP response in JSON XML HTML PLAIN MEMORY WDDX
+ *	@desc Writes HTTP response to output stream
  *
- *	@param type string Request type [message] optional default 'json' ('memory', 'json, 'xml', 'wddx', 'html', 'plain')
- *	@param successmsg string Success message [message|memory] optional default 'Successfully Executed'
- *
- *	@return response values [echo]
+ *	@param data string Stream data [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *	
@@ -18,54 +15,17 @@ class ResponseWriteService implements Service {
 	/**
 	 *	@interface Service
 	**/
+	public function input(){
+		return array(
+			'required' => array('data')
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
 	public function run($message, $memory){
-		$type = isset($message['type']) ? $message['type'] : 'json';
-		
-		$result = $memory;
-		$successmsg = isset($message['successmsg']) ? $message['successmsg'] : (isset($memory['successmsg']) ? $memory['successmsg'] : 'Successfully Executed');
-
-		if($result['valid'])
-			$result['msg'] = $successmsg;
-			
-		if(isset($result['successmsg']))
-			unset($result['successmsg']);
-		
-		switch($type){
-			case 'json' :
-			case 'xml' :
-			case 'wddx' :
-				$kernel = new WorkflowKernel();
-				$mdl = array(
-					'service' => 'sbcore.data.encode.service',
-					'output' => array('result' => 'result'),
-					'data' => $result,
-					'type' => $type
-				);
-				$memory = $kernel->run($mdl, $memory);
-				
-				if(!$memory['valid']){
-					echo $memory['details'];
-				}
-				
-				echo $memory['result'];
-				break;
-				
-			case 'memory' :
-				$memory['result'] = $result;
-				break;
-				
-			case 'html' :
-				echo $this->html_encode($result);
-				break;
-				
-			case 'plain' :
-				echo var_dump($result);
-				break;
-				
-			default :
-				echo 'Please check response data type. '.$type.' not supported';
-				break;
-		}
+		echo $memory['data'];
 
 		$memory['valid'] = true;
 		$memory['msg'] = 'Valid Response Given';
@@ -74,8 +34,11 @@ class ResponseWriteService implements Service {
 		return $memory;
 	}
 	
-	public function html_encode($data){
-		return 'Not implemented yet';
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array();
 	}
 	
 }
