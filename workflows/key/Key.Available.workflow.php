@@ -5,9 +5,7 @@ require_once(SBSERVICE);
  *	@class KeyAvailableWorkflow
  *	@desc Checks for availability of service key value
  *
- *	@param keyvalue string Key value [memory]
- *
- *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
+ *	@param email string Email [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -17,21 +15,40 @@ class KeyAvailableWorkflow implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('email')
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$mdl = array(
+		$memory['msg'] = 'Email available for registration';
+		
+		$service = array(
 			'service' => 'sb.relation.unique.workflow',
-			'input' => array('conn' => 'conn', 'keyvalue' => 'keyvalue'),
-			'relation' => 'sbkeys',
-			'sqlcnd' => "where keyvalue='\${keyvalue}';",
-			'sqlprj' => 'owner',
-			'escparam' => array('keyvalue' => 'keyvalue'),
+			'args' => array('email'),
+			'conn' => 'sbconn',
+			'relation' => '`keys`',
+			'sqlprj' => 'keyid',
+			'sqlcnd' => "where `email`='\${email}'",
+			'escparam' => array('email'),
 			'not' => false,
-			'errormsg' => 'Service key not available'
+			'errormsg' => 'Email already registered'
 		);
 		
-		return $kernel->run($mdl, $memory);
+		return $kernel->run($service, $memory);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array();
 	}
 	
 }

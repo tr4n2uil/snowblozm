@@ -135,15 +135,6 @@ class WorkflowKernel {
 		}
 		
 		/**
-		 *	Copy default input if exists
-		**/
-		foreach($default as $key){
-			if(isset($memory[$key])){
-				$message[$key] = $memory[$key];
-			}
-		}
-		
-		/**
 		 *	@debug
 		**/
 		if(Snowblozm::$debug){
@@ -169,19 +160,26 @@ class WorkflowKernel {
 		$sout = $service->output();
 		
 		/**
-		 *	Copy default output
+		 *	Copy default output and return if not valid
 		**/
-		foreach($default as $key){
-			if(isset($message[$key])){
-				$memory[$key] = $message[$key];
+		$memory['valid'] = $message['valid'];
+		if(!$memory['valid']){
+			foreach($default as $key){
+				if(isset($message[$key])){
+					$memory[$key] = $message[$key];
+				}
 			}
+			return $memory;
 		}
 		
 		/**
-		 *	Return if not valid
+		 *	Copy default output if not exists
 		**/
-		if(!$memory['valid'])
-			return $memory;
+		foreach($default as $key){
+			if(!isset($memory[$key]) && isset($message[$key])){
+				$memory[$key] = $message[$key];
+			}
+		}
 		
 		/**
 		 *	Copy output
@@ -196,6 +194,13 @@ class WorkflowKernel {
 				return $memory;
 			}
 			$memory[$param] = $message[$key];
+		}
+		
+		/**
+		 *	@debug
+		**/
+		if(Snowblozm::$debug){
+			echo 'MEMORY '.json_encode($memory).'<br /><br />';
 		}
 		
 		/**

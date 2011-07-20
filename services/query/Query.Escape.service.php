@@ -52,7 +52,7 @@ class QueryEscapeService implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return $this->output();
+		return $this->output;
 	}
 	
 }

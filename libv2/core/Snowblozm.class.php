@@ -156,7 +156,6 @@ class Snowblozm {
 		 *	WorkflowKernel instance
 		**/
 		$kernel = new WorkflowKernel();
-		$memory = array();
 		
 		/**
 		 *	Read request data
@@ -170,7 +169,7 @@ class Snowblozm {
 			'type' => $reqtype
 		));
 		
-		$memory = $kernel->execute($workflow, $memory);
+		$memory = $kernel->execute($workflow);
 		
 		if(!$memory['valid']){
 			self::respond($memory, $restype);
@@ -205,7 +204,7 @@ class Snowblozm {
 		/**
 		 *	Run the service using WorkflowKernel
 		**/
-		$memory = $kernel->run($message, $memory);
+		$memory = $kernel->run($message);
 		
 		if(!$memory['valid']){
 			self::respond($memory, $restype);
@@ -238,9 +237,10 @@ class Snowblozm {
 	private static function respond($memory, $restype, $output = array()){
 	
 		/**
-		 *	WorkflowKernel instance
+		 *	WorkflowKernel instance and default output
 		**/
 		$kernel = new WorkflowKernel();
+		$default = array('valid', 'msg', 'status', 'details');
 		
 		/**
 		 *	Response workflow
@@ -248,7 +248,8 @@ class Snowblozm {
 		$workflow = array(
 		array(
 			'service' => 'sbcore.data.prepare.service',
-			'args' => $output
+			'args' => array_merge($output, $default),
+			'strict' => false
 		),
 		array(
 			'service' => 'sbcore.data.encode.service',

@@ -5,9 +5,8 @@ require_once(SBSERVICE);
  *	@class KeyAddWorkflow
  *	@desc Adds new service key
  *
- *	@param keyvalue string Key value [memory]
- *
- *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
+ *	@param email string Email [memory]
+ *	@param key string Key value [memory]
  *
  *	@return return id long int Key ID [memory]
  *
@@ -19,19 +18,37 @@ class KeyAddWorkflow implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('key', 'email')
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$mdl = array(
+		$memory['msg'] = 'Key created successfully';
+		
+		$service = array(
 			'service' => 'sb.relation.insert.workflow',
-			'input' => array('conn' => 'conn', 'keyvalue' => 'keyvalue'),
-			'output' => array('id' => 'id'),
-			'relation' => 'sbkeys',
-			'sqlcnd' => "(keyvalue) values ('\${keyvalue}');",
-			'escparam' => array('keyvalue' => 'keyvalue')
+			'args' => array('key', 'email'),
+			'conn' => 'sbconn',
+			'relation' => '`keys`',
+			'sqlcnd' => "(`email`, `keyvalue`) values ('\${email}', MD5('\${email}\${key}'))",
+			'escparam' => array('key', 'email')
 		);
 		
-		return $kernel->run($mdl, $memory);
+		return $kernel->run($service, $memory);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array('id');
 	}
 	
 }

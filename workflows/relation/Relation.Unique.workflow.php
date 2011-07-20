@@ -23,11 +23,6 @@ require_once(SBSERVICE);
 class RelationUniqueWorkflow implements Service {
 	
 	/**
-	 *	@var relation 
-	**/
-	private $relation;
-	
-	/**
 	 *	@interface Service
 	**/
 	public function input(){
@@ -43,29 +38,21 @@ class RelationUniqueWorkflow implements Service {
 	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$this->relation = $message['relation'];
-		
-		$workflow = array(
-		array(
+		$service = array(
 			'service' => 'sb.query.execute.workflow',
 			'args' => $memory['args'],
-			'output' => array('sqlresult', $this->relation),
-			'query' => 'select '.$memory['sqlprj'].' from '.$this->relation.' '.$memory['sqlcnd'].';'
-		),
-		array(
-			'service' => 'sbcore.data.select.service',
-			'args' => array($this->relation),
-			'params' => array($this->relation.'.0' => $this->relation)
-		));
+			'output' => array('sqlresult' => 'result'),
+			'query' => 'select '.$memory['sqlprj'].' from '.$memory['relation'].' '.$memory['sqlcnd'].';'
+		);
 		
-		return $kernel->execute($workflow, $memory);
+		return $kernel->run($service, $memory);
 	}
 	
 	/**
 	 *	@interface Service
 	**/
 	public function output(){
-		return array($this->relation);
+		return array('result');
 	}
 	
 }

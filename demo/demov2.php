@@ -11,6 +11,13 @@
 	$type = $_GET['type'];
 	
 	//Snowblozm::$debug = true;
+	Snowblozm::init('sbconn', array(
+		'type' => 'mysql',
+		'host' => 'localhost',
+		'user' => 'root',
+		'pass' => 'krishna',
+		'database' => 'snowblozm'
+	));
 	
 	Snowblozm::launch($type, array('sbdemo', 'sb'));
 

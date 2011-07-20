@@ -3,12 +3,10 @@ require_once(SBSERVICE);
 
 /**
  *	@class KeyAuthenticateWorkflow
- *	@desc Validates key/challenge and selects key ID
+ *	@desc Validates email keyvalue and selects key ID
  *
- *	@param key string Usage key [memory] (service key md5 hashed with challenge)
- *	@param challenge string Challenge string [memory]
- *
- *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
+ *	@param email string Email [memory]
+ *	@param key string Usage key [memory]
  *
  *	@return keyid long int Key ID [memory]
  *
@@ -20,28 +18,45 @@ class KeyAuthenticateWorkflow implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('key', 'email')
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$kernel = new WorkflowKernel();
+		
+		$memory['msg'] = 'Key authenticated successfully';
 		
 		$workflow = array(
 		array(
 			'service' => 'sb.relation.unique.workflow',
-			'input' => array('conn' => 'conn', 'key' => 'key', 'challenge' => 'challenge'),
-			'output' => array('result' => 'key'),
-			'relation' => 'sbkeys',
-			'sqlcnd' => "where MD5(concat(keyvalue, '\${challenge}'))='\${key}';",
+			'args' => array('key', 'email'),
+			'conn' => 'sbconn',
+			'relation' => '`keys`',
 			'sqlprj' => 'keyid',
-			'escparam' => array('key' => 'key', 'challenge' => 'challenge'),
-			'errormsg' => 'Invalid Service Key'
+			'sqlcnd' => "where `email`='\${email}' and `keyvalue`=MD5('\${email}\${key}')",
+			'escparam' => array('key', 'email'),
+			'errormsg' => 'Invalid Credentials'
 		),
 		array(
 			'service' => 'sbcore.data.select.service',
-			'input' => array('key' => 'key'),
-			'output' => array('keyid' => 'keyid'),
-			'params' => array('key.keyid' => 'keyid')
+			'args' => array('result'),
+			'params' => array('result.0.keyid' => 'keyid')
 		));
 		
 		return $kernel->execute($workflow, $memory);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array('keyid');
 	}
 	
 }

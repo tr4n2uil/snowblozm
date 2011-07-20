@@ -6,9 +6,6 @@ require_once(SBSERVICE);
  *	@desc Removes service key using ID
  *
  *	@param keyid long int Key ID [memory]
- *	@param keyvalue string Key value [memory]
- *
- *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -18,18 +15,37 @@ class KeyRemoveWorkflow implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('keyid')
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$mdl = array(
+		$memory['msg'] = 'Key removed successfully';
+		
+		$service = array(
 			'service' => 'sb.relation.delete.workflow',
-			'input' => array('conn' => 'conn', 'keyid' => 'keyid'),
-			'relation' => 'sbkeys',
-			'sqlcnd' => "where keyid=\${keyid};",
-			'errormsg' => 'Invalid Servicekey ID'
+			'args' => array('keyid'),
+			'conn' => 'sbconn',
+			'relation' => '`keys`',
+			'sqlcnd' => "where `keyid`=\${keyid}",
+			'errormsg' => 'Invalid Service Key ID'
 		);
 		
-		return $kernel->run($mdl, $memory);
+		return $kernel->run($service, $memory);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array();
 	}
 	
 }

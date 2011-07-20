@@ -67,6 +67,7 @@ class QueryExecuteWorkflow implements Service {
 		array(
 			'service' => 'sbcore.string.substitute.service',
 			'args' => $args,
+			'input' => array('data' => 'query'),
 			'output' => array('result' => 'query')
 		),
 		array(
@@ -76,7 +77,7 @@ class QueryExecuteWorkflow implements Service {
 		array(
 			'service' => 'sbcore.data.equal.service',
 			'input' => array('data' => 'sqlrc'),
-			'value' => $count
+			'value' => $memory['count']
 		));
 		
 		$memory = $kernel->execute($workflow, $memory);
