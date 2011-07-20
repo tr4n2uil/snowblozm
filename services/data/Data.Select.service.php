@@ -15,6 +15,11 @@ require_once(SBMYSQL);
 class DataSelectService implements Service {
 	
 	/**
+	 *	@var output
+	**/
+	private $output;
+	
+	/**
 	 *	@interface Service
 	**/
 	public function input(){
@@ -29,6 +34,7 @@ class DataSelectService implements Service {
 	public function run($memory){
 		$params = $memory['params'];
 		$errormsg = $memory['errormsg'];
+		$this->output = array();
 		
 		foreach($params as $key => $value){
 			$tokens = explode('.', $key);
@@ -47,6 +53,7 @@ class DataSelectService implements Service {
 			}
 			
 			$memory[$value] = $result;
+			array_push($this->output, $value);
 		}
 
 		$memory['valid'] = true;
@@ -60,7 +67,7 @@ class DataSelectService implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array();
+		return $this->output;
 	}
 	
 }

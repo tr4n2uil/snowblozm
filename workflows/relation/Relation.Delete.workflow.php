@@ -5,13 +5,13 @@ require_once(SBSERVICE);
  *	@class RelationDeleteWorkflow
  *	@desc Executes DELETE query on relation
  *
- *	@param relation string Relation name [message]
- *	@param sqlcnd string SQL condition [message]
- *	@param params array Query parameters (with 'conn') [message] optional default input
- *	@param escparam array Escape parameters [message] optional default array()
- *	@param errormsg string Error message [message] optional default 'Invalid Tuple'
+ *	@param relation string Relation name [memory]
+ *	@param sqlcnd string SQL condition [memory]
+ *	@param args array Query parameters [args]
+ *	@param escparam array Escape parameters [memory] optional default array()
+ *	@param errormsg string Error message [memory] optional default 'Invalid Tuple'
  *
- *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
+ *	@param conn array DataService instance configuration key [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -21,25 +21,34 @@ class RelationDeleteWorkflow implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('conn', 'relation', 'sqlcnd'),
+			'optional' => array('escparam' => array(), 'errormsg' => 'Invalid Tuple')
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$relation = $message['relation'];
-		$sqlcnd = $message['sqlcnd'];
-		$params = isset($message['params']) ? $message['params'] : $message['input'];
-		$escparam = isset($message['escparam']) ? $message['escparam'] : array();
-		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Invalid Tuple';
-		
-		$mdl = array(
+		$service = array(
 			'service' => 'sb.query.execute.workflow',
-			'input' => $params,
-			'query' => 'delete from '.$relation.' '.$sqlcnd.';',
-			'rstype' => 1,
-			'escparam' => $escparam,
-			'errormsg' => $errormsg
+			'args' => $memory['args'],
+			'query' => 'delete from '.$memory['relation'].' '.$memory['sqlcnd'].';',
+			'rstype' => 1
 		);
 		
-		return $kernel->run($mdl, $memory);
+		return $kernel->run($service, $memory);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array();
 	}
 	
 }

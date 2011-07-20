@@ -5,14 +5,14 @@ require_once(SBSERVICE);
  *	@class RelationInsertWorkflow
  *	@desc Executes INSERT query on relation
  *
- *	@param relation string Relation name [message]
- *	@param sqlcnd string SQL condition [message]
- *	@param params array Query parameters (with 'conn') [message] optional default input
- *	@param escparam array Escape parameters [message] optional default array()
+ *	@param relation string Relation name [memory]
+ *	@param sqlcnd string SQL condition [memory]
+ *	@param args array Query parameters [args]
+ *	@param escparam array Escape parameters [memory] optional default array()
  *
- *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
+ *	@param conn array DataService instance configuration key [memory]
  *
- *	@return return id long int Servicekey ID [memory] 
+ *	@return return id long int Tuple ID [memory] 
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -22,24 +22,35 @@ class RelationInsertWorkflow implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('conn', 'relation', 'sqlcnd'),
+			'optional' => array('escparam' => array())
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$relation = $message['relation'];
-		$sqlcnd = $message['sqlcnd'];
-		$params = isset($message['params']) ? $message['params'] : $message['input'];
-		$escparam = isset($message['escparam']) ? $message['escparam'] : array();
-		
-		$mdl = array(
+		$service = array(
 			'service' => 'sb.query.execute.workflow',
-			'input' => $params,
+			'args' => $memory['args'],
 			'output' => array('sqlresult' => 'id'),
-			'query' => 'insert into '.$relation.' '.$sqlcnd.';',
-			'rstype' => 2,
-			'escparam' => $escparam
+			'query' => 'insert into '.$memory['relation'].' '.$memory['sqlcnd'].';',
+			'rstype' => 2
 		);
 		
-		return $kernel->run($mdl, $memory);
+		return $kernel->run($service, $memory);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array('id');
 	}
 	
 }

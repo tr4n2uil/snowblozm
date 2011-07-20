@@ -84,7 +84,7 @@ class WorkflowKernel {
 		/**
 		 *	Read the service arguments
 		**/
-		$args = isset($message['args']) ? $message['args'] : array();
+		$args = isset($message['args']) ? $message['args'] : $message['args'] = array();
 		
 		/**
 		 *	Copy arguments if necessary

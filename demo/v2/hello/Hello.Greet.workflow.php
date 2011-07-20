@@ -18,13 +18,13 @@ class HelloGreetWorkflow implements Service {
 	public function run($memory){
 		$kernel = new WorkflowKernel();
 
-		$mdl = array(
+		$service = array(
 			'service' => 'sbdemo.hello.greet.service',
 			'input' => array('name' => 'name'),
 			'output' => array('view' => 'message')
 		);
 		
-		return $kernel->run($mdl, $memory);
+		return $kernel->run($service, $memory);
 	}
 	
 	/**

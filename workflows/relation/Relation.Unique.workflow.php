@@ -5,15 +5,15 @@ require_once(SBSERVICE);
  *	@class RelationUniqueWorkflow
  *	@desc Executes SELECT query on relation returning unique result, if any, in resultset
  *
- *	@param relation string Relation name [message]
- *	@param sqlcnd string SQL condition [message]
- *	@param sqlprj string SQL projection [message] optional default *
- *	@param params array Query parameters (with 'conn') [message] optional default input
- *	@param escparam array Escape parameters [message] optional default array()
- *	@param not boolean Value check nonequal [message] optional default true
- *	@param errormsg string Error message [message] optional default 'Error in Database'
+ *	@param relation string Relation name [memory]
+ *	@param sqlcnd string SQL condition [memory]
+ *	@param sqlprj string SQL projection [memory] optional default *
+ *	@param args array Query parameters [args]
+ *	@param escparam array Escape parameters [memory] optional default array()
+ *	@param not boolean Value check nonequal [memory] optional default true
+ *	@param errormsg string Error message [memory] optional default 'Error in Database'
  *
- *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
+ *	@param conn array DataService instance configuration key [memory]
  *
  *	@return result array/attribute Result tuple or value [memory] 
  *
@@ -23,37 +23,49 @@ require_once(SBSERVICE);
 class RelationUniqueWorkflow implements Service {
 	
 	/**
+	 *	@var relation 
+	**/
+	private $relation;
+	
+	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('conn', 'relation', 'sqlcnd'),
+			'optional' => array('sqlprj' => '*', 'escparam' => array(), 'errormsg' => 'Error in Database', 'not' => true)
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$relation = $message['relation'];
-		$sqlcnd = $message['sqlcnd'];
-		$sqlprj = isset($message['sqlprj']) ? $message['sqlprj'] : '*';
-		$params = isset($message['params']) ? $message['params'] : $message['input'];
-		$escparam = isset($message['escparam']) ? $message['escparam'] : array();
-		$not = isset($message['not']) ? $message['not'] : true;
-		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Error in Database';
+		$this->relation = $message['relation'];
 		
 		$workflow = array(
 		array(
 			'service' => 'sb.query.execute.workflow',
-			'input' => $params,
-			'output' => array('sqlresult' => $relation),
-			'query' => 'select '.$sqlprj.' from '.$relation.' '.$sqlcnd.';',
-			'escparam' => $escparam,
-			'not' => $not,
-			'errormsg' => $errormsg
+			'args' => $memory['args'],
+			'output' => array('sqlresult', $this->relation),
+			'query' => 'select '.$memory['sqlprj'].' from '.$this->relation.' '.$memory['sqlcnd'].';'
 		),
 		array(
 			'service' => 'sbcore.data.select.service',
-			'input' => array($relation => $relation),
-			'output' => array($relation => $relation),
-			'params' => array($relation.'.0' => 'result')
+			'args' => array($this->relation),
+			'params' => array($this->relation.'.0' => $this->relation)
 		));
 		
 		return $kernel->execute($workflow, $memory);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array($this->relation);
 	}
 	
 }
