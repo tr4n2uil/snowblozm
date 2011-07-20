@@ -5,12 +5,12 @@ require_once(SBSERVICE);
  *	@class QueryExecuteWorkflow
  *	@desc Executes query by performing escapes, checks and substitutions and validates result
  *
-  *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
- *	@param query string SQL Query to be executed with substitutions [message|memory]
+ *	@param conn array DataService instance configuration key [memory] (type, user, pass, host, database)
+ *	@param args array Query parameters [args]
+ *	@param query string SQL Query to be executed with substitutions [memory]
  *	@param rstype integer type of result [message] optional default 0 
  *	@param escparam array Escape parameters [message] optional default array()
- *	@param numparam array Number parameters [message] optional default qryparam-escparam
- *	@param qryparam array Query parameters [message] optional default input-'query'
+ *	@param numparam array Number parameters [message] optional default args-escparam
  *	@param count integer Validation count [message] optional default 1
  *	@param not boolean Error on nonequality [message] optional default true
  *	@param errormsg string Error message on validation failure [message] optional default 'Invalid Query Results'
@@ -26,29 +26,26 @@ class QueryExecuteWorkflow implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('conn', 'query'),
+			'optional' => array('rstype' => 0, 'escparam' => array(), 'numparam' => false, 
+								'count' => 1, 'not' => true, 'errormsg' => 'Invalid Query Results')
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$query = isset($message['query']) ? $message['query'] : $memory['query'];
-		$rstype = isset($message['rstype']) ? $message['rstype'] : 0;
-		$escparam = isset($message['escparam']) ? $message['escparam'] : array();
-		$qryparam = isset($message['qryparam']) ? $message['qryparam'] : $message['input'];
+		$args = $memory['args'];
+		$escparam = $memory['escparam'];
+		$numparam = $memory['numparam'] ? $memory['numparam'] : array_diff($args, $escparam);
+		$key = $memory['conn'];
 		
-		if(isset($qryparam['query'])) 
-			unset($qryparam['query']);
-			
-		if(isset($qryparam['conn'])) 
-			unset($qryparam['conn']);
-		
-		$numparam = isset($message['numparam']) ? $message['numparam'] : array_diff($qryparam, $escparam);
-		$count = isset($message['count']) ? $message['count'] : 1;
-		$not = isset($message['not']) ? $message['not'] : true;
-		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Invalid Query Results';
-			
-		$escout = $escparam;
-		$escparam['conn'] = 'conn';
-		
-		$conn = $memory['conn'];
+		$conn = Snowblozm::get($key);
 		switch($conn['type']){
 			case 'mysql' :
 			default :
@@ -61,37 +58,40 @@ class QueryExecuteWorkflow implements Service {
 		$workflow = array(
 		array(
 			'service' => 'sbcore.data.numeric.service',
-			'input' => $numparam
+			'args' => $numparam
 		),
 		array(
 			'service' => 'sbcore.query.escape.service',
-			'input' => $escparam,
-			'output' => $escparam
+			'args' => $escparam
 		),
 		array(
 			'service' => 'sbcore.string.substitute.service',
-			'input' => $qryparam,
-			'output' => array('result' => 'query'),
-			'data' => $query
+			'args' => $args,
+			'output' => array('result' => 'query')
 		),
 		array(
 			'service' => 'sbcore.query.execute.service',
-			'input' => array('query' => 'query', 'conn' => 'conn'),
-			'output' => array('sqlresult' => 'sqlresult', 'sqlrowcount' => 'sqlrc'),
-			'rstype' => $rstype
+			'output' => array('sqlresult' => 'sqlresult', 'sqlrowcount' => 'sqlrc')
 		),
 		array(
 			'service' => 'sbcore.data.equal.service',
-			'input' => array('sqlrc' => 'data'),
-			'value' => $count,
-			'not' => $not,
-			'errormsg' => $errormsg
+			'input' => array('data' => 'sqlrc'),
+			'value' => $count
 		));
 		
 		$memory = $kernel->execute($workflow, $memory);
+		
 		$dataservice->close();
+		$memory['conn'] = $key;
 		
 		return $memory;
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array('sqlresult', 'sqlrc');
 	}
 	
 }

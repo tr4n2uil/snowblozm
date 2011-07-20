@@ -5,6 +5,7 @@ require_once(SBWFKERNEL);
  *	@class Snowblozm
  *	@desc Central class for management purposes
  *				Manages ServiceProvider configurations
+ *				Manages Initialization configurations
  *				Manages loading and Services and Workflows
  *				Manages launching of Workflows
  *
@@ -17,6 +18,11 @@ class Snowblozm {
 	 *	@static sparray array ServiceProvider configurations
 	**/
 	private static $sparray = array();
+	
+	/** 
+	 *	@static initarray array Initialization configurations
+	**/
+	private static $initarray = array();
 	
 	/** 
 	 *	@static debug boolean Debug flag
@@ -33,6 +39,36 @@ class Snowblozm {
 	**/
 	public static function add($spname, $spconf){
 		self::$sparray[$spname] = $spconf;
+	}
+	
+	/** 
+	 *	@method init
+	 *	@desc Adds an initialization configuration
+	 *
+	 *	@param initname string Initialization name
+	 *	@param initconf array 
+	 *
+	**/
+	public static function init($initname, $initconf){
+		self::$initarray[$initname] = $initconf;
+	}
+	
+	/** 
+	 *	@method get
+	 *	@desc Gets an initialization configuration if exists
+	 *
+	 *	@param initname string Initialization name
+	 *
+	 *	@return initconf array 
+	 *
+	**/
+	public static function get($initname){
+		if(!isset(self::$initarray[$initname])){
+			echo 'Initialization configuration not found for key : '.$initname;
+			exit;
+		}
+		
+		return self::$initarray[$initname];
 	}
 	
 	/** 
