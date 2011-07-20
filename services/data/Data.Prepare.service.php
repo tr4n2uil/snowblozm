@@ -2,15 +2,15 @@
 require_once(SBSERVICE);
 
 /**
- *	@class ResponsePrepareService
- *	@desc Writes HTTP response to output stream
+ *	@class DataPrepareService
+ *	@desc Prepares data as array from memory
  *
- *	@param data string Stream data [memory]
+ *	@param data array Stream data [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *	
 **/
-class ResponsePrepareService implements Service {
+class DataPrepareService implements Service {
 	
 	/**
 	 *	@interface Service
@@ -25,6 +25,7 @@ class ResponsePrepareService implements Service {
 	public function run($memory){
 		$result = $memory;
 		if(isset($result['service'])) unset($result['service']);
+		if(isset($result['args'])) unset($result['args']);
 		
 		$memory['result'] = $result;
 		$memory['valid'] = true;

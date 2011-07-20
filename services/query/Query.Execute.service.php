@@ -6,8 +6,8 @@ require_once(SBMYSQL);
  *	@class QueryExecuteService
  *	@desc Executes a query and returns result according to rstype
  *
- *	@param query string SQL Query [message|memory]
- *	@param rstype integer type of result [message] optional default 0
+ *	@param query string SQL Query [memory]
+ *	@param rstype integer type of result [memory] optional default 0
  *	@param conn resource DataService instance [memory]
  *
  *	@return sqlresult array SQL Query ResultSet [memory]
@@ -21,10 +21,20 @@ class QueryExecuteService implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('query', 'conn'),
+			'optional' => array('rstype' => 0)
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$conn = $memory['conn'];
-		$query = isset($message['query']) ? $message['query'] : $memory['query'];
-		$rstype = isset($message['rstype']) ? $message['rstype'] : 0;
+		$query = $memory['query'];
+		$rstype = $memory['rstype'];
 		
 		$result = $conn->getResult($query, $rstype);
 		
@@ -62,6 +72,13 @@ class QueryExecuteService implements Service {
 		$memory['status'] = 200;
 		$memory['details'] = 'Successfully executed';
 		return $memory;
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array('sqlresult', 'sqlrowcount');
 	}
 	
 }

@@ -6,9 +6,9 @@ require_once(SBMYSQL);
  *	@class CurlExecuteService
  *	@desc Executes cURL request and returns response
  *
- *	@param url string URL [message|memory]
- *	@param data array/string Data to send with request [message|memory] optional default memory
- *	@param plain boolean [message] optional default false
+ *	@param url string URL [memory]
+ *	@param data array/string Data to send with request [memory]
+ *	@param plain boolean [memory] optional default false
  *
  *	@return response string Response [memory]
  *
@@ -22,20 +22,18 @@ class CurlExecuteService implements Service {
 	**/
 	public function input(){
 		return array(
-			'optional' => array('url' => '','data' => '')
+			'required' => array('url', 'data'),
+			'optional' => array('plain' => false)
 		);
 	}
 	
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
-		$url = isset($message['url']) ? $message['url'] : $memory['url'];
-		$data = isset($message['data']) ? $message['data'] : (isset($memory['data']) ? $memory['data'] : $memory);
-		$plain = isset($message['plain']) ? $message['plain'] : false;
-		
-		if(isset($data['data'])) unset($data['data']);
-		if(isset($data['url'])) unset($data['url']);
+	public function run($memory){
+		$url = $memory['url'];
+		$data = $memory['data'];
+		$plain = $memory['plain'];
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);

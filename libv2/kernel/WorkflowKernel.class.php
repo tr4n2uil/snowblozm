@@ -82,6 +82,20 @@ class WorkflowKernel {
 		$service = Snowblozm::load($message['service']);
 		
 		/**
+		 *	Read the service arguments
+		**/
+		$args = isset($message['args']) ? $message['args'] : array();
+		
+		/**
+		 *	Copy arguments if necessary
+		**/
+		foreach($args as $key){
+			if(!isset($message[$key])){
+				$message[$key] = isset($memory[$key]) ? $memory[$key] : false;
+			}
+		}
+		
+		/**
 		 *	Read the service input
 		**/
 		$input = isset($message['input']) ? $message['input'] : array();
@@ -151,7 +165,7 @@ class WorkflowKernel {
 		/**
 		 *	Read the service output
 		**/
-		$output = isset($message['output']) && $response['valid'] ? $message['output'] : array();
+		$output = isset($message['output']) && $message['valid'] ? $message['output'] : array();
 		$sout = $service->output();
 		
 		/**

@@ -5,14 +5,13 @@ require_once(SBSERVICE);
  *	@class FileUploadService
  *	@desc Uploads file to given destination
  *
- *	@param key string File key [message]
- *	@param maxsize long int Maximum size [message|memory] optional default false
- *	@param path string Path to save file [message|memory]
- *	@param name string Filename [message|memory] optional default name received
+ *	@param key string File key [memory]
+ *	@param maxsize long int Maximum size [memory] optional default false
+ *	@param path string Path to save file [memory]
+ *	@param name string Filename [memory] optional default name received
  *
  *	@return filename string Filename received [memory]
  *	@return size long int File size in bytes [memory]
- *	@return mime string File MIME if available [memory] optional default ''
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *	
@@ -22,9 +21,19 @@ class FileUploadService implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
-		$key = $message['key'];
-		$path = isset($message['path']) ? $message['path'] : $memory['path'];
+	public function input(){
+		return array(
+			'required' => array('key', 'path'),
+			'optional' => array('maxsize' => false, 'name' => false)
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
+		$key = $memory['key'];
+		$path = $memory['path'];
 		$file = $_FILES[$key];
 		
 		switch($file['error']){
@@ -56,7 +65,7 @@ class FileUploadService implements Service {
 				return $memory;
 		}
 		
-		$maxsize = isset($message['maxsize']) ? $message['maxsize'] : (isset($memory['maxsize']) ? $memory['maxsize'] : false)
+		$maxsize = $memory['maxsize'];
 		
 		if($maxsize){
 			if($file['size'] > $message['maxsize']){
@@ -71,7 +80,7 @@ class FileUploadService implements Service {
 		$memory['filename'] = basename($file['name']);
 		$memory['size'] = $file['size'];
 		
-		$filename = ((isset($message['name']) ? $message['name'] : (isset($memory['name']) ? $memory['name'] :$memory['filename'])));
+		$filename = $memory['name'] ? $memory['name'] : $memory['filename'];
 		
 		if(!move_uploaded_file($file['tmp_name'], $path.$filename)){
 			$memory['valid'] = false;
@@ -86,6 +95,13 @@ class FileUploadService implements Service {
 		$memory['status'] = 200;
 		$memory['details'] = 'Successfully executed';
 		return $memory;
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array('filename', 'size');
 	}
 	
 }

@@ -5,8 +5,8 @@ require_once(SBSERVICE);
  *	@class StringSubstituteService
  *	@desc Substitutes ${key} in base string with value from memory for all keys in params array
  *
- *	@param params array Array of key to use for substitutions [message] optional default input
- *	@param data string Base string to use for substitutions [message]
+ *	@param args array Array of key to use for substitutions [args]
+ *	@param data string Base string to use for substitutions [memory]
  *
  *	@return result string String with substitutions done [memory]
  *
@@ -18,11 +18,20 @@ class StringSubstituteService implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
-		$data = $message['data'];
-		$params = isset($message['params']) ? $message['params'] : $message['input'];
+	public function input(){
+		return array(
+			'required' => array('data')
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
+		$data = $memory['data'];
+		$args = $memory['args'];
 		
-		foreach($params as $key){
+		foreach($args as $key){
 			if(!isset($memory[$key])){
 				$memory['valid'] = false;
 				$memory['msg'] = 'Invalid Service State';
@@ -39,6 +48,13 @@ class StringSubstituteService implements Service {
 		$memory['status'] = 200;
 		$memory['details'] = 'Successfully executed';
 		return $memory;
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array('result');
 	}
 	
 }

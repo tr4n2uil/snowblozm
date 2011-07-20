@@ -5,10 +5,10 @@ require_once(SBSERVICE);
  *	@class FileDownloadService
  *	@desc Reads and echoes file at specified destination
  *
- *	@param file string File (full path + name) [message|memory]
- *	@param size long int File size in bytes [message|memory]
- *	@param mime string File MIME type [message|message] optional default 'application/force-download'
- *	@param filename string Filename [message|memory]
+ *	@param file string File (full path + name) [memory]
+ *	@param size long int File size in bytes [memory]
+ *	@param mime string File MIME type [message] optional default 'application/force-download'
+ *	@param filename string Filename [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *	
@@ -18,11 +18,21 @@ class FileDownloadService implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
-		$filename = isset($message['file']) ? $message['file'] : $memory['file'];
-		$size = isset($message['size']) ? $message['size'] : $memory['size'];
-		$asname = isset($message['filename']) ? $message['filename'] : $memory['filename'];
-		$mime = isset($message['mime']) ? $message['mime'] : (isset($memory['mime']) ? $memory['mime'] : 'application/force-download');
+	public function input(){
+		return array(
+			'required' => array('file', 'filename', 'size'),
+			'optional' => array('mime' => 'application/force-download')
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
+		$filename = $memory['file'];
+		$size = $memory['size'];
+		$asname = $memory['filename'];
+		$mime = $memory['mime'];
 		
 		if(!is_file($filename)){
 			$memory['valid'] = false;
@@ -62,6 +72,13 @@ class FileDownloadService implements Service {
 		$memory['status'] = 200;
 		$memory['details'] = 'Successfully executed';
 		return $memory;
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array();
 	}
 	
 }

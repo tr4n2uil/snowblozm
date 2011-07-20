@@ -147,7 +147,7 @@ class Snowblozm {
 		 *	Check for valid service request
 		**/
 		if(!isset($message['service'])){
-			echo "Please specify service to be executed with param service=root.service.operation.type";
+			echo "Please specify service to be executed with param service=root.service.operation (Only workflows may be launched)";
 			exit;
 		}
 			
@@ -155,7 +155,8 @@ class Snowblozm {
 		 *	Get service URI and restrict access to services
 		**/
 		$uri = $message['service'];
-		list($root, $service, $operation, $type) = explode('.' ,$uri);
+		list($root, $service, $operation) = explode('.' ,$uri);
+		$message['service'] = $uri = $uri.'.workflow';
 		
 		/**
 		 *	Check for valid access for service requested
@@ -201,16 +202,6 @@ class Snowblozm {
 	private static function respond($memory, $restype, $output = array()){
 	
 		/**
-		 *	Prepare response
-		**/
-		$prepare = array(
-			'service' => 'sbcore.response.prepare.service'
-		);
-		foreach($output as $key){
-			$prepare[$key] = isset($memory[$key]) ? $memory[$key] : '';
-		}
-		
-		/**
 		 *	WorkflowKernel instance
 		**/
 		$kernel = new WorkflowKernel();
@@ -219,7 +210,10 @@ class Snowblozm {
 		 *	Response workflow
 		**/
 		$workflow = array(
-		$prepare,
+		array(
+			'service' => 'sbcore.data.prepare.service',
+			'args' => $output
+		),
 		array(
 			'service' => 'sbcore.data.encode.service',
 			'input' => array('data' => 'result'),

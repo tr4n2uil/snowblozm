@@ -12,6 +12,6 @@
 	
 	//Snowblozm::$debug = true;
 	
-	Snowblozm::launch($type, array('sbdemo'));
+	Snowblozm::launch($type, array('sbdemo', 'sb'));
 
 ?>

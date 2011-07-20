@@ -6,8 +6,8 @@ require_once(SBMYSQL);
  *	@class DataNumericService
  *	@desc Checks all values for being number
  *
- *	@param params array Array of numbers to check [message] optional default input
- *	@param errormsg string Error message [message] optional default 'Invalid Numeric Value'
+ *	@param args array Array of numbers to check [args]
+ *	@param errormsg string Error message [memory] optional default 'Invalid Numeric Value'
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *	
@@ -17,11 +17,20 @@ class DataNumericService implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
-		$params = isset($message['params']) ? $message['params'] : $message['input'];
-		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Invalid Numeric Value';
+	public function input(){
+		return array(
+			'optional' => array('errormsg' => 'Invalid Numeric Value')
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
+		$args = $memory['args'];
+		$errormsg = $memory['errormsg'];
 		
-		foreach($params as $key){
+		foreach($args as $key){
 			if(!is_numeric($memory[$key])){
 				$memory['valid'] = false;
 				$memory['msg'] = $errormsg;
@@ -36,6 +45,13 @@ class DataNumericService implements Service {
 		$memory['status'] = 200;
 		$memory['details'] = 'Successfully executed';
 		return $memory;
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array();
 	}
 	
 }

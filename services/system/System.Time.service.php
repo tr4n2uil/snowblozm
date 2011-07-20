@@ -2,10 +2,10 @@
 require_once(SBSERVICE);
 
 /**
- *	@class TimeGetService
+ *	@class SystemTimeService
  *	@desc Returns current time both timestamp and formatted
  *
- *	@param diff long int Time difference [message] optional default 0
+ *	@param diff long int Time difference [memory] optional default 0
  *
  *	@return timestamp long int Timestamp [memory]
  *	@return formatted string Formatted time [memory]
@@ -13,13 +13,22 @@ require_once(SBSERVICE);
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *	
 **/
-class TimeGetService implements Service {
+class SystemTimeService implements Service {
 	
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
-		$diff = isset($message['diff']) ? $message['diff'] : 0;
+	public function input(){
+		return array(
+			'optional' => array('diff' => 0)
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
+		$diff = $memory['diff'];
 		
 		$memory['timestamp'] = time() + $diff;
 		$memory['formatted'] = date('c', $memory['timestamp']);
@@ -29,6 +38,13 @@ class TimeGetService implements Service {
 		$memory['status'] = 200;
 		$memory['details'] = 'Successfully executed';
 		return $memory;
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array('timestamp', 'formatted');
 	}
 	
 }

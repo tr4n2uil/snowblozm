@@ -6,10 +6,10 @@ require_once(PHPMAILER);
  *	@class MailSmtpService
  *	@desc Sends HTML mail using PHPMailer SMTP functions
  *
- *	@param to string To address [message]
- *	@param subject string Subject [message] 
- *	@param message string Message [message] 
- *	@param mail array Mail configuration [memory] (type, host, port, secure, user, email, pass)
+ *	@param to string To address [memory]
+ *	@param subject string Subject [memory] 
+ *	@param message string Message [memory] 
+ *	@param mail array Mail configuration [Snowblozm] (type, host, port, secure, user, email, pass)
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *	
@@ -19,11 +19,20 @@ class MailSmtpService implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
-		$mail = $memory['mail'];
-		$to = $message['to'];
-		$subject = $message['subject'];
-		$message = $message['message'];
+	public function input(){
+		return array(
+			'required' => array('to', 'subject', 'message')
+		);
+	}
+
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
+		$mail = Snowblozm::get('mail');
+		$to = $memory['to'];
+		$subject = $memory['subject'];
+		$message = $memory['message'];
 		
 		$mail = new PHPMailer();
 		$mail->IsSMTP();
@@ -52,7 +61,7 @@ class MailSmtpService implements Service {
 		$mail->IsHTML(true);
 
 		if(!$mail->Send()) {
-			$memory['result'] = false;
+			$memory['valid'] = false;
 			$memory['msg'] = 'Error sending Mail';
 			$memory['status'] = 503;
 			$memory['details'] = 'Error : '.$mail->ErrorInfo.' @mail.smtp.service';
@@ -64,6 +73,13 @@ class MailSmtpService implements Service {
 		$memory['status'] = 200;
 		$memory['details'] = 'Successfully executed';
 		return $memory;
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array();
 	}
 	
 }

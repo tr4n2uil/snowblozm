@@ -6,8 +6,8 @@ require_once(SBMYSQL);
  *	@class DataSelectService
  *	@desc Selects data from deeper arrays into memory
  *
- *	@param params array Array indicating data to be selected [message] optional default array()
- *	@param errormsg string Error message [message] optional default 'Invalid Data Selection'
+ *	@param params array Array indicating data to be selected [memory] optional default array()
+ *	@param errormsg string Error message [memory] optional default 'Invalid Data Selection'
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *	
@@ -17,9 +17,18 @@ class DataSelectService implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
-		$params = isset($message['params']) ? $message['params'] : array();
-		$errormsg = isset($message['errormsg']) ? $message['errormsg'] : 'Invalid Data Selection';
+	public function input(){
+		return array(
+			'optional' => array('params' => array(), 'errormsg' => 'Invalid Data Selection')
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
+		$params = $memory['params'];
+		$errormsg = $memory['errormsg'];
 		
 		foreach($params as $key => $value){
 			$tokens = explode('.', $key);
@@ -45,6 +54,13 @@ class DataSelectService implements Service {
 		$memory['status'] = 200;
 		$memory['details'] = 'Successfully executed';
 		return $memory;
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array();
 	}
 	
 }
