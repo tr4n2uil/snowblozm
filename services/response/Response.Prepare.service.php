@@ -2,7 +2,7 @@
 require_once(SBSERVICE);
 
 /**
- *	@class ResponseWriteService
+ *	@class ResponsePrepareService
  *	@desc Writes HTTP response to output stream
  *
  *	@param data string Stream data [memory]
@@ -10,23 +10,23 @@ require_once(SBSERVICE);
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *	
 **/
-class ResponseWriteService implements Service {
+class ResponsePrepareService implements Service {
 	
 	/**
 	 *	@interface Service
 	**/
 	public function input(){
-		return array(
-			'required' => array('data')
-		);
+		return array();
 	}
 	
 	/**
 	 *	@interface Service
 	**/
 	public function run($memory){
-		echo $memory['data'];
-
+		$result = $memory;
+		if(isset($result['service'])) unset($result['service']);
+		
+		$memory['result'] = $result;
 		$memory['valid'] = true;
 		$memory['msg'] = 'Valid Response Given';
 		$memory['status'] = 201;
@@ -38,7 +38,7 @@ class ResponseWriteService implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array();
+		return array('result');
 	}
 	
 }

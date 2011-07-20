@@ -31,11 +31,11 @@ class WorkflowKernel {
 	public function execute($workflow, $memory = array()){
 		$memory['valid'] = isset($memory['valid']) ? $memory['valid'] : true;
 		
-		foreach($workflow as $defn){
+		foreach($workflow as $message){
 			/**
 			 *	Check for strictness
 			**/
-			$strict = isset($defn['strict']) ? $defn['strict'] : true;
+			$strict = isset($message['strict']) ? $message['strict'] : true;
 			
 			/**
 			 *	Continue on invalid state if strict
@@ -44,9 +44,9 @@ class WorkflowKernel {
 				continue;
 			
 			/**
-			 *	Run the service with the message (defn itself) and memory
+			 *	Run the service with the message and memory
 			**/
-			$memory = $this->run($defn, $memory);
+			$memory = $this->run($message, $memory);
 		}
 		
 		/**
@@ -57,7 +57,7 @@ class WorkflowKernel {
 	
 	/** 
 	 *	@method run
-	 *	@desc Runs a service by using its definition object
+	 *	@desc Runs a service by using its definition message object
 	 *				service {
 	 *					service => ...,
 	 *					input => ...,
@@ -66,131 +66,123 @@ class WorkflowKernel {
 	 *					... params ...
 	 *				}
 	 *
-	 *	@param $defn Service definition
-	 *	@param $memory object ooptional default array('valid' => true)
+	 *	@param $message Service definition message
+	 *	@param $memory object optional default array('valid' => true)
 	 *
 	 *	@return $memory object
 	 *
 	**/
-	public function run($defn, $memory = array()){
+	public function run($message, $memory = array()){
 		$memory['valid'] = isset($memory['valid']) ? $memory['valid'] : true;
 		$default = array('valid', 'msg', 'status', 'details');
 		
 		/**
 		 *	Read the service uri and load an instance
 		**/
-		$service = Snowblozm::load($defn['service']);
+		$service = Snowblozm::load($message['service']);
 		
 		/**
 		 *	Read the service input
 		**/
-		$input = isset($defn['input']) ? $defn['input'] : array();
+		$input = isset($message['input']) ? $message['input'] : array();
 		$sin = $service->input();
 		$sinreq = isset($sin['required']) ? $sin['required'] : array();
 		$sinopt = isset($sin['optional']) ? $sin['optional'] : array();
 		
 		/**
-		 *	Construct service request
+		 *	Copy required input if not exists
 		**/
-		$request = array();
+		foreach($sinreq as $key){
+			if(!isset($message[$key])){
+				$param = isset($input[$key]) ? $input[$key] : $key;
+				if(!isset($memory[$param])){				
+					$memory['valid'] = false;
+					$memory['msg'] = 'Invalid Service Input Parameters';
+					$memory['status'] = 500;
+					$memory['details'] = 'Value not found for '.$key.' @'.$message['service'];
+					return $memory;
+				}
+				$message[$key] = $memory[$param];
+			}
+		}
+		
+		/**
+		 *	Copy optional input if not exists
+		**/
+		foreach($sinopt as $key => $value){
+			if(!isset($message[$key])){
+				$param = isset($input[$key]) ? $input[$key] : $key;
+				if(!isset($memory[$param])){				
+					$message[$key] = $value;
+					continue;
+				}
+				$message[$key] = $memory[$param];
+			}
+		}
+		
+		/**
+		 *	Copy default input if exists
+		**/
+		foreach($default as $key){
+			if(isset($memory[$key])){
+				$message[$key] = $memory[$key];
+			}
+		}
 		
 		/**
 		 *	@debug
 		**/
-		//echo $defn['service'].' IN '.json_encode($memory).'<br />';
-		
-		/**
-		 *	Copy required input
-		**/
-		foreach($sinreq as $key){
-			$param = isset($input[$key]) ? $input[$key] : $key;
-			if(!isset($memory[$param])){				
-				$memory['valid'] = false;
-				$memory['msg'] = 'Invalid Service Input Parameters';
-				$memory['status'] = 500;
-				$memory['details'] = 'Value not found for '.$key.' @'.$defn['service'];
-				return $memory;
-			}
-			$request[$key] = $memory[$param];
-		}
-		
-		/**
-		 *	Copy optional input
-		**/
-		foreach($sinopt as $key => $value){
-			$param = isset($input[$key]) ? $input[$key] : $key;
-			if(!isset($memory[$param])){				
-				$request[$key] = $value;
-				continue;
-			}
-			$request[$key] = $memory[$param];
-		}
-		
-		/**
-		 *	Copy default input
-		**/
-		foreach($default as $key){
-			if(isset($memory[$key])){
-				$request[$key] = $memory[$key];
-			}
+		if(Snowblozm::$debug){
+			echo 'IN '.json_encode($message).'<br /><br />';
 		}
 			
 		/**
-		 *	Run the service with the message (defn itself) and request as memory
+		 *	Run the service with the message as memory
 		**/
-		$response = $service->run($defn, $request);
+		$message = $service->run($message);
+		
+		/**
+		 *	@debug
+		**/
+		if(Snowblozm::$debug){
+			echo 'OUT '.json_encode($message).'<br /><br />';
+		}
 		
 		/**
 		 *	Read the service output
 		**/
-		$output = isset($defn['output']) && $response['valid'] ? $defn['output'] : array();
+		$output = isset($message['output']) && $response['valid'] ? $message['output'] : array();
 		$sout = $service->output();
-		//$soutreq = isset($sout['required']) ? $sout['required'] : array();
-		//$soutopt = isset($sout['optional']) ? $sout['optional'] : array();
 		
 		/**
 		 *	Copy default output
 		**/
 		foreach($default as $key){
-			if(isset($response[$key])){
-				$memory[$key] = $response[$key];
+			if(isset($message[$key])){
+				$memory[$key] = $message[$key];
 			}
 		}
 		
+		/**
+		 *	Return if not valid
+		**/
 		if(!$memory['valid'])
 			return $memory;
 		
 		/**
-		 *	Copy required output
+		 *	Copy output
 		**/
 		foreach($sout as $key){
 			$param = isset($output[$key]) ? $output[$key] : $key;
-			if(!isset($response[$key])){				
+			if(!isset($message[$key])){				
 				$memory['valid'] = false;
 				$memory['msg'] = 'Invalid Service Output Parameters';
 				$memory['status'] = 501;
-				$memory['details'] = 'Value not found for '.$key.' @'.$defn['service'];
+				$memory['details'] = 'Value not found for '.$key.' @'.$message['service'];
 				return $memory;
 			}
-			$memory[$param] = $response[$key];
+			$memory[$param] = $message[$key];
 		}
-		
-		/**
-		 *	Copy optional output
-		**
-		foreach($soutopt as $key => $value){
-			$param = isset($output[$key]) ? $output[$key] : $key;
-			if(!isset($response[$key])){				
-				$memory[$param] = $value;
-				continue;
-			}
-			$memory[$param] = $response[$key];
-		}*/
-		
-		/**
-		 *	@debug
-		**/
-		//echo $defn['service'].' OUT '.json_encode($memory).'<br />';
 		
 		/**
 		 *	Return the memory

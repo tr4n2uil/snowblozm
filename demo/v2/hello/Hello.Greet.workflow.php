@@ -15,7 +15,7 @@ class HelloGreetWorkflow implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function run($memory){
 		$kernel = new WorkflowKernel();
 
 		$mdl = array(

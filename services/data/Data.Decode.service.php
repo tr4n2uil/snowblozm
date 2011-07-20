@@ -5,8 +5,8 @@ require_once(SBSERVICE);
  *	@class DataDecodeService
  *	@desc Decodes JSON XML WDDX data into array (supports copy of GET and POST data)
  *
- *	@param type string Request type [message] optional default 'json' ('get', 'post', 'json', 'xml', 'wddx')
- *	@param data string Data to be decoded [message|memory] optional default '' when type=('get', 'post')
+ *	@param type string Request type [memory] optional default 'json' ('get', 'post', 'json', 'xml', 'wddx')
+ *	@param data string Data to be decoded [memory] optional default '' when type=('get', 'post')
  *
  *	@return result array Decoded data [memory]
  *
@@ -20,16 +20,16 @@ class DataDecodeService implements Service {
 	**/
 	public function input(){
 		return array(
-			'optional' => array('data' => '')
+			'optional' => array('type' => 'json', 'data' => '')
 		);
 	}
 	
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
-		$type = isset($message['type']) ? $message['type'] : 'json';
-		$data = isset($message['data']) ? $message['data'] : $memory['data'];
+	public function run($memory){
+		$type = $memory['type'];
+		$data = $memory['data'];
 		
 		switch($type){
 			case 'get' :

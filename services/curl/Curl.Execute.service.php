@@ -20,10 +20,22 @@ class CurlExecuteService implements Service {
 	/**
 	 *	@interface Service
 	**/
+	public function input(){
+		return array(
+			'optional' => array('url' => '','data' => '')
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
 	public function run($message, $memory){
 		$url = isset($message['url']) ? $message['url'] : $memory['url'];
 		$data = isset($message['data']) ? $message['data'] : (isset($memory['data']) ? $memory['data'] : $memory);
 		$plain = isset($message['plain']) ? $message['plain'] : false;
+		
+		if(isset($data['data'])) unset($data['data']);
+		if(isset($data['url'])) unset($data['url']);
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
@@ -52,6 +64,13 @@ class CurlExecuteService implements Service {
 		$memory['status'] = 200;
 		$memory['details'] = 'Successfully executed';
 		return $memory;
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array('response');
 	}
 	
 }

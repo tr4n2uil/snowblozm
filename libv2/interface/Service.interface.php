@@ -10,18 +10,6 @@
 interface Service {
 
 	/** 
-	 *	@method run
-	 *	@desc executes the service functionality
-	 *
-	 *	@param $message object Configuration parameters
-	 *	@param $memory object State management in workflows
-	 *
-	 *	@return $memory	object Current state in workflow
-	 *
-	**/
-	public function run($message, $memory);
-	
-	/** 
 	 *	@method input
 	 *	@desc returns input array for the service
 	 *
@@ -29,6 +17,17 @@ interface Service {
 	 *
 	**/
 	public function input();
+	
+	/** 
+	 *	@method run
+	 *	@desc executes the service functionality
+	 *
+	 *	@param $memory object Local memory for service execution
+	 *
+	 *	@return $memory	object Local memory for service execution
+	 *
+	**/
+	public function run($memory);
 	
 	/** 
 	 *	@method output

@@ -5,8 +5,8 @@ require_once(SBSERVICE);
  *	@class DataEncodeService
  *	@desc Encodes array into JSON XML WDDX PLAIN HTML data
  *
- *	@param type string Request type [message] optional default 'json' ('json, 'xml', 'wddx', 'plain', 'html')
- *	@param data array Data to be encoded [message|memory]
+ *	@param type string Request type [memory] optional default 'json' ('json, 'xml', 'wddx', 'plain', 'html')
+ *	@param data array Data to be encoded [memory]
  *
  *	@return result string Encoded data [memory]
  *
@@ -20,16 +20,16 @@ class DataEncodeService implements Service {
 	**/
 	public function input(){
 		return array(
-			'optional' => array('data' => '')
+			'optional' => array('type' => 'json', 'data' => '')
 		);
 	}
 	
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
-		$type = isset($message['type']) ? $message['type'] : 'json';
-		$data = isset($message['data']) ? $message['data'] : $memory['data'];
+	public function run($memory){
+		$type = $memory['type'];
+		$data = $memory['data'];
 		
 		switch($type){
 			case 'json' :

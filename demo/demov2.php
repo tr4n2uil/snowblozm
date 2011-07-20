@@ -10,6 +10,8 @@
 	
 	$type = $_GET['type'];
 	
+	//Snowblozm::$debug = true;
+	
 	Snowblozm::launch($type, array('sbdemo'));
 
 ?>

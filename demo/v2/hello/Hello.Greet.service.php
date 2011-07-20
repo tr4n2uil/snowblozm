@@ -26,7 +26,7 @@ class HelloGreetService implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function run($memory){
 		$memory['view'] = 'Hello World from '.$memory['name'];
 		$memory['valid'] = true;
 		$memory['msg'] = 'Valid Execution';

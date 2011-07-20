@@ -5,8 +5,8 @@ require_once(SBSERVICE);
  *	@class DataEqualService
  *	@desc Checks for equality and gives error message as configured
  *
- *	@param data mixed Data to be checked [message|memory]
- *	@param value mixed Value to check against [message|memory]
+ *	@param data mixed Data to be checked [message|memory] optional default 1
+ *	@param value mixed Value to check against [message|memory] optional default 1
  *	@param not boolean Is error on non-equalilty [message] optional default true
  *	@param errormsg string Error message [message]
  *
@@ -14,6 +14,15 @@ require_once(SBSERVICE);
  *	
 **/
 class DataEqualService implements Service {
+	
+	/**
+	 *	@interface Service
+	**/
+	public function input(){
+		return array(
+			'optional' => array('data' => 1, 'value' => 1)
+		);
+	}
 	
 	/**
 	 *	@interface Service
@@ -37,6 +46,13 @@ class DataEqualService implements Service {
 		$memory['status'] = 200;
 		$memory['details'] = 'Successfully executed';
 		return $memory;
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array();
 	}
 	
 }

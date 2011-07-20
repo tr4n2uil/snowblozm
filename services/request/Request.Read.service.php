@@ -22,7 +22,7 @@ class RequestReadService implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function run($memory){
 		$memory['data'] = file_get_contents('php://input');
 		
 		$memory['valid'] = true;

@@ -19,6 +19,11 @@ class Snowblozm {
 	private static $sparray = array();
 	
 	/** 
+	 *	@static debug boolean Debug flag
+	**/
+	public static $debug = false;
+	
+	/** 
 	 *	@method add
 	 *	@desc Adds a service provider configuration
 	 *
@@ -112,14 +117,6 @@ class Snowblozm {
 		}
 		
 		/**
-		 *	Save the request host address and proxy address if any
-		**/
-		if(isset($_SERVER['REMOTE_ADDR']))
-			$memory['client'] = $_SERVER['REMOTE_ADDR'];
-		if(isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
-			$memory['client'] .= " / ".$_SERVER["HTTP_X_FORWARDED_FOR"];
-		
-		/**
 		 *	WorkflowKernel instance
 		**/
 		$kernel = new WorkflowKernel();
@@ -144,12 +141,12 @@ class Snowblozm {
 			exit;
 		}
 		
-		$request = $memory['result'];
+		$message = $memory['result'];
 		
 		/**
-		 *	Check for valid request
+		 *	Check for valid service request
 		**/
-		if(!isset($request['service'])){
+		if(!isset($message['service'])){
 			echo "Please specify service to be executed with param service=root.service.operation.type";
 			exit;
 		}
@@ -157,7 +154,7 @@ class Snowblozm {
 		/**
 		 *	Get service URI and restrict access to services
 		**/
-		$uri = $request['service'];
+		$uri = $message['service'];
 		list($root, $service, $operation, $type) = explode('.' ,$uri);
 		
 		/**
@@ -171,10 +168,7 @@ class Snowblozm {
 		/**
 		 *	Run the service using WorkflowKernel
 		**/
-		$memory = $kernel->run(
-		array(
-			'service' => $uri
-		), array_merge($memory, $request));
+		$memory = $kernel->run($message, $memory);
 		
 		if(!$memory['valid']){
 			self::respond($memory, $restype);
@@ -195,15 +189,25 @@ class Snowblozm {
 		return;
 	}
 	
+	/**
+	 *	@method respond
+	 *	@desc Encodes response and writes it
+	 *	
+	 *	@param memory array Memory array
+	 *	@param restype string response types ('json', 'wddx', 'xml', 'plain', 'html')
+	 *	@param output array Output keys optional default array()
+	 *
+	**/
 	private static function respond($memory, $restype, $output = array()){
 	
 		/**
 		 *	Prepare response
 		**/
-		$output = array_merge($output, array('valid', 'msg', 'status', 'details'));
-		$response = array();
+		$prepare = array(
+			'service' => 'sbcore.response.prepare.service'
+		);
 		foreach($output as $key){
-			$response[$key] = isset($memory[$key]) ? $memory[$key] : '';
+			$prepare[$key] = isset($memory[$key]) ? $memory[$key] : '';
 		}
 		
 		/**
@@ -215,16 +219,17 @@ class Snowblozm {
 		 *	Response workflow
 		**/
 		$workflow = array(
+		$prepare,
 		array(
 			'service' => 'sbcore.data.encode.service',
-			'data' => $response,
+			'input' => array('data' => 'result'),
 			'type' => $restype
 		),array(
 			'service' => 'sbcore.response.write.service',
 			'input' => array('data' => 'result')
 		));
 		
-		return $kernel->execute($workflow);
+		return $kernel->execute($workflow, $memory);
 	}
 	
 }
