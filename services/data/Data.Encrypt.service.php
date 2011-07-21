@@ -61,7 +61,7 @@ class DataEncryptService implements Service {
 		
 		if($result === false || $result == null){
 			$memory['valid'] = false;
-			$memory['msg'] = 'Invalid Data';
+			$memory['msg'] = 'Invalid Data for Encryption';
 			$memory['status'] = 501;
 			$memory['details'] = 'Data could not be encrypted @data.encrypt.service';
 			return $memory;

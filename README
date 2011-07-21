@@ -21,10 +21,19 @@ Enhanced (v2)
 		Mysql
 	Services	
 		curl.execute
-		data.encode
 		data.decode
+		data.decrypt
+		data.encode
+		data.encrypt
 		data.equal
+		data.hash
+		data.numeric
+		data.prepare
+		data.select
+		file.download
+		file.upload
 		mail.send
+		mail.smtp
 		query.escape
 		query.execute
 		random.number
@@ -32,16 +41,31 @@ Enhanced (v2)
 		request.read
 		response.write
 		string.substitute
-		time.get
+		system.client
+		system.time
 	Workflows
-		entity.add
-		entity.all
-		entity.edit
-		entity.get
-		entity.info
-		entit.remove
+		chain.add
+		chain.authenticate
+		chain.authorize
+		chain.create
+		chain.delete
+		chain.remove
+		key.add
+		key.authenticate
+		key.available
+		key.edit
+		key.identify
+		key.remove
 		query.execute
-
+		relation.delete
+		relation.insert
+		relation.select
+		relation.unique
+		relation.update
+		secure.write
+		web.add
+		web.remove
+		
 Initial (v1)
 	Classes
 		ServiceKernel

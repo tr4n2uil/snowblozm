@@ -36,7 +36,7 @@ class DataDecryptService implements Service {
 		
 		switch($type){
 			case 'rc4' :
-				require_once('DataEncryptService');
+				require_once('Data.Encrypt.service.php');
 				$result = DataEncryptService::rc4($data, $key);
 				break;
 			case 'aes' :
@@ -61,7 +61,7 @@ class DataDecryptService implements Service {
 		
 		if($result === false || $result == null){
 			$memory['valid'] = false;
-			$memory['msg'] = 'Invalid Data';
+			$memory['msg'] = 'Invalid Encrypted Data';
 			$memory['status'] = 501;
 			$memory['details'] = 'Data could not be decrypted @data.decrypt.service';
 			return $memory;
