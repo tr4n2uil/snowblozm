@@ -55,21 +55,32 @@ class QueryExecuteWorkflow implements Service {
 		}
 		$memory['conn'] = $dataservice;
 		
-		$workflow = array(
-		array(
-			'service' => 'sbcore.data.numeric.service',
-			'args' => $numparam
-		),
-		array(
-			'service' => 'sbcore.query.escape.service',
-			'args' => $escparam
-		),
-		array(
-			'service' => 'sbcore.string.substitute.service',
-			'args' => $args,
-			'input' => array('data' => 'query'),
-			'output' => array('result' => 'query')
-		),
+		$workflow = array();
+		
+		if(count($numparam) != 0){
+			array_push($workflow, array(
+				'service' => 'sbcore.data.numeric.service',
+				'args' => $numparam
+			));
+		}
+		
+		if(count($escparam) != 0){
+			array_push($workflow, array(
+				'service' => 'sbcore.query.escape.service',
+				'args' => $escparam
+			));
+		}
+		
+		if(count($args) != 0){
+			array_push($workflow, array(
+				'service' => 'sbcore.string.substitute.service',
+				'args' => $args,
+				'input' => array('data' => 'query'),
+				'output' => array('result' => 'query')
+			));
+		}
+		
+		array_push($workflow,
 		array(
 			'service' => 'sbcore.query.execute.service',
 			'output' => array('sqlresult' => 'sqlresult', 'sqlrowcount' => 'sqlrc')

@@ -7,7 +7,7 @@ require_once(SBSERVICE);
  *
  *	@param type string Secure type [memory] optional default 'rc4' ('rc4', 'aes', 'blowfish' 'tripledes', 'none')
  *	@param data string Data to be encrypted [memory]
- *	@param key string Key used for encryption [memory]
+ *	@param key string Key used for encryption [memory] optional (defaults type to none if key not set)
  *
  *	@return result string Encrypted data [memory]
  *
@@ -21,8 +21,8 @@ class DataEncryptService implements Service {
 	**/
 	public function input(){
 		return array(
-			'required' => array('data', 'key'),
-			'optional' => array('type' => 'rc4')
+			'required' => array('data'),
+			'optional' => array('type' => 'rc4', 'key' => false)
 		);
 	}
 	
@@ -30,9 +30,10 @@ class DataEncryptService implements Service {
 	 *	@interface Service
 	**/
 	public function run($memory){
-		$type = $memory['type'];
-		$data = $memory['data'];
 		$key = $memory['key'];
+		$type = $key ? $memory['type'] : 'none';
+		$data = $memory['data'];
+		
 		
 		switch($type){
 			case 'rc4' :

@@ -114,48 +114,51 @@ class Snowblozm {
 	
 	/**
 	 *	@method launch
-	 *	@desc Launches workflows after decoding input and encodes response to output
+	 *	@desc Launches workflows after decoding input and encodes response to output 
+	 *
+	 *	@condition crypt executed only if (user, message, challenge) value found in request
+	 *	@condition hash executed only if (hash, message) value found in request
+	 *
+	 *	@format 	request = {
+	 *						user : (email of key to use for crypt),
+	 *						challenge : (used to generate key for decrypting message),
+	 *						message : (all request values as array/object within this encrypted message),
+	 *						hash : (hash of message)
+	 *					}
+	 *
+	 *	@format	response = {
+	 *						valid : (valid execution flag),
+	 *						msg : (service execution message),
+	 *						status : (status code),
+	 *						details : (service execution details),
+	 *						message : (all response values as array/object within this encrypted message),
+	 *						hash : (hash of message)
+	 *					}
+	 *
+	 *	@format	message = {
+	 *						service : (service uri if request),
+	 *						... params ...
+	 *					}
 	 *	
-	 *	@param type string request.response.secure types 
-	 *					('get', 'post', 'json', 'wddx', 'xml').('json', 'wddx', 'xml', 'plain', 'html').('none', 'md5', 'aes', 'aes-md5')
+	 *	@param reqtype string request type ('get', 'post', 'json', 'wddx', 'xml')
+	 *	@param restype string response types ('json', 'wddx', 'xml', 'plain', 'html'),
+	 *	@param crypt string Crypt types ('none', 'rc4', 'aes', 'blowfish', 'tripledes')
+	 *	@param hash string Hash types ('none', 'md5', 'sha1', 'crc32')
 	 *	@param access array allowed service provider names
+	 *	@param email string Identification email to be used if not set in message optional default false
 	 *
 	**/
-	public static function launch($type, $access){
+	public static function launch($reqtype, $restype, $crypt, $hash, $access, $email = false){
 		
 		/**
-		 *	Read request.response.secure types
-		**/
-		list($reqtype, $restype, $secure) = explode('.', $type);
-		
-		/**
-		 *	Validate request type
-		**/
-		if(!in_array($reqtype, array('get', 'post', 'json', 'xml', 'wddx'))){
-			echo 'Please check request type. '.$reqtype.' not supported';
-			exit;
-		}
-		
-		/**
-		 *	Validate response type
-		**/
-		if(!in_array($restype, array('json', 'xml', 'wddx', 'plain', 'html'))){
-			echo 'Please check response type. '.$restype.' not supported';
-			exit;
-		}
-		
-		/**
-		 *	Validate secure type
-		**/
-		if(!in_array($secure, array('none', 'md5', 'aes', 'aes-md5'))){
-			echo 'Please check secure type. '.$secure.' not supported';
-			exit;
-		}
-		
-		/**
-		 *	WorkflowKernel instance
+		 *	WorkflowKernel instance and initialization
 		**/
 		$kernel = new WorkflowKernel();
+		$memory = array(
+			'restype' => $restype,
+			'crypt' => $crypt,
+			'hash' => $hash,
+		);
 		
 		/**
 		 *	Read request data
@@ -169,14 +172,81 @@ class Snowblozm {
 			'type' => $reqtype
 		));
 		
-		$memory = $kernel->execute($workflow);
-		
+		$memory = $kernel->execute($workflow, $memory);
 		if(!$memory['valid']){
-			self::respond($memory, $restype);
+			self::respond($memory);
 			exit;
 		}
 		
 		$message = $memory['result'];
+		
+		/**
+		 *	Check message integrity if hash set
+		**/
+		if($hash != 'none' && isset($message['hash']) && isset($message['message'])){
+			$workflow = array(
+			array(
+				'service' => 'sbcore.data.hash.service',
+				'data' => $message['message'],
+				'type' => $hash
+			),
+			array(
+				'service' => 'sbcore.data.equal.service',
+				'input' => array('data' => 'result'),
+				'value' => $message['hash'],
+				'errormsg' => 'Request integrity check failed'
+			));
+			
+			$memory = $kernel->execute($workflow, $memory);
+			if(!$memory['valid']){
+				self::respond($memory);
+				exit;
+			}
+		}
+		
+		/**
+		 *	Identify keyid if email set in message or arguments
+		**/
+		$challenge = isset($message['challenge']) ? $message['challenge'] : '';
+		$email = isset($message['user']) ? $message['user'] : ($email ? $email : false);
+		if($email){
+			$service = array(
+				'service' => 'sb.key.identify.workflow',
+				'email' => $email,
+				'challenge' => $challenge
+			);
+			
+			$memory = $kernel->run($service, $memory);
+			if(!$memory['valid']){
+				self::respond($memory);
+				exit;
+			}
+		}
+		
+		/**
+		 *	Decrypt message and decode if crypt set
+		**/
+		if($crypt != 'none' && isset($message['user']) && isset($message['message']) && isset($message['challenge'])){
+			$workflow = array(
+			array(
+				'service' => 'sbcore.data.decrypt.service',
+				'data' => $message['message'],
+				'type' => $crypt
+			),
+			array(
+				'service' => 'sbcore.data.decode.service',
+				'input' => array('data' => 'result'),
+				'type' => $reqtype
+			));
+			
+			$memory = $kernel->execute($workflow, $memory);
+			if(!$memory['valid']){
+				self::respond($memory);
+				exit;
+			}
+			
+			$message = $memory['result'];
+		}
 		
 		/**
 		 *	Check for valid service request
@@ -194,6 +264,11 @@ class Snowblozm {
 		$message['service'] = $uri = $uri.'.workflow';
 		
 		/**
+		 *	Remove args if set (for being on safe side)
+		**/
+		if(isset($message['args'])) unset($message['args']);
+		
+		/**
 		 *	Check for valid access for service requested
 		**/
 		if(!in_array($root, $access)){
@@ -204,10 +279,11 @@ class Snowblozm {
 		/**
 		 *	Run the service using WorkflowKernel
 		**/
-		$memory = $kernel->run($message);
+		unset($memory['msg']);
+		$memory = $kernel->run($message, $memory);
 		
 		if(!$memory['valid']){
-			self::respond($memory, $restype);
+			self::respond($memory);
 			exit;
 		}
 		
@@ -220,42 +296,37 @@ class Snowblozm {
 		/**
 		 * Write response
 		**/
-		self::respond($memory, $restype, $output);
+		self::respond($memory, $output);
 		
 		return;
 	}
 	
 	/**
 	 *	@method respond
-	 *	@desc Encodes response and writes it
+	 *	@desc Encodes response and writes it securely
 	 *	
 	 *	@param memory array Memory array
-	 *	@param restype string response types ('json', 'wddx', 'xml', 'plain', 'html')
 	 *	@param output array Output keys optional default array()
 	 *
 	**/
-	private static function respond($memory, $restype, $output = array()){
+	private static function respond($memory, $output = array()){
 	
 		/**
-		 *	WorkflowKernel instance and default output
+		 *	WorkflowKernel instance and initialization
 		**/
 		$kernel = new WorkflowKernel();
-		$default = array('valid', 'msg', 'status', 'details');
 		
 		/**
 		 *	Response workflow
 		**/
 		$workflow = array(
 		array(
-			'service' => 'sbcore.data.prepare.service',
-			'args' => array_merge($output, $default),
-			'strict' => false
+			'service' => 'sb.secure.write.workflow',
+			'args' => $output,
+			'strict' => false,
+			'msg' => $memory['msg']
 		),
 		array(
-			'service' => 'sbcore.data.encode.service',
-			'input' => array('data' => 'result'),
-			'type' => $restype
-		),array(
 			'service' => 'sbcore.response.write.service',
 			'input' => array('data' => 'result')
 		));

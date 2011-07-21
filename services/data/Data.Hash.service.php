@@ -31,7 +31,6 @@ class DataHashService implements Service {
 	public function run($memory){
 		$type = $memory['type'];
 		$data = $memory['data'];
-		$key = $memory['key'];
 		
 		switch($type){
 			case 'md5' :
@@ -44,7 +43,7 @@ class DataHashService implements Service {
 				$result = crc32($data);
 				break;
 			case 'none' :
-				$result = $data;
+				$result = '';
 				break;
 			default :
 				$memory['valid'] = false;
@@ -54,7 +53,7 @@ class DataHashService implements Service {
 				return $memory;
 		}
 		
-		if($result === false || $result == null){
+		if($result === false){
 			$memory['valid'] = false;
 			$memory['msg'] = 'Invalid Data';
 			$memory['status'] = 501;
