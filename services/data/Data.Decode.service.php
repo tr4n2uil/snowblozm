@@ -66,7 +66,7 @@ class DataDecodeService implements Service {
 		
 		$memory['result'] = $result;
 		$memory['valid'] = true;
-		$memory['msg'] = 'Valid Data';
+		$memory['msg'] = 'Valid Data Decoding';
 		$memory['status'] = 200;
 		$memory['details'] = 'Successfully executed';
 		return $memory;

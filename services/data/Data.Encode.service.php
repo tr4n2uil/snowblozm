@@ -5,7 +5,7 @@ require_once(SBSERVICE);
  *	@class DataEncodeService
  *	@desc Encodes array into JSON XML WDDX PLAIN HTML data
  *
- *	@param type string Request type [memory] optional default 'json' ('json, 'xml', 'wddx', 'plain', 'html')
+ *	@param type string Request type [memory] optional default 'json' ('json', 'xml', 'wddx', 'plain', 'html')
  *	@param data array Data to be encoded [memory]
  *
  *	@return result string Encoded data [memory]
@@ -56,7 +56,6 @@ class DataEncodeService implements Service {
 		}
 		
 		if($result === false || $result == null){
-			$memory['result'] = array();
 			$memory['valid'] = false;
 			$memory['msg'] = 'Invalid Data';
 			$memory['status'] = 501;
@@ -66,7 +65,7 @@ class DataEncodeService implements Service {
 
 		$memory['result'] = $result;
 		$memory['valid'] = true;
-		$memory['msg'] = 'Valid Data';
+		$memory['msg'] = 'Valid Data Encoding';
 		$memory['status'] = 200;
 		$memory['details'] = 'Successfully executed';
 		return $memory;
