@@ -8,8 +8,6 @@ require_once(SBSERVICE);
  *	@param keyid long int Key ID [memory]
  *	@param chainid long int Chain ID [memory]
  *
- *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
- *
  *	@return return id long int Chain member key ID [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
@@ -20,18 +18,36 @@ class ChainAddWorkflow implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('keyid', 'chainid')
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$mdl = array(
+		$memory['msg'] = 'Chain member added successfully';
+		
+		$service = array(
 			'service' => 'sb.relation.insert.workflow',
-			'input' => array('conn' => 'conn', 'chainid' => 'chainid', 'keyid' => 'keyid'),
-			'output' => array('id' => 'id'),
-			'relation' => 'sbmembers',
-			'sqlcnd' => "(chainid, keyid) values ('\${chainid}', \${keyid});"
+			'args' => array('chainid', 'keyid'),
+			'conn' => 'sbconn',
+			'relation' => '`members`',
+			'sqlcnd' => "(`chainid`, `keyid`) values (\${chainid}, \${keyid})"
 		);
 		
-		return $kernel->run($mdl, $memory);
+		return $kernel->run($service, $memory);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array('id');
 	}
 	
 }

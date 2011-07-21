@@ -10,8 +10,6 @@ require_once(SBSERVICE);
  *	@param masterkey long int Master Key ID [memory]
  *	@param admin integer Is admin [memory]
  *
- *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
- *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
@@ -20,18 +18,37 @@ class ChainRemoveWorkflow implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('keyid', 'chainid', 'masterkey', 'admin')
+		);
+	}
+
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$mdl = array(
+		$memory['msg'] = 'Chain member removed successfully';
+		
+		$service = array(
 			'service' => 'sb.relation.delete.workflow',
-			'input' => array('conn' => 'conn', 'keyid' => 'keyid', 'chainid' => 'chainid', 'masterkey' => 'masterkey', 'admin' => 'admin'),
-			'relation' => 'sbmembers',
-			'sqlcnd' => "where keyid=\${keyid} and chainid=(select chainid from sbchains where chainid=\${chainid} and (\${admin} or masterkey=\${masterkey}));",
-			'errormsg' => 'Invalid Chain ID / Not Permitted'
+			'args' => array('keyid', 'chainid', 'masterkey', 'admin'),
+			'conn' => 'sbconn',
+			'relation' => '`members`',
+			'sqlcnd' => "where `keyid`=\${keyid} and `chainid`=(select `chainid` from `chains` where `chainid`=\${chainid} and (\${admin} or `masterkey`=\${masterkey}))",
+			'errormsg' => 'Invalid Parent Chain ID / Not Permitted'
 		);
 		
-		return $kernel->run($mdl, $memory);
+		return $kernel->run($service, $memory);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array();
 	}
 	
 }

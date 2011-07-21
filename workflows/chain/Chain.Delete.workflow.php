@@ -9,8 +9,6 @@ require_once(SBSERVICE);
  *	@param masterkey long int Key ID [memory]
  *	@param admin integer Is admin [memory]
  *
- *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
- *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
@@ -19,18 +17,37 @@ class ChainDeleteWorkflow implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('chainid', 'masterkey', 'admin')
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$mdl = array(
+		$memory['msg'] = 'Chain deleted successfully';
+		
+		$service = array(
 			'service' => 'sb.relation.delete.workflow',
-			'input' => array('conn' => 'conn', 'chainid' => 'chainid', 'masterkey' => 'masterkey', 'admin' => 'admin'),
-			'relation' => 'sbchains',
-			'sqlcnd' => "where chainid=\${chainid} and (\${admin} or masterkey=\${masterkey});",
+			'args' => array('chainid', 'masterkey', 'admin'),
+			'conn' => 'sbconn',
+			'relation' => '`chains`',
+			'sqlcnd' => "where `chainid`=\${chainid} and (\${admin} or `masterkey`=\${masterkey})",
 			'errormsg' => 'Invalid Chain ID / Not Permitted'
 		);
 		
-		return $kernel->run($mdl, $memory);
+		return $kernel->run($service, $memory);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array();
 	}
 	
 }

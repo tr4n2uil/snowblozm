@@ -9,8 +9,6 @@ require_once(SBSERVICE);
  *	@param keyid long int Key ID [memory]
  *	@param level integer Web level [memory] optional default 0
  *
- *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
- *
  *	@return admin integer Is admin [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
@@ -21,10 +19,20 @@ class ChainAuthorizeWorkflow implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('keyid', 'chainid'),
+			'optional' => array('level' => 0)
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$level = isset($memory['level']) ? $memory['level'] : 0;
+		$level = $memory['level'];
 		
 		$join1 = 'chainid=';
 		$join2 = 'chainid in ';
@@ -39,24 +47,32 @@ class ChainAuthorizeWorkflow implements Service {
 			$query = $query.' or '.$join1.$master.' or '.$join2.$chain;
 		}
 		
+		$memory['msg'] = 'Key authorized successfully';
+		
 		$workflow = array(
 		array(
 			'service' => 'sb.relation.unique.workflow',
-			'input' => array('conn' => 'conn', 'keyid' => 'keyid', 'chainid' => 'chainid'),
-			'output' => array('result' => 'chain'),
-			'relation' => 'sbchains',
-			'sqlcnd' => "where chainid=\${chainid} and ($query);",
+			'args' => array('keyid', 'chainid'),
+			'conn' => 'sbconn',
+			'relation' => '`chains`',
 			'sqlprj' => 'count(chainid) as admin',
-			'errormsg' => 'Invalid Service Key'
+			'sqlcnd' => "where chainid=\${chainid} and ($query)",
+			'errormsg' => 'Unable to Authorize'
 		),
 		array(
 			'service' => 'sbcore.data.select.service',
-			'input' => array('chain' => 'chain'),
-			'output' => array('admin' => 'admin'),
-			'params' => array('chain.admin' => 'admin')
+			'args' => array('result'),
+			'params' => array('result.0.admin' => 'admin')
 		));
 		
 		return $kernel->execute($workflow, $memory);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array('admin');
 	}
 	
 }

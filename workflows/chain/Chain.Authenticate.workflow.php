@@ -8,8 +8,6 @@ require_once(SBSERVICE);
  *	@param keyid long int Key ID [memory]
  *	@param chainid long int Chain ID [memory]
  *
- *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
- *
  *	@return admin integer Is admin [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
@@ -20,26 +18,44 @@ class ChainAuthenticateWorkflow implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('keyid', 'chainid')
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$kernel = new WorkflowKernel();
+		
+		$memory['msg'] = 'Key authenticated successfully';
 		
 		$workflow = array(
 		array(
 			'service' => 'sb.relation.unique.workflow',
-			'input' => array('conn' => 'conn', 'keyid' => 'keyid', 'chainid' => 'chainid'),
-			'output' => array('result' => 'result'),
-			'relation' => 'sbmembers',
-			'sqlcnd' => "where keyid=\${keyid} and chainid=\${chainid};",
-			'sqlprj' => 'count(keyid) as admin'
+			'args' => array('keyid', 'chainid'),
+			'conn' => 'sbconn',
+			'relation' => '`members`',
+			'sqlprj' => 'count(keyid) as admin',
+			'sqlcnd' => "where keyid=\${keyid} and chainid=\${chainid}",
+			'errormsg' => 'Invalid Credentials'
 		),
 		array(
 			'service' => 'sbcore.data.select.service',
-			'input' => array('result' => 'result'),
-			'output' => array('admin' => 'admin'),
-			'params' => array('result.admin' => 'admin')
+			'args' => array('result'),
+			'params' => array('result.0.admin' => 'admin')
 		));
 		
 		return $kernel->execute($workflow, $memory);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array('admin');
 	}
 	
 }
