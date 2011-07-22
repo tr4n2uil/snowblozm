@@ -7,8 +7,8 @@ Vibhaj Rajan
 vibhaj8@gmail.com
 
 Features 
-	Experimental Service Computing Platform
-	Reference Mechanism for managing entities
+	Experimental Service Computing Platform for managing services and workflows
+	Reference Structure for managing entities
 	Key-Chain-Web Mechanism for access control
 	Integrated Application Layer Security for access security
 
@@ -62,6 +62,7 @@ Enhanced (v2)
 		relation.select
 		relation.unique
 		relation.update
+		secure.read
 		secure.write
 		web.add
 		web.remove
