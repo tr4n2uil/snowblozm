@@ -6,8 +6,6 @@ require_once(SBSERVICE);
  *	@desc Removes chain using ID
  *
  *	@param chainid long int Chain ID [memory]
- *	@param masterkey long int Key ID [memory]
- *	@param admin integer Is admin [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -19,7 +17,7 @@ class ChainDeleteWorkflow implements Service {
 	**/
 	public function input(){
 		return array(
-			'required' => array('chainid', 'masterkey', 'admin')
+			'required' => array('chainid')
 		);
 	}
 	
@@ -33,11 +31,11 @@ class ChainDeleteWorkflow implements Service {
 		
 		$service = array(
 			'service' => 'sb.relation.delete.workflow',
-			'args' => array('chainid', 'masterkey', 'admin'),
+			'args' => array('chainid'),
 			'conn' => 'sbconn',
 			'relation' => '`chains`',
-			'sqlcnd' => "where `chainid`=\${chainid} and (\${admin} or `masterkey`=\${masterkey})",
-			'errormsg' => 'Invalid Chain ID / Not Permitted'
+			'sqlcnd' => "where `chainid`=\${chainid}",
+			'errormsg' => 'Invalid Chain ID'
 		);
 		
 		return $kernel->run($service, $memory);

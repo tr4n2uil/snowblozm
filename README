@@ -32,6 +32,7 @@ Enhanced (v2)
 		data.select
 		file.download
 		file.upload
+		launch.message
 		mail.send
 		mail.smtp
 		query.escape
@@ -56,7 +57,13 @@ Enhanced (v2)
 		key.edit
 		key.identify
 		key.remove
+		launch.message
 		query.execute
+		reference.add
+		reference.authorize
+		reference.grant
+		reference.remove
+		reference.revoke
 		relation.delete
 		relation.insert
 		relation.select

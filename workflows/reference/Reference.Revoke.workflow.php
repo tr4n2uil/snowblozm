@@ -2,25 +2,25 @@
 require_once(SBSERVICE);
 
 /**
- *	@class ReferenceRemoveWorkflow
- *	@desc Manages removal of existing reference 
+ *	@class ReferenceRevokeWorkflow
+ *	@desc Manages revoking of privileges to existing reference 
  *
  *	@param keyid long int Usage Key ID [memory]
  *	@param id long int Reference ID [memory]
- *	@param parent long int Reference ID [memory]
+ *	@param childkeyid long int Key ID to be granted [memory]
  *	@param level integer Web level [memory] optional default 0
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class ReferenceRemoveWorkflow implements Service {
+class ReferenceGrantWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
 	**/
 	public function input(){
 		return array(
-			'required' => array('keyid', 'parent', 'id'),
+			'required' => array('keyid', 'parent', 'childkeyid'),
 			'optional' => array('level' => 0)
 		);
 	}
@@ -30,21 +30,17 @@ class ReferenceRemoveWorkflow implements Service {
 	**/
 	public function run($memory){
 		$kernel = new WorkflowKernel();
-	
-		$memory['msg'] = 'Reference deleted successfully';
+		
+		$memory['msg'] = 'Reference privilege revoked successfully';
 		
 		$workflow = array(
 		array(
 			'service' => 'sb.chain.authorize.workflow',
-			'input' => array('chainid' => 'parent')
-		),
-		array(
-			'service' => 'sb.chain.delete.workflow',
 			'input' => array('chainid' => 'id')
 		),
 		array(
-			'service' => 'sb.web.remove.workflow',
-			'input' => array('child' => 'id')
+			'service' => 'sb.chain.remove.workflow',
+			'input' => array('chainid' => 'id', 'keyid' => 'childkeyid')
 		));
 		
 		return $kernel->execute($workflow, $memory);
@@ -54,7 +50,7 @@ class ReferenceRemoveWorkflow implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array();
+		return array('id');
 	}
 	
 }

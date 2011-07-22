@@ -5,7 +5,6 @@ require_once(SBSERVICE);
  *	@class ChainCreateWorkflow
  *	@desc Creates new chain
  *
- *	@param chainname string Keychain name [memory]
  *	@param masterkey long int Key ID [memory]
  *
  *	@return return id long int Chain ID [memory]
@@ -20,7 +19,7 @@ class ChainCreateWorkflow implements Service {
 	**/
 	public function input(){
 		return array(
-			'required' => array('key', 'email')
+			'required' => array('masterkey')
 		);
 	}
 	
@@ -34,11 +33,10 @@ class ChainCreateWorkflow implements Service {
 		
 		$service = array(
 			'service' => 'sb.relation.insert.workflow',
-			'args' => array('chainname', 'masterkey'),
+			'args' => array('masterkey'),
 			'conn' => 'sbconn',
 			'relation' => '`chains`',
-			'sqlcnd' => "(`chainname`, `masterkey`) values ('\${chainname}', \${masterkey})",
-			'escparam' => array('chainname' => 'chainname')
+			'sqlcnd' => "(`masterkey`) values (\${masterkey})"
 		);
 		
 		return $kernel->run($service, $memory);

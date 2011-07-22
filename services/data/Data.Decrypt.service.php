@@ -59,7 +59,7 @@ class DataDecryptService implements Service {
 				return $memory;
 		}
 		
-		if($result === false || $result == null){
+		if(($result === false || $result == null) && $type != 'none'){
 			$memory['valid'] = false;
 			$memory['msg'] = 'Invalid Encrypted Data';
 			$memory['status'] = 501;

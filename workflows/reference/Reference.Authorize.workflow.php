@@ -3,17 +3,11 @@ require_once(SBSERVICE);
 
 /**
  *	@class ReferenceAuthorizeWorkflow
- *	@desc Manages authorization of reference 
+ *	@desc Manages authorization of existing reference 
  *
- *	@param key string Usage key [memory] (service key md5 hashed with challenge)
- *	@param challenge string Challenge string [memory]
+ *	@param keyid long int Usage Key ID [memory]
  *	@param id long int Reference ID [memory]
- *	@param level integer Collection level [message|memory] optional default 0
- *
- *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
- *
- *	@return admin integer Is admin [memory]
- *	@return owner long int Owner ID [memory]
+ *	@param level integer Web level [memory] optional default 0
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -23,24 +17,34 @@ class ReferenceAuthorizeWorkflow implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('keyid', 'id'),
+			'optional' => array('level' => 0)
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$kernel = new WorkflowKernel();
+	
+		$memory['msg'] = 'Reference authorized successfully';
 		
-		$memory['level'] = isset($message['level']) ? $message['level'] : (isset($memory['level']) ? $memory['level'] : 0);
+		$service = array(
+			'service' => 'sb.chain.authorize.workflow',
+			'input' => array('chainid' => 'id')
+		);
 		
-		$workflow = array(
-		array(
-			'service' => 'sb.key.authenticate.workflow',
-			'input' => array('conn' => 'conn', 'key' => 'key', 'challenge' => 'challenge'),
-			'output' => array('keyid' => 'keyid', 'owner' => 'owner')
-		),
-		array(
-			'service' => 'sb.artifact.authenticate.workflow',
-			'input' => array('conn' => 'conn', 'id' => 'artid', 'keyid' => 'keyid', 'level' => 'level'),
-			'output' => array('admin' => 'admin')
-		));
-		
-		return $kernel->execute($workflow, $memory);
+		return $kernel->run($service, $memory);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array();
 	}
 	
 }

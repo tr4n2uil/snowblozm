@@ -56,6 +56,25 @@
 		'database' => 'snowblozm'
 	));
 	
-	Snowblozm::launch($reqtype, $restype, $crypt, $hash, array('sbdemo', 'sb'));
+	/**
+	 *	WorkflowKernel instance and initialization
+	**/
+	$kernel = new WorkflowKernel();
+	$memory = array(
+		'reqtype' => $reqtype,
+		'restype' => $restype,
+		'crypt' => $crypt,
+		'hash' => $hash,
+		'email' => false,
+		'access' => array(
+			'root' => array('sbdemo', 'sb')
+		)
+	);
+	
+	$service = array(
+		'service' => 'sb.launch.message.workflow'
+	);
+	
+	$kernel->run($service, $memory);
 
 ?>

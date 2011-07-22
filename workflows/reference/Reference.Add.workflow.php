@@ -5,14 +5,10 @@ require_once(SBSERVICE);
  *	@class ReferenceAddWorkflow
  *	@desc Manages addition of new reference 
  *
- *	@param key string Usage key [memory] (service key md5 hashed with challenge)
- *	@param challenge string Challenge string [memory]
+ *	@param keyid long int Usage Key ID [memory]
  *	@param parent long int Reference ID [memory]
- *	@param level integer Collection level [message|memory] optional default 0
- *	@param chainname string Keychain name [memory]
- *	@param owner long int Owner ID [memory] optional default keyowner
- *
- *	@param conn array DataService instance configuration [memory] (type, user, pass, host, database)
+ *	@param level integer Web level [memory] optional default 0
+ *	@param owner long int Owner Key ID [memory] optional default keyid
  *
  *	@return return id long int Reference ID [memory]
  *
@@ -24,35 +20,45 @@ class ReferenceAddWorkflow implements Service {
 	/**
 	 *	@interface Service
 	**/
-	public function run($message, $memory){
+	public function input(){
+		return array(
+			'required' => array('keyid', 'parent'),
+			'optional' => array('level' => 0, 'owner' => false)
+		);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$memory['level'] = isset($message['level']) ? $message['level'] : (isset($memory['level']) ? $memory['level'] : 0);
-		$keyowner = isset($memory['owner']) ? 'keyowner' : 'owner';
+		$memory['owner'] = $memory['owner'] ? $memory['owner'] : $memory['keyid'];
+		$memory['msg'] = 'Reference added successfully';
 		
 		$workflow = array(
 		array(
-			'service' => 'sb.reference.authorize.workflow',
-			'input' => array('conn' => 'conn', 'key' => 'key', 'challenge' => 'challenge', 'parent' => 'id', 'level' => 'level'),
-			'output' => array('admin' => 'admin', 'owner' => $keyowner)
+			'service' => 'sb.chain.authorize.workflow',
+			'input' => array('chainid' => 'parent')
 		),
 		array(
-			'service' => 'sb.keychain.create.workflow',
-			'input' => array('conn' => 'conn', 'chainname' => 'chainname', 'owner' => 'owner'),
+			'service' => 'sb.chain.create.workflow',
+			'input' => array('masterkey' => 'owner'),
 			'output' => array('id' => 'chainid')
 		),
 		array(
-			'service' => 'sb.artifact.create.workflow',
-			'input' => array('conn' => 'conn', 'chainid' => 'chainid', 'owner' => 'owner'),
-			'output' => array('id' => 'id')
-		),
-		array(
-			'service' => 'sb.artifact.add.workflow',
-			'input' => array('conn' => 'conn', 'id' => 'child', 'parent' => 'parent'),
-			'output' => array('id' => 'clmbrid')
+			'service' => 'sb.web.add.workflow',
+			'input' => array('child' => 'id')
 		));
 		
 		return $kernel->execute($workflow, $memory);
+	}
+	
+	/**
+	 *	@interface Service
+	**/
+	public function output(){
+		return array('id');
 	}
 	
 }

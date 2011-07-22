@@ -3,13 +3,11 @@ require_once(SBSERVICE);
 
 /**
  *	@class ChainAuthorizeWorkflow
- *	@desc Authorizes key for chain operations and sets admin flag if need be
+ *	@desc Authorizes key for chain operations
  *
  *	@param chainid long int Chain ID [memory]
  *	@param keyid long int Key ID [memory]
  *	@param level integer Web level [memory] optional default 0
- *
- *	@return admin integer Is admin [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -34,11 +32,11 @@ class ChainAuthorizeWorkflow implements Service {
 		
 		$level = $memory['level'];
 		
-		$join1 = 'chainid=';
-		$join2 = 'chainid in ';
-		$master = "(select chainid from sbchains where masterkey=\${keyid})";
-		$chain = "(select chainid from sbmembers where keyid=\${keyid})";
-		$child = 'select child from sbwebs where parent in ';
+		$join1 = '`chainid`=';
+		$join2 = '`chainid` in ';
+		$master = "(select `chainid` from `chains` where `masterkey`=\${keyid})";
+		$chain = "(select `chainid` from `members` where `keyid`=\${keyid})";
+		$child = 'select `child` from `webs` where `parent` in ';
 		$query = $join1.$master.' or '.$join2.$chain;
 		
 		while($level--){
@@ -49,30 +47,24 @@ class ChainAuthorizeWorkflow implements Service {
 		
 		$memory['msg'] = 'Key authorized successfully';
 		
-		$workflow = array(
-		array(
+		$service = array(
 			'service' => 'sb.relation.unique.workflow',
 			'args' => array('keyid', 'chainid'),
 			'conn' => 'sbconn',
 			'relation' => '`chains`',
-			'sqlprj' => 'count(chainid) as admin',
-			'sqlcnd' => "where chainid=\${chainid} and ($query)",
+			'sqlprj' => '`chainid`',
+			'sqlcnd' => "where `chainid`=\${chainid} and ($query)",
 			'errormsg' => 'Unable to Authorize'
-		),
-		array(
-			'service' => 'sbcore.data.select.service',
-			'args' => array('result'),
-			'params' => array('result.0.admin' => 'admin')
-		));
+		);
 		
-		return $kernel->execute($workflow, $memory);
+		return $kernel->run($service, $memory);
 	}
 	
 	/**
 	 *	@interface Service
 	**/
 	public function output(){
-		return array('admin');
+		return array();
 	}
 	
 }

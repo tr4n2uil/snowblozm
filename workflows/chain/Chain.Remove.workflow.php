@@ -7,8 +7,6 @@ require_once(SBSERVICE);
  *
  *	@param keyid long int Key ID [memory]
  *	@param chainid long int Chain ID [memory]
- *	@param masterkey long int Master Key ID [memory]
- *	@param admin integer Is admin [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -20,7 +18,7 @@ class ChainRemoveWorkflow implements Service {
 	**/
 	public function input(){
 		return array(
-			'required' => array('keyid', 'chainid', 'masterkey', 'admin')
+			'required' => array('keyid', 'chainid')
 		);
 	}
 
@@ -34,11 +32,11 @@ class ChainRemoveWorkflow implements Service {
 		
 		$service = array(
 			'service' => 'sb.relation.delete.workflow',
-			'args' => array('keyid', 'chainid', 'masterkey', 'admin'),
+			'args' => array('keyid', 'chainid'),
 			'conn' => 'sbconn',
 			'relation' => '`members`',
-			'sqlcnd' => "where `keyid`=\${keyid} and `chainid`=(select `chainid` from `chains` where `chainid`=\${chainid} and (\${admin} or `masterkey`=\${masterkey}))",
-			'errormsg' => 'Invalid Parent Chain ID / Not Permitted'
+			'sqlcnd' => "where `keyid`=\${keyid} and `chainid`=\${chainid}",
+			'errormsg' => 'Invalid Parent Chain ID'
 		);
 		
 		return $kernel->run($service, $memory);
