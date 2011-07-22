@@ -43,7 +43,7 @@ class DataHashService implements Service {
 				$result = crc32($data);
 				break;
 			case 'none' :
-				$result = '';
+				$result = false;
 				break;
 			default :
 				$memory['valid'] = false;
@@ -53,7 +53,7 @@ class DataHashService implements Service {
 				return $memory;
 		}
 		
-		if($result === false){
+		if($result === false && $type != 'none'){
 			$memory['valid'] = false;
 			$memory['msg'] = 'Invalid Data';
 			$memory['status'] = 501;

@@ -158,17 +158,18 @@ class Snowblozm {
 			'restype' => $restype,
 			'crypt' => $crypt,
 			'hash' => $hash,
+			'email' => $email
 		);
 		
 		/**
-		 *	Read request data
+		 *	Unsecure message
 		**/
 		$workflow = array(
 		array(
 			'service' => 'sbcore.request.read.service'
 		),
 		array(
-			'service' => 'sbcore.data.decode.service',
+			'service' => 'sb.secure.read.workflow',
 			'type' => $reqtype
 		));
 		
@@ -179,74 +180,6 @@ class Snowblozm {
 		}
 		
 		$message = $memory['result'];
-		
-		/**
-		 *	Check message integrity if hash set
-		**/
-		if($hash != 'none' && isset($message['hash']) && isset($message['message'])){
-			$workflow = array(
-			array(
-				'service' => 'sbcore.data.hash.service',
-				'data' => $message['message'],
-				'type' => $hash
-			),
-			array(
-				'service' => 'sbcore.data.equal.service',
-				'input' => array('data' => 'result'),
-				'value' => $message['hash'],
-				'errormsg' => 'Request integrity check failed'
-			));
-			
-			$memory = $kernel->execute($workflow, $memory);
-			if(!$memory['valid']){
-				self::respond($memory);
-				exit;
-			}
-		}
-		
-		/**
-		 *	Identify keyid if email set in message or arguments
-		**/
-		$challenge = isset($message['challenge']) ? $message['challenge'] : '';
-		$email = isset($message['user']) ? $message['user'] : ($email ? $email : false);
-		if($email){
-			$service = array(
-				'service' => 'sb.key.identify.workflow',
-				'email' => $email,
-				'challenge' => $challenge
-			);
-			
-			$memory = $kernel->run($service, $memory);
-			if(!$memory['valid']){
-				self::respond($memory);
-				exit;
-			}
-		}
-		
-		/**
-		 *	Decrypt message and decode if crypt set
-		**/
-		if($crypt != 'none' && isset($message['user']) && isset($message['message']) && isset($message['challenge'])){
-			$workflow = array(
-			array(
-				'service' => 'sbcore.data.decrypt.service',
-				'data' => $message['message'],
-				'type' => $crypt
-			),
-			array(
-				'service' => 'sbcore.data.decode.service',
-				'input' => array('data' => 'result'),
-				'type' => $reqtype
-			));
-			
-			$memory = $kernel->execute($workflow, $memory);
-			if(!$memory['valid']){
-				self::respond($memory);
-				exit;
-			}
-			
-			$message = $memory['result'];
-		}
 		
 		/**
 		 *	Check for valid service request
@@ -321,10 +254,17 @@ class Snowblozm {
 		**/
 		$workflow = array(
 		array(
-			'service' => 'sb.secure.write.workflow',
+			'service' => 'sbcore.data.prepare.service',
 			'args' => $output,
-			'strict' => false,
-			'msg' => $memory['msg']
+			'strict' => false
+		),
+		array(
+			'service' => 'sb.secure.write.workflow',
+			'input' => array('data' => 'result', 'type' => 'restype'),
+			'valid' => $memory['valid'],
+			'msg' => $memory['msg'],
+			'status' => $memory['status'],
+			'details' => $memory['details']
 		),
 		array(
 			'service' => 'sbcore.response.write.service',

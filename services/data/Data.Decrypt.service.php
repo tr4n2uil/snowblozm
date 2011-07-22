@@ -1,12 +1,13 @@
 <?php 
 require_once(SBSERVICE);
+require_once('Data.Encrypt.service.php');
 
 /**
  *	@class DataDEcryptService
  *	@desc Decrypts data using RC4 AES BLOWFISH TRIPLEDES modes
  *
  *	@param type string Secure type [memory] optional default 'rc4' ('rc4', 'aes', 'blowfish' 'tripledes', 'none')
- *	@param data string Data to be decrypted [memory]
+ *	@param data string Data to be decrypted in base16 format [memory]
  *	@param key string Key used for decryption [memory]
  *
  *	@return result string Decrypted data [memory]
@@ -30,14 +31,13 @@ class DataDecryptService implements Service {
 	 *	@interface Service
 	**/
 	public function run($memory){
-		$type = $memory['type'];
-		$data = $memory['data'];
 		$key = $memory['key'];
+		$type = $key ? $memory['type'] : 'none';
+		$data = $memory['data'];
 		
 		switch($type){
 			case 'rc4' :
-				require_once('Data.Encrypt.service.php');
-				$result = DataEncryptService::rc4($data, $key);
+				$result = DataEncryptService::rc4(DataEncryptService::hex_decode($data), $key);
 				break;
 			case 'aes' :
 				$result = $this->aes_decrypt($data, $key);

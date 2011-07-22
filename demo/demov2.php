@@ -47,7 +47,7 @@
 		exit;
 	}
 	
-	Snowblozm::$debug = true;
+	//Snowblozm::$debug = true;
 	Snowblozm::init('sbconn', array(
 		'type' => 'mysql',
 		'host' => 'localhost',
@@ -57,24 +57,5 @@
 	));
 	
 	Snowblozm::launch($reqtype, $restype, $crypt, $hash, array('sbdemo', 'sb'));
-	
-	function hex_str($hex){
-		$string='';
-		for ($i=0; $i < strlen($hex)-1; $i+=2){
-			$string .= chr(hexdec($hex[$i].$hex[$i+1]));
-		}
-		return $string;
-	}
-	
-	function str_hex($string){
-		$hex='';
-		for ($i=0; $i < strlen($string); $i++){
-			$hex .= dechex(ord($string[$i]));
-		}
-		return $hex;
-	}
-
-	require_once('../services/data/Data.Encrypt.service.php');
-	echo (DataEncryptService::rc4(hex_str('bad32ca3e6728a'), 'bbebb93dc256ed8b2b1ae365f7dbcd23'));
 
 ?>

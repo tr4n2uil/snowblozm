@@ -3,10 +3,14 @@ require_once(SBSERVICE);
 
 /**
  *	@class KeyIdentifyWorkflow
- *	@desc Identifies key from email and returns hash of it with challenge sent
+ *	@desc Identifies key from email and returns hash of it with challenge sent 
+ *	@condition identifies only if (user|email) is set and (key, keyid) not set else returns what is sent
  *
- *	@param email string Email [memory]
+ *	@param user string Email [memory] optional default false
+ *	@param email string Email [memory] optional default false
  *	@param challenge string Challenge to be used while hashing [memory] optional default 'snowblozm'
+ *	@param key string Key value hash already generated previously [memory] optional default false
+ *	@param keyid string Key ID returned previously [memory] optional default false
  *
  *	@return key string Key value hash [memory]
  *	@return keyid long int Key ID [memory]
@@ -21,8 +25,7 @@ class KeyIdentifyWorkflow implements Service {
 	**/
 	public function input(){
 		return array(
-			'required' => array('email'),
-			'optional' => array('challenge' => 'snowblozm')
+			'optional' => array('challenge' => false, 'user' => false, 'email' => false, 'key' => false, 'keyid' => false)
 		);
 	}
 	
@@ -32,26 +35,36 @@ class KeyIdentifyWorkflow implements Service {
 	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$memory['msg'] = 'Key identified successfully';
+		$memory['challenge'] = $memory['challenge'] ? $memory['challenge'] : 'snowblozm';
+		$memory['email'] = isset($memory['user']) ? $memory['user'] : ($memory['email'] ? $memory['email'] : false);
 		
-		$workflow = array(
-		array(
-			'service' => 'sb.relation.unique.workflow',
-			'args' => array('email', 'challenge'),
-			'conn' => 'sbconn',
-			'relation' => '`keys`',
-			'sqlprj' => "keyid, MD5(concat(`keyvalue`,'\${challenge}')) as `key`",
-			'sqlcnd' => "where `email`='\${email}'",
-			'escparam' => array('email', 'challenge'),
-			'errormsg' => 'Unable to identify key from email'
-		),
-		array(
-			'service' => 'sbcore.data.select.service',
-			'args' => array('result'),
-			'params' => array('result.0.keyid' => 'keyid', 'result.0.key' => 'key')
-		));
+		if($memory['email'] !==false && $memory['key'] === false && $memory['keyid'] === false){
+			$memory['msg'] = 'Key identified successfully';
+			
+			$workflow = array(
+			array(
+				'service' => 'sb.relation.unique.workflow',
+				'args' => array('email', 'challenge'),
+				'conn' => 'sbconn',
+				'relation' => '`keys`',
+				'sqlprj' => "keyid, MD5(concat(`keyvalue`,'\${challenge}')) as `key`",
+				'sqlcnd' => "where `email`='\${email}'",
+				'escparam' => array('email', 'challenge'),
+				'errormsg' => 'Unable to identify key from email'
+			),
+			array(
+				'service' => 'sbcore.data.select.service',
+				'args' => array('result'),
+				'params' => array('result.0.keyid' => 'keyid', 'result.0.key' => 'key')
+			));
+			
+			$memory = $kernel->execute($workflow, $memory);
+		}
+		else {
+			$memory['valid'] = true;
+		}
 		
-		return $kernel->execute($workflow, $memory);
+		return $memory;
 	}
 	
 	/**
