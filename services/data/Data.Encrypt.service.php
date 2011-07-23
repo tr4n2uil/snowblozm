@@ -82,10 +82,7 @@ class DataEncryptService implements Service {
 		return array('result');
 	}
 	
-	public static function hex_encode($data){
-		if(strlen($data) % 2)
-			$data = '0'.$data;
-			
+	public static function hex_encode($data){			
 		$result='';
 		for ($i=0; isset($data[$i]); $i++){
 			$result .= str_pad(dechex(ord($data[$i])), 2, '0', STR_PAD_LEFT);
