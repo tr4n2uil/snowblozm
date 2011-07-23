@@ -39,7 +39,7 @@ class SecureWriteWorkflow implements Service {
 	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		if($memory['key'] === false)
+		if($memory['keyid'] === false)
 			$args = array('valid', 'msg', 'status', 'details', 'message', 'hash');
 		else
 			$args = array('user', 'challenge', 'message', 'hash', 'valid', 'msg', 'status', 'details');
