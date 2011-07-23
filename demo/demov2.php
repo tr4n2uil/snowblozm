@@ -67,7 +67,9 @@
 		'hash' => $hash,
 		'email' => 'vibhaj@gmail.com',
 		'access' => array(
-			'root' => array('sbdemo', 'sb')
+			'root' => array('sbdemo', 'sb'),
+			'service' => array('cloudcore.test'),
+			'operation' => array('cloudid.test.get')
 		)
 	);
 	

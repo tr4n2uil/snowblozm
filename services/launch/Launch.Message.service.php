@@ -65,27 +65,25 @@ class LaunchMessageService implements Service {
 		/**
 		 *	Check for valid access for service requested
 		**/
-		if(!isset($access['root']) || (isset($access['root']) && !in_array($root, $access['root']))){
-			$memory['valid'] = false;
-			$memory['msg'] = 'Access Denied';
-			$memory['status'] = 500;
-			$memory['details'] = 'Access denied at root level';
-			return $memory;
+		$flag = false;
+		
+		if(isset($access['operation']) && in_array($root.'.'.$service.'.'.$operation, $access['operation'])){
+			$flag = true;
 		}
 		
-		if(isset($access['service']) && !in_array($root.'.'.$service, $access['service'])){
-			$memory['valid'] = false;
-			$memory['msg'] = 'Access Denied';
-			$memory['status'] = 500;
-			$memory['details'] = 'Access denied at service level';
-			return $memory;
+		if(!$flag && isset($access['service']) && in_array($root.'.'.$service, $access['service'])){
+			$flag = true;
 		}
 		
-		if(isset($access['operation']) && !in_array($root.'.'.$service.'.'.$operation, $access['operation'])){
+		if(!$flag && isset($access['root']) && in_array($root, $access['root'])){
+			$flag = true;
+		}
+		
+		if(!$flag){
 			$memory['valid'] = false;
 			$memory['msg'] = 'Access Denied';
 			$memory['status'] = 500;
-			$memory['details'] = 'Access denied at operation level';
+			$memory['details'] = "Access denied for the service";
 			return $memory;
 		}
 		
