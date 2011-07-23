@@ -6,8 +6,7 @@ require_once(SBWFKERNEL);
  *	@desc Central class for management purposes
  *				Manages ServiceProvider configurations
  *				Manages Initialization configurations
- *				Manages loading and Services and Workflows
- *				Manages launching of Workflows
+ *				Manages loading of Services and Workflows
  *
  *	@format 	request = {
  *						user : (email of key to use for crypt),
@@ -26,7 +25,7 @@ require_once(SBWFKERNEL);
  *					}
  *
  *	@format	message = {
- *						service : (service uri if request),
+ *						service : (service URI (root.service.operation)),
  *						... params ...
  *					}
  *	

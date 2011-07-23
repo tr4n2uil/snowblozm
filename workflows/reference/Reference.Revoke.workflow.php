@@ -13,14 +13,14 @@ require_once(SBSERVICE);
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class ReferenceGrantWorkflow implements Service {
+class ReferenceRevokeWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
 	**/
 	public function input(){
 		return array(
-			'required' => array('keyid', 'parent', 'childkeyid'),
+			'required' => array('keyid', 'id', 'childkeyid'),
 			'optional' => array('level' => 0)
 		);
 	}
@@ -50,7 +50,7 @@ class ReferenceGrantWorkflow implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array('id');
+		return array();
 	}
 	
 }

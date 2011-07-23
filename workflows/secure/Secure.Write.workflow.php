@@ -5,7 +5,7 @@ require_once(SBSERVICE);
  *	@class SecureWriteWorkflow
  *	@desc Builds secure message to be used further
  *
- *	@param data string Data to be secured [memory]
+ *	@param data string Data to be secured [memory] optional default array()
  *	@param type string Encode type [memory] ('json', 'wddx', 'xml', 'plain', 'html')
  *	@param crypt string Crypt type [memory] ('none', 'rc4', 'aes', 'blowfish', 'tripledes')
  *	@param key string Key used for encryption [memory] optional default false (generated from challenge)
@@ -28,8 +28,8 @@ class SecureWriteWorkflow implements Service {
 	**/
 	public function input(){
 		return array(
-			'required' => array('data', 'type', 'crypt', 'hash'),
-			'optional' => array('key' => false, 'keyid' => false, 'email' => false, 'challenge' => false, 'user' => false)
+			'required' => array('type', 'crypt', 'hash'),
+			'optional' => array('data' => array(), 'key' => false, 'keyid' => false, 'email' => false, 'challenge' => false, 'user' => false)
 		);
 	}
 	
@@ -39,10 +39,10 @@ class SecureWriteWorkflow implements Service {
 	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		if($memory['key'] !== false)
+		if($memory['key'] === false)
 			$args = array('valid', 'msg', 'status', 'details', 'message', 'hash');
 		else
-			$args = array('user', 'challenge', 'message', 'hash');
+			$args = array('user', 'challenge', 'message', 'hash', 'valid', 'msg', 'status', 'details');
 		
 		$workflow = array(
 		array(

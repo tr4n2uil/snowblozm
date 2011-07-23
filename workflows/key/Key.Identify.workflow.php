@@ -36,7 +36,7 @@ class KeyIdentifyWorkflow implements Service {
 		$kernel = new WorkflowKernel();
 		
 		$memory['challenge'] = $memory['challenge'] ? $memory['challenge'] : 'snowblozm';
-		$memory['email'] = isset($memory['user']) ? $memory['user'] : ($memory['email'] ? $memory['email'] : false);
+		$memory['email'] = $memory['user'] ? $memory['user'] : ($memory['email'] ? $memory['email'] : false);
 		
 		if($memory['email'] !==false && $memory['key'] === false && $memory['keyid'] === false){
 			$memory['msg'] = 'Key identified successfully';

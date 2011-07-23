@@ -2,28 +2,30 @@
 require_once(SBSERVICE);
 
 /**
- *	@class ReferenceAddWorkflow
- *	@desc Manages addition of new reference 
+ *	@class ReferenceCreateWorkflow
+ *	@desc Manages creation of new reference 
  *
  *	@param keyid long int Usage Key ID [memory]
  *	@param parent long int Reference ID [memory]
  *	@param level integer Web level [memory] optional default 0
- *	@param owner long int Owner Key ID [memory] optional default keyid
+ *	@param email string Email [memory]
+ *	@param keyvalue string Key value [memory]
  *
  *	@return return id long int Reference ID [memory]
+ *	@return owner long int Owner Key ID [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class ReferenceAddWorkflow implements Service {
+class ReferenceCreateWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
 	**/
 	public function input(){
 		return array(
-			'required' => array('keyid', 'parent'),
-			'optional' => array('level' => 0, 'owner' => false)
+			'required' => array('keyid', 'parent', 'email', 'keyvalue'),
+			'optional' => array('level' => 0)
 		);
 	}
 	
@@ -33,8 +35,7 @@ class ReferenceAddWorkflow implements Service {
 	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$memory['owner'] = $memory['owner'] ? $memory['owner'] : $memory['keyid'];
-		$memory['msg'] = 'Reference added successfully';
+		$memory['msg'] = 'Reference created successfully';
 		
 		$workflow = array(
 		array(
@@ -42,12 +43,21 @@ class ReferenceAddWorkflow implements Service {
 			'input' => array('chainid' => 'parent')
 		),
 		array(
+			'service' => 'sb.key.available.workflow'
+		),
+		array(
+			'service' => 'sb.key.add.workflow',
+			'input' => array('key' => 'keyvalue'),
+			'output' => array('id' => 'owner')
+		),
+		array(
 			'service' => 'sb.chain.create.workflow',
 			'input' => array('masterkey' => 'owner')
 		),
 		array(
 			'service' => 'sb.web.add.workflow',
-			'input' => array('child' => 'id')
+			'input' => array('child' => 'id'),
+			'output' => array('id' => 'webid')
 		));
 		
 		return $kernel->execute($workflow, $memory);
@@ -57,7 +67,7 @@ class ReferenceAddWorkflow implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array('id');
+		return array('id', 'owner');
 	}
 	
 }

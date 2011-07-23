@@ -14,6 +14,7 @@ require_once(SBSERVICE);
  *	@param count integer Validation count [message] optional default 1
  *	@param not boolean Error on nonequality [message] optional default true
  *	@param errormsg string Error message on validation failure [message] optional default 'Invalid Query Results'
+ *	@param errstatus integer Error status code [memory] optional default 505
  *
  *	@return sqlresult array/integer Result set / affected row count [memory]
  *	@return sqlrc integer Row count [memory]
@@ -30,7 +31,7 @@ class QueryExecuteWorkflow implements Service {
 		return array(
 			'required' => array('conn', 'query'),
 			'optional' => array('rstype' => 0, 'escparam' => array(), 'numparam' => false, 
-								'count' => 1, 'not' => true, 'errormsg' => 'Invalid Query Results')
+								'count' => 1, 'not' => true, 'errormsg' => 'Invalid Query Results', 'errstatus' => 505)
 		);
 	}
 	

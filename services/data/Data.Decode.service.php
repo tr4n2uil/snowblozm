@@ -58,9 +58,9 @@ class DataDecodeService implements Service {
 		if($result === false || $result == null){
 			$memory['result'] = array();
 			$memory['valid'] = false;
-			$memory['msg'] = 'Invalid Data';
+			$memory['msg'] = 'Unable to decode data';
 			$memory['status'] = 501;
-			$memory['details'] = 'Data could not be decoded : '.$data.' @data.decode.service';
+			$memory['details'] = 'Data could not be decoded @data.decode.service';
 			return $memory;
 		}
 		

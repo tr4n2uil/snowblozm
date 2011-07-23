@@ -57,7 +57,7 @@ class DataEncodeService implements Service {
 		
 		if($result === false || $result == null){
 			$memory['valid'] = false;
-			$memory['msg'] = 'Invalid Data';
+			$memory['msg'] = 'Unable to encode data';
 			$memory['status'] = 501;
 			$memory['details'] = 'Data could not be encoded @data.encode.service';
 			return $memory;

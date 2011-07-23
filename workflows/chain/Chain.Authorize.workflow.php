@@ -32,17 +32,16 @@ class ChainAuthorizeWorkflow implements Service {
 		
 		$level = $memory['level'];
 		
-		$join1 = '`chainid`=';
-		$join2 = '`chainid` in ';
+		$join = '`chainid` in ';
 		$master = "(select `chainid` from `chains` where `masterkey`=\${keyid})";
 		$chain = "(select `chainid` from `members` where `keyid`=\${keyid})";
 		$child = 'select `child` from `webs` where `parent` in ';
-		$query = $join1.$master.' or '.$join2.$chain;
+		$query = $join.$master.' or '.$join.$chain;
 		
 		while($level--){
 			$chain = '('.$child.$chain.')';
 			$master = '('.$child.$master.')';
-			$query = $query.' or '.$join1.$master.' or '.$join2.$chain;
+			$query = $query.' or '.$join.$master.' or '.$join.$chain;
 		}
 		
 		$memory['msg'] = 'Key authorized successfully';
@@ -54,7 +53,8 @@ class ChainAuthorizeWorkflow implements Service {
 			'relation' => '`chains`',
 			'sqlprj' => '`chainid`',
 			'sqlcnd' => "where `chainid`=\${chainid} and ($query)",
-			'errormsg' => 'Unable to Authorize'
+			'errormsg' => 'Unable to Authorize',
+			'errstatus' => 403
 		);
 		
 		return $kernel->run($service, $memory);

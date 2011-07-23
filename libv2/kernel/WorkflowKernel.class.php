@@ -138,7 +138,7 @@ class WorkflowKernel {
 		 *	@debug
 		**/
 		if(Snowblozm::$debug){
-			echo 'IN '.json_encode($message).'<br /><br />';
+			echo 'IN '.json_encode($message)."<br /><br />\n\n";
 		}
 			
 		/**
@@ -150,7 +150,7 @@ class WorkflowKernel {
 		 *	@debug
 		**/
 		if(Snowblozm::$debug){
-			echo 'OUT '.json_encode($message).'<br /><br />';
+			echo 'OUT '.json_encode($message)."<br /><br />\n\n";
 		}
 		
 		/**
@@ -200,7 +200,7 @@ class WorkflowKernel {
 		 *	@debug
 		**/
 		if(Snowblozm::$debug){
-			echo 'MEMORY '.json_encode($memory).'<br /><br />';
+			echo 'MEMORY '.json_encode($memory)."<br /><br />\n\n";
 		}
 		
 		/**

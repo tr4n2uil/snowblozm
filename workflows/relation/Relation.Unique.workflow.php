@@ -12,6 +12,7 @@ require_once(SBSERVICE);
  *	@param escparam array Escape parameters [memory] optional default array()
  *	@param not boolean Value check nonequal [memory] optional default true
  *	@param errormsg string Error message [memory] optional default 'Error in Database'
+ *	@param errstatus integer Error status code [memory] optional default 505
  *
  *	@param conn array DataService instance configuration key [memory]
  *
@@ -28,7 +29,7 @@ class RelationUniqueWorkflow implements Service {
 	public function input(){
 		return array(
 			'required' => array('conn', 'relation', 'sqlcnd'),
-			'optional' => array('sqlprj' => '*', 'escparam' => array(), 'errormsg' => 'Error in Database', 'not' => true)
+			'optional' => array('sqlprj' => '*', 'escparam' => array(), 'errormsg' => 'Error in Database', 'not' => true, 'errstatus' => 505)
 		);
 	}
 	

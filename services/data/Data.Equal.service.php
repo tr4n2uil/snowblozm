@@ -9,6 +9,7 @@ require_once(SBSERVICE);
  *	@param value mixed Value to check against [memory] optional default 1
  *	@param not boolean Is error on non-equalilty [memory] optional default true
  *	@param errormsg string Error message [memory]
+ *	@param errstatus integer Error status code [memory] optional default 505
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *	
@@ -21,7 +22,7 @@ class DataEqualService implements Service {
 	public function input(){
 		return array(
 			'required' => array('errormsg'),
-			'optional' => array('data' => 1, 'value' => 1, 'not' => true)
+			'optional' => array('data' => 1, 'value' => 1, 'not' => true, 'errstatus' => 505)
 		);
 	}
 	
@@ -33,11 +34,12 @@ class DataEqualService implements Service {
 		$value = $memory['value'];
 		$not = $memory['not'];
 		$errormsg = $memory['errormsg'];
+		$errstatus = $memory['errstatus'];
 		
 		if($not ^ ($data == $value)){
 			$memory['valid'] = false;
 			$memory['msg'] = $errormsg;
-			$memory['status'] = 505;
+			$memory['status'] = $errstatus;
 			$memory['details'] = 'Data not equal to value : '.$value.' @data.equal.service';
 			return $memory;
 		}

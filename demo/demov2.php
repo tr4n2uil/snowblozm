@@ -65,7 +65,7 @@
 		'restype' => $restype,
 		'crypt' => $crypt,
 		'hash' => $hash,
-		'email' => false,
+		'email' => 'vibhaj@gmail.com',
 		'access' => array(
 			'root' => array('sbdemo', 'sb')
 		)
