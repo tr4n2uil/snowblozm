@@ -38,7 +38,7 @@ class ChainMemberWorkflow implements Service {
 			'relation' => '`members` m, `keys` k',
 			'sqlprj' => 'k.`keyid`, k.`email`',
 			'sqlcnd' => "where m.`chainid`=\${chainid} and m.`keyid`=k.`keyid`",
-			'errormsg' => 'Invalid Chain ID'
+			'errormsg' => 'Invalid Chain ID / No Members'
 		);
 		
 		return $kernel->run($service, $memory);

@@ -36,6 +36,7 @@ class SecureReadWorkflow implements Service {
 	**/
 	public function run($memory){
 		$kernel = new WorkflowKernel();
+		$flag = $memory['email'] ? true : ($memory['crypt']!='none');
 		
 		$workflow = array(
 		array(
@@ -70,12 +71,14 @@ class SecureReadWorkflow implements Service {
 		));
 		
 		$memory = $kernel->execute($workflow, $memory);
+		
 		if($memory['valid']){
 			$memory['result'] = array_merge($memory['result'], $memory['message']);
 			if(isset($memory['result']['challenge'])) unset($memory['result']['challenge']);
 			if(isset($memory['result']['message'])) unset($memory['result']['message']);
 			if(isset($memory['result']['hash'])) unset($memory['result']['hash']);
-			$memory['result']['keyid'] = $memory['keyid'];
+			if($flag) 
+				$memory['result']['keyid'] = $memory['keyid'];
 		}
 		
 		return $memory;
