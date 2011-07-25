@@ -1,7 +1,7 @@
 <?php
 
 	require_once('../init.php');
-	require_once(SBCORE);
+	//Snowblozm::$debug = true;
 	
 	if(!isset($_GET['type'])){
 		echo "Please specify request.response.secure type using GET param type";
@@ -47,7 +47,9 @@
 		exit;
 	}
 	
-	//Snowblozm::$debug = true;
+	/**
+	 *	@config Dataservices
+	**/
 	Snowblozm::init('sbconn', array(
 		'type' => 'mysql',
 		'host' => 'localhost',

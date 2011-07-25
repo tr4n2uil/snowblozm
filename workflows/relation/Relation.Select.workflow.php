@@ -14,7 +14,7 @@ require_once(SBSERVICE);
  *
  *	@param conn array DataService instance configuration key [memory]
  *
- *	@return resultset array Resultset [memory] 
+ *	@return result array Resultset [memory] 
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -42,7 +42,7 @@ class RelationSelectWorkflow implements Service {
 		$service = array(
 			'service' => 'sb.query.execute.workflow',
 			'args' => $memory['args'],
-			'output' => array('sqlresult' => $relation),
+			'output' => array('sqlresult' => 'result'),
 			'query' => 'select '.$memory['sqlprj'].' from '.$relation.' '.$memory['sqlcnd'].';',
 			'count' => 0,
 			'not' => false
@@ -55,7 +55,7 @@ class RelationSelectWorkflow implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array('resultset');
+		return array('result');
 	}
 	
 }

@@ -48,7 +48,7 @@ class LaunchMessageWorkflow implements Service {
 		array(
 			'service' => 'sb.secure.write.workflow',
 			'args' => array('valid', 'msg', 'status', 'details'),
-			'input' => array('data' => 'result', 'type' => 'restype'),
+			'input' => array('data' => 'response', 'type' => 'restype'),
 			'strict' => false
 		),
 		array(

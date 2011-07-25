@@ -8,7 +8,7 @@ require_once(SBSERVICE);
  *	@param message array Message to be launched [memory]
  *	@param access array Array of allowed values for controlling workflows executed [memory] optional default array()
  *
- *	@return result array Output parameters for service execution [memory]
+ *	@return response array Output parameters for service execution [memory]
  *	@return valid boolean Service execution validity [memory]
  *	@return msg string Service execution result [memory]
  *	@return status integer Service execution status [memory]
@@ -102,7 +102,7 @@ class LaunchMessageService implements Service {
 		**/
 		$service = Snowblozm::load($uri);
 		foreach($service->output() as $key){
-			$memory['result'][$key] = $memory[$key];
+			$memory['response'][$key] = $memory[$key];
 		}
 		
 		
@@ -113,7 +113,7 @@ class LaunchMessageService implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array('result', 'valid', 'msg', 'status', 'details');
+		return array('response', 'valid', 'msg', 'status', 'details');
 	}
 	
 }
