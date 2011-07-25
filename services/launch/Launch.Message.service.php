@@ -34,7 +34,7 @@ class LaunchMessageService implements Service {
 	**/
 	public function run($memory){
 		$kernel = new WorkflowKernel();
-		$memory['result'] = array();
+		$memory['response'] = array();
 		
 		$message = $memory['message'];
 		$access = $memory['access'];

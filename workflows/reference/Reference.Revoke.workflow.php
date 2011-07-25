@@ -7,7 +7,7 @@ require_once(SBSERVICE);
  *
  *	@param keyid long int Usage Key ID [memory]
  *	@param id long int Reference ID [memory]
- *	@param childkeyid long int Key ID to be granted [memory]
+ *	@param childkeyid long int Key ID to be revoked [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
