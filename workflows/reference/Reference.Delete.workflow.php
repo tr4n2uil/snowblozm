@@ -8,7 +8,6 @@ require_once(SBSERVICE);
  *	@param keyid long int Usage Key ID [memory]
  *	@param id long int Reference ID [memory]
  *	@param parent long int Reference ID [memory]
- *	@param level integer Web level [memory] optional default 0
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -20,8 +19,7 @@ class ReferenceDeleteWorkflow implements Service {
 	**/
 	public function input(){
 		return array(
-			'required' => array('keyid', 'parent', 'id'),
-			'optional' => array('level' => 0)
+			'required' => array('keyid', 'parent', 'id')
 		);
 	}
 	
@@ -35,12 +33,8 @@ class ReferenceDeleteWorkflow implements Service {
 		
 		$workflow = array(
 		array(
-			'service' => 'sb.chain.authorize.workflow',
+			'service' => 'sb.reference.authorize.workflow',
 			'input' => array('chainid' => 'parent')
-		),
-		array(
-			'service' => 'sb.chain.master.workflow',
-			'input' => array('chainid' => 'id')
 		),
 		array(
 			'service' => 'sb.key.remove.workflow',

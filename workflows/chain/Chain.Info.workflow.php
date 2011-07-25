@@ -2,17 +2,18 @@
 require_once(SBSERVICE);
 
 /**
- *	@class ChainMasterWorkflow
- *	@desc Returns master key ID in chain
+ *	@class ChainInfoWorkflow
+ *	@desc Returns chain information
  *
  *	@param chainid long int Chain ID [memory]
  *
- *	@param masterkey long int Master key ID [memory]
+ *	@return masterkey long int Master key ID [memory]
+ *	@return level integer Level [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class ChainMasterWorkflow implements Service {
+class ChainInfoWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
@@ -29,7 +30,7 @@ class ChainMasterWorkflow implements Service {
 	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$memory['msg'] = 'Master key returned successfully';
+		$memory['msg'] = 'Chain information returned successfully';
 		
 		$workflow = array(
 		array(
@@ -37,14 +38,14 @@ class ChainMasterWorkflow implements Service {
 			'args' => array('chainid'),
 			'conn' => 'sbconn',
 			'relation' => '`chains`',
-			'sqlprj' => '`masterkey`',
+			'sqlprj' => '`masterkey`, `level`',
 			'sqlcnd' => "where `chainid`=\${chainid}",
 			'errormsg' => 'Invalid Chain ID'
 		),
 		array(
 			'service' => 'sbcore.data.select.service',
 			'args' => array('result'),
-			'params' => array('result.0.masterkey' => 'masterkey')
+			'params' => array('result.0.masterkey' => 'masterkey', 'result.0.level' => 'level')
 		));
 		
 		return $kernel->execute($workflow, $memory);
@@ -54,7 +55,7 @@ class ChainMasterWorkflow implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array('masterkey');
+		return array('masterkey', 'level');
 	}
 	
 }

@@ -7,7 +7,8 @@ require_once(SBSERVICE);
  *
  *	@param keyid long int Usage Key ID [memory]
  *	@param id long int Reference ID [memory]
- *	@param level integer Web level [memory] optional default 0
+ *
+ *	@return masterkey long int Master key ID [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -19,8 +20,7 @@ class ReferenceAuthorizeWorkflow implements Service {
 	**/
 	public function input(){
 		return array(
-			'required' => array('keyid', 'id'),
-			'optional' => array('level' => 0)
+			'required' => array('keyid', 'id')
 		);
 	}
 	
@@ -32,19 +32,24 @@ class ReferenceAuthorizeWorkflow implements Service {
 	
 		$memory['msg'] = 'Reference authorized successfully';
 		
-		$service = array(
+		$workflow = array(
+		array(
+			'service' => 'sb.chain.info.workflow',
+			'input' => array('chainid' => 'id')
+		),
+		array(
 			'service' => 'sb.chain.authorize.workflow',
 			'input' => array('chainid' => 'id')
-		);
+		));
 		
-		return $kernel->run($service, $memory);
+		return $kernel->execute($workflow, $memory);
 	}
 	
 	/**
 	 *	@interface Service
 	**/
 	public function output(){
-		return array();
+		return array('masterkey');
 	}
 	
 }

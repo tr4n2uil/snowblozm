@@ -7,7 +7,6 @@ require_once(SBSERVICE);
  *
  *	@param keyid long int Usage Key ID [memory]
  *	@param id long int Reference ID [memory]
- *	@param level integer Web level [memory] optional default 0
  *
  *	@return chain array Chain member information [memory]
  *
@@ -21,8 +20,7 @@ class ReferenceChainWorkflow implements Service {
 	**/
 	public function input(){
 		return array(
-			'required' => array('keyid', 'id'),
-			'optional' => array('level' => 0)
+			'required' => array('keyid', 'id')
 		);
 	}
 	
@@ -36,7 +34,7 @@ class ReferenceChainWorkflow implements Service {
 		
 		$workflow = array(
 		array(
-			'service' => 'sb.chain.authorize.workflow',
+			'service' => 'sb.reference.authorize.workflow',
 			'input' => array('chainid' => 'id')
 		),
 		array(
