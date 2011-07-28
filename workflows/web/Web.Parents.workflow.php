@@ -2,25 +2,24 @@
 require_once(SBSERVICE);
 
 /**
- *	@class WebAddWorkflow
- *	@desc Adds child chain to parent in the web
+ *	@class WebParentsWorkflow
+ *	@desc Lists parent chains of child in the web
  *
  *	@param child long int Chain ID [memory]
- *	@param parent long int Chain ID [memory]
  *
- *	@return id long int Web member ID [memory]
+ *	@return parents array Parents IDs [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class WebAddWorkflow implements Service {
+class WebParentsWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
 	**/
 	public function input(){
 		return array(
-			'required' => array('child', 'parent')
+			'required' => array('child')
 		);
 	}
 	
@@ -30,14 +29,14 @@ class WebAddWorkflow implements Service {
 	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$memory['msg'] = 'Web member added successfully';
+		$memory['msg'] = 'Web parents listed successfully';
 		
 		$service = array(
-			'service' => 'sb.relation.insert.workflow',
-			'args' => array('child', 'parent'),
+			'service' => 'sb.relation.select.workflow',
+			'args' => array('child'),
 			'conn' => 'sbconn',
 			'relation' => '`webs`',
-			'sqlcnd' => "(`child`, `parent`) values (\${child}, \${parent})"
+			'sqlcnd' => "where `child`=\${child}"
 		);
 		
 		return $kernel->run($service, $memory);
@@ -47,7 +46,7 @@ class WebAddWorkflow implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array('id');
+		return array('parents');
 	}
 	
 }
