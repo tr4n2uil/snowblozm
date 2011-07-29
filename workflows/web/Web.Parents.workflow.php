@@ -36,7 +36,8 @@ class WebParentsWorkflow implements Service {
 			'args' => array('child'),
 			'conn' => 'sbconn',
 			'relation' => '`webs`',
-			'sqlcnd' => "where `child`=\${child}"
+			'sqlcnd' => "where `child`=\${child}",
+			'output' => array('result' => 'parents')
 		);
 		
 		return $kernel->run($service, $memory);

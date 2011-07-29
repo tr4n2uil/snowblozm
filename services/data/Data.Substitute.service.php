@@ -2,7 +2,7 @@
 require_once(SBSERVICE);
 
 /**
- *	@class StringSubstituteService
+ *	@class DataSubstituteService
  *	@desc Substitutes ${key} in base string with value from memory for all keys in params array
  *
  *	@param args array Array of key to use for substitutions [args]
@@ -13,7 +13,7 @@ require_once(SBSERVICE);
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *	
 **/
-class StringSubstituteService implements Service {
+class DataSubstituteService implements Service {
 	
 	/**
 	 *	@interface Service
@@ -36,7 +36,7 @@ class StringSubstituteService implements Service {
 				$memory['valid'] = false;
 				$memory['msg'] = 'Invalid Service State';
 				$memory['status'] = 504;
-				$memory['details'] = 'Value not found for '.$key.' @string.substitute.service';
+				$memory['details'] = 'Value not found for '.$key.' @data.substitute.service';
 				return $memory;
 			}
 			$data = str_replace('${'.$key.'}', $memory[$key], $data);
@@ -44,7 +44,7 @@ class StringSubstituteService implements Service {
 
 		$memory['result'] = $data;
 		$memory['valid'] = true;
-		$memory['msg'] = 'Valid String Substitution';
+		$memory['msg'] = 'Valid Data Substitution';
 		$memory['status'] = 200;
 		$memory['details'] = 'Successfully executed';
 		return $memory;

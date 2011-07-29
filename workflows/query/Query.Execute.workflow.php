@@ -74,7 +74,7 @@ class QueryExecuteWorkflow implements Service {
 		
 		if(count($args) != 0){
 			array_push($workflow, array(
-				'service' => 'sbcore.string.substitute.service',
+				'service' => 'sbcore.data.substitute.service',
 				'args' => $args,
 				'input' => array('data' => 'query'),
 				'output' => array('result' => 'query')
