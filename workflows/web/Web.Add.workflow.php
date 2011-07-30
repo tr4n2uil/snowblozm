@@ -7,6 +7,8 @@ require_once(SBSERVICE);
  *
  *	@param child long int Chain ID [memory]
  *	@param parent long int Chain ID [memory]
+ *	@param path string Collation path [memory] optional default '/'
+ *	@param leaf string Collation leaf [memory] optional default 'Child ID'
  *
  *	@return id long int Web member ID [memory]
  *
@@ -20,7 +22,8 @@ class WebAddWorkflow implements Service {
 	**/
 	public function input(){
 		return array(
-			'required' => array('child', 'parent')
+			'required' => array('child', 'parent'),
+			'optional' => array('path' => '/', 'leaf' => false)
 		);
 	}
 	
@@ -31,13 +34,15 @@ class WebAddWorkflow implements Service {
 		$kernel = new WorkflowKernel();
 		
 		$memory['msg'] = 'Web member added successfully';
+		$memory['leaf'] = $memory['leaf'] ? $memory['leaf'] : $memory['child'];
 		
 		$service = array(
 			'service' => 'sb.relation.insert.workflow',
-			'args' => array('child', 'parent'),
+			'args' => array('child', 'parent', 'path', 'leaf'),
 			'conn' => 'sbconn',
 			'relation' => '`webs`',
-			'sqlcnd' => "(`child`, `parent`) values (\${child}, \${parent})"
+			'sqlcnd' => "(`child`, `parent`, `path`, `leaf`) values (\${child}, \${parent}, '\${path}', '\${leaf}')",
+			'escparam' => array('path', 'leaf')
 		);
 		
 		return $kernel->run($service, $memory);

@@ -6,6 +6,7 @@ require_once(SBSERVICE);
  *	@desc Creates new chain
  *
  *	@param masterkey long int Key ID [memory]
+ *	@param root string Collation root [memory] optional default '/masterkey'
  *	@param level integer Web level [memory] optional default 0
  *
  *	@return return id long int Chain ID [memory]
@@ -21,7 +22,7 @@ class ChainCreateWorkflow implements Service {
 	public function input(){
 		return array(
 			'required' => array('masterkey'),
-			'optional' => array('level' => 0)
+			'optional' => array('level' => 0, 'root' => false)
 		);
 	}
 	
@@ -32,13 +33,15 @@ class ChainCreateWorkflow implements Service {
 		$kernel = new WorkflowKernel();
 		
 		$memory['msg'] = 'Chain created successfully';
+		$memory['root'] = $memory['root'] ? $memory['root'] : '/'.$memory['masterkey'];
 		
 		$service = array(
 			'service' => 'sb.relation.insert.workflow',
-			'args' => array('masterkey', 'level'),
+			'args' => array('masterkey', 'level', 'root'),
 			'conn' => 'sbconn',
 			'relation' => '`chains`',
-			'sqlcnd' => "(`masterkey`, `level`, `ctime`, `rtime`, `wtime`) values (\${masterkey}, \${level}, now(), now(), now())"
+			'sqlcnd' => "(`masterkey`, `level`, `root`, `ctime`, `rtime`, `wtime`) values (\${masterkey}, \${level}, '\${root}', now(), now(), now())",
+			'escparam' => array('root')
 		);
 		
 		return $kernel->run($service, $memory);
