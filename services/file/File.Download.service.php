@@ -5,10 +5,11 @@ require_once(SBSERVICE);
  *	@class FileDownloadService
  *	@desc Reads and echoes file at specified destination
  *
- *	@param file string File (full path + name) [memory]
+ *	@param filepath string Filepath [memory]
+ *	@param filename string Filename [memory]
  *	@param size long int File size in bytes [memory]
  *	@param mime string File MIME type [message] optional default 'application/force-download'
- *	@param filename string Filename [memory]
+ *	@param asname string Download filename [memory] optional default 'filename'
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *	
@@ -20,8 +21,8 @@ class FileDownloadService implements Service {
 	**/
 	public function input(){
 		return array(
-			'required' => array('file', 'filename', 'size'),
-			'optional' => array('mime' => 'application/force-download')
+			'required' => array('filepath', 'filename', 'size'),
+			'optional' => array('mime' => 'application/force-download', 'asname' => false)
 		);
 	}
 	
@@ -29,9 +30,9 @@ class FileDownloadService implements Service {
 	 *	@interface Service
 	**/
 	public function run($memory){
-		$file = $memory['file'];
+		$file = $memory['filepath'].$memory['filename'];
 		$size = $memory['size'];
-		$asname = $memory['filename'];
+		$asname = $memory['asname'] ? $memory['asname'] : $memory['filename'];
 		$mime = $memory['mime'];
 		
 		if (file_exists($file)) {
@@ -47,6 +48,7 @@ class FileDownloadService implements Service {
 			ob_clean();
 			flush();
 			readfile($file);
+			exit;
 		}
 		else {
 			$memory['valid'] = false;
