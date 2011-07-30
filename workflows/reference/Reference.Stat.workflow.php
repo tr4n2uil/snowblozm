@@ -2,22 +2,24 @@
 require_once(SBSERVICE);
 
 /**
- *	@class ReferenceAvailableWorkflow
- *	@desc Checks for availability of service key value
+ *	@class ReferenceStatWorkflow
+ *	@desc Returns statistics of reference
  *
- *	@param email string Email [memory]
+ *	@param id long int Reference ID [memory]
+ *
+ *	@return stat array Statistics [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
-class ReferenceAvailableWorkflow implements Service {
+class ReferenceStatWorkflow implements Service {
 	
 	/**
 	 *	@interface Service
 	**/
 	public function input(){
 		return array(
-			'required' => array('email')
+			'required' => array('id')
 		);
 	}
 	
@@ -28,7 +30,8 @@ class ReferenceAvailableWorkflow implements Service {
 		$kernel = new WorkflowKernel();
 		
 		$service = array(
-			'service' => 'sb.key.available.workflow'
+			'service' => 'sb.chain.stat.workflow',
+			'input' => array('chainid' => 'id')
 		);
 		
 		return $kernel->run($service, $memory);
@@ -38,7 +41,7 @@ class ReferenceAvailableWorkflow implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array();
+		return array('stat');
 	}
 	
 }

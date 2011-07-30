@@ -53,7 +53,7 @@ class LaunchMessageWorkflow implements Service {
 		),
 		array(
 			'service' => 'sbcore.response.write.service',
-			'input' => array('data' => 'result')
+			'input' => array('data' => 'result', 'type' => 'restype')
 		));
 		
 		return $kernel->execute($workflow, $memory);

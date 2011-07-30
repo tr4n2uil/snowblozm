@@ -29,46 +29,35 @@ class FileDownloadService implements Service {
 	 *	@interface Service
 	**/
 	public function run($memory){
-		$filename = $memory['file'];
+		$file = $memory['file'];
 		$size = $memory['size'];
 		$asname = $memory['filename'];
 		$mime = $memory['mime'];
 		
-		if(!is_file($filename)){
+		if (file_exists($file)) {
+			set_time_limit(0);
+			header('Content-Description: File Transfer');
+			header("Content-Type: $mime");
+			header("Content-Disposition: attachment; filename=\"$asname\"");
+			header('Content-Transfer-Encoding: binary');
+			header('Expires: 0');
+			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+			header('Pragma: public');
+			header('Content-Length: ' . $size);
+			ob_clean();
+			flush();
+			readfile($file);
+		}
+		else {
 			$memory['valid'] = false;
 				$memory['msg'] = "File Not Found";
 				$memory['status'] = 504;
-				$memory['details'] = 'Error file not found : '.$filename.' @file.upload.service';
+				$memory['details'] = 'Error file not found : '.$file.' @file.upload.service';
 				return $memory;
 		}
 		
-		set_time_limit(0);
-		
-		header("Pragma: public");
-		header("Expires: 0");
-		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-		header("Cache-Control: public");
-		header("Content-Description: File Transfer");
-		header("Content-Type: $mime");
-		header("Content-Disposition: attachment; filename=\"$asname\"");
-		header("Content-Transfer-Encoding: binary");
-		header("Content-Length: " . $size);
-		
-		$file = @fopen($filename,"rb");
-		if ($file) {
-			while(!feof($file)) {
-				print(fread($file, 1024*8));
-				flush();
-				if (connection_status()!=0) {
-					@fclose($file);
-					die();
-				}
-			}
-		@fclose($file);
-		}
-		
 		$memory['valid'] = true;
-		$memory['msg'] = 'File Uploaded Successfully';
+		$memory['msg'] = 'File Downloaded Successfully';
 		$memory['status'] = 200;
 		$memory['details'] = 'Successfully executed';
 		return $memory;
