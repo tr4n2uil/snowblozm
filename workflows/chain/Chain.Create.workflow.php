@@ -38,7 +38,7 @@ class ChainCreateWorkflow implements Service {
 			'args' => array('masterkey', 'level'),
 			'conn' => 'sbconn',
 			'relation' => '`chains`',
-			'sqlcnd' => "(`masterkey`, `level`) values (\${masterkey}, \${level})"
+			'sqlcnd' => "(`masterkey`, `level`, `ctime`, `rtime`, `wtime`) values (\${masterkey}, \${level}, now(), now(), now())"
 		);
 		
 		return $kernel->run($service, $memory);
