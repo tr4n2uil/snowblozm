@@ -27,7 +27,7 @@ class ResponseWriteService implements Service {
 	 *	@interface Service
 	**/
 	public function run($memory){
-		$type = $memory['type'];
+		$type = Snowblozm::$setmime ? Snowblozm::$setmime : $memory['type'];
 		
 		switch($type){
 			case 'json' :

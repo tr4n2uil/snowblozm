@@ -2,6 +2,7 @@
 
 	require_once('../init.php');
 	//Snowblozm::$debug = true;
+	Snowblozm::$setmime = 'html'; 
 	
 	if(!isset($_GET['type'])){
 		echo "Please specify request.response.secure type using GET param type";

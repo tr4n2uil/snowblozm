@@ -11,6 +11,7 @@ require_once(SBSERVICE);
  *	@param rstype integer type of result [message] optional default 0 
  *	@param escparam array Escape parameters [message] optional default array()
  *	@param numparam array Number parameters [message] optional default args-escparam
+ *	@param check boolean Is validate [memory] optional default true
  *	@param count integer Validation count [message] optional default 1
  *	@param not boolean Error on nonequality [message] optional default true
  *	@param errormsg string Error message on validation failure [message] optional default 'Invalid Query Results'
@@ -31,7 +32,7 @@ class QueryExecuteWorkflow implements Service {
 		return array(
 			'required' => array('conn', 'query'),
 			'optional' => array('rstype' => 0, 'escparam' => array(), 'numparam' => false, 
-								'count' => 1, 'not' => true, 'errormsg' => 'Invalid Query Results', 'errstatus' => 505)
+								'count' => 1, 'not' => true, 'errormsg' => 'Invalid Query Results', 'errstatus' => 505, 'check' => true)
 		);
 	}
 	
@@ -81,16 +82,18 @@ class QueryExecuteWorkflow implements Service {
 			));
 		}
 		
-		array_push($workflow,
-		array(
+		array_push($workflow, array(
 			'service' => 'sbcore.query.execute.service',
 			'output' => array('sqlresult' => 'sqlresult', 'sqlrowcount' => 'sqlrc')
-		),
-		array(
-			'service' => 'sbcore.data.equal.service',
-			'input' => array('data' => 'sqlrc'),
-			'value' => $memory['count']
 		));
+		
+		if($memory['check']){
+			array_push($workflow, array(
+				'service' => 'sbcore.data.equal.service',
+				'input' => array('data' => 'sqlrc'),
+				'value' => $memory['count']
+			));
+		}
 		
 		$memory = $kernel->execute($workflow, $memory);
 		

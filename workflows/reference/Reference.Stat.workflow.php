@@ -29,12 +29,18 @@ class ReferenceStatWorkflow implements Service {
 	public function run($memory){
 		$kernel = new WorkflowKernel();
 		
-		$service = array(
+		$workflow = array(
+		array(
+			'service' => 'sb.reference.authorize.workflow',
+			'input' => array('chainid' => 'id'),
+			'action' => 'info'
+		),
+		array(
 			'service' => 'sb.chain.stat.workflow',
 			'input' => array('chainid' => 'id')
-		);
+		));
 		
-		return $kernel->run($service, $memory);
+		return $kernel->execute($workflow, $memory);
 	}
 	
 	/**

@@ -68,7 +68,7 @@ class FileUploadService implements Service {
 		$maxsize = $memory['maxsize'];
 		
 		if($maxsize){
-			if($file['size'] > $message['maxsize']){
+			if($file['size'] > $memory['maxsize']){
 				$memory['valid'] = false;
 				$memory['msg'] = "File is larger than maximum allowed";
 				$memory['status'] = 503;

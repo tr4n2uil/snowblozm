@@ -9,9 +9,10 @@ require_once(SBSERVICE);
  *	@param sqlcnd string SQL condition [memory]
  *	@param args array Query parameters [args]
  *	@param escparam array Escape parameters [memory] optional default array()
+ *	@param check boolean Is validate [memory] optional default true
  *	@param not boolean Value check nonequal [memory] optional default true
  *	@param count boolean Value [memory] optional default 1
- *	@param errormsg string Error message [memory] optional default 'Invalid Tuple'
+ *	@param errormsg string Error message [memory] optional default 'Invalid Tuple / No Change'
  *
  *	@param conn array DataService instance configuration key [memory]
  *
@@ -26,7 +27,7 @@ class RelationUpdateWorkflow implements Service {
 	public function input(){
 		return array(
 			'required' => array('conn', 'relation', 'sqlcnd'),
-			'optional' => array('escparam' => array(), 'errormsg' => 'Invalid Tuple', 'not' => true, 'count' => 1)
+			'optional' => array('escparam' => array(), 'errormsg' => 'Invalid Tuple / No Change', 'not' => true, 'count' => 1, 'check' => true)
 		);
 	}
 	

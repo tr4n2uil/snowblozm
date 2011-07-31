@@ -7,6 +7,7 @@ require_once(SBSERVICE);
  *
  *	@param keyid long int Usage Key ID [memory]
  *	@param id long int Reference ID [memory]
+ *	@param action string Action to authorize [memory] optional default 'edit'
  *
  *	@return masterkey long int Master key ID [memory]
  *
@@ -20,7 +21,8 @@ class ReferenceAuthorizeWorkflow implements Service {
 	**/
 	public function input(){
 		return array(
-			'required' => array('keyid', 'id')
+			'required' => array('keyid', 'id'),
+			'optional' => array('action' => 'edit')
 		);
 	}
 	

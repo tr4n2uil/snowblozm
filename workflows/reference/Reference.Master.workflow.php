@@ -34,7 +34,8 @@ class ReferenceMasterWorkflow implements Service {
 		$workflow = array(
 		array(
 			'service' => 'sb.reference.authorize.workflow',
-			'input' => array('chainid' => 'id')
+			'input' => array('chainid' => 'id'),
+			'action' => 'edit'
 		),
 		array(
 			'service' => 'sb.key.edit.workflow',

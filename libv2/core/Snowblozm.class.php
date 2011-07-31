@@ -51,6 +51,11 @@ class Snowblozm {
 	public static $debug = false;
 	
 	/** 
+	 *	@static setmime string Set response MIME type
+	**/
+	public static $setmime = false;
+	
+	/** 
 	 *	@method add
 	 *	@desc Adds a service provider configuration
 	 *

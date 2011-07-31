@@ -8,6 +8,9 @@ require_once(SBSERVICE);
  *	@param relation string Relation name [memory]
  *	@param sqlcnd string SQL condition [memory]
  *	@param args array Query parameters [args]
+ *	@param check boolean Is validate [memory] optional default true
+ *	@param count integer Validation count [message] optional default 1
+ *	@param not boolean Error on nonequality [message] optional default true
  *	@param escparam array Escape parameters [memory] optional default array()
  *	@param errormsg string Error message [memory] optional default 'Invalid Tuple'
  *
@@ -24,7 +27,7 @@ class RelationDeleteWorkflow implements Service {
 	public function input(){
 		return array(
 			'required' => array('conn', 'relation', 'sqlcnd'),
-			'optional' => array('escparam' => array(), 'errormsg' => 'Invalid Tuple')
+			'optional' => array('escparam' => array(), 'errormsg' => 'Invalid Tuple', 'not' => true, 'count' => 1, 'check' => true)
 		);
 	}
 	

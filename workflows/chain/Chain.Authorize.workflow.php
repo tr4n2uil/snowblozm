@@ -8,6 +8,7 @@ require_once(SBSERVICE);
  *	@param chainid long int Chain ID [memory]
  *	@param keyid long int Key ID [memory]
  *	@param level integer Web level [memory] optional default 0
+ *	@param action string Action to authorize [memory] optional default 'edit'
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -20,7 +21,7 @@ class ChainAuthorizeWorkflow implements Service {
 	public function input(){
 		return array(
 			'required' => array('keyid', 'chainid'),
-			'optional' => array('level' => 0)
+			'optional' => array('level' => 0, 'action' => 'edit')
 		);
 	}
 	
@@ -48,11 +49,12 @@ class ChainAuthorizeWorkflow implements Service {
 		
 		$service = array(
 			'service' => 'sb.relation.unique.workflow',
-			'args' => array('keyid', 'chainid'),
+			'args' => array('keyid', 'chainid', 'action'),
 			'conn' => 'sbconn',
 			'relation' => '`chains`',
 			'sqlprj' => '`chainid`',
-			'sqlcnd' => "where `chainid`=\${chainid} and ($query)",
+			'sqlcnd' => "where `chainid`=\${chainid} and (`authorize` not like '%\${action}%' or $query)",
+			'escparam' => array('action'),
 			'errormsg' => 'Unable to Authorize',
 			'errstatus' => 403
 		);
