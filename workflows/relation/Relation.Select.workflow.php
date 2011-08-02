@@ -10,6 +10,7 @@ require_once(SBSERVICE);
  *	@param sqlprj string SQL projection [memory] optional default *
  *	@param args array Query parameters [args]
  *	@param escparam array Escape parameters [memory] optional default array()
+ *	@param check boolean Is validate [memory] optional default true
  *	@param errormsg string Error message [memory] optional default 'Error in Database'
  *
  *	@param conn array DataService instance configuration key [memory]
@@ -27,7 +28,7 @@ class RelationSelectWorkflow implements Service {
 	public function input(){
 		return array(
 			'required' => array('conn', 'relation', 'sqlcnd'),
-			'optional' => array('sqlprj' => '*', 'escparam' => array(), 'errormsg' => 'Error in Database')
+			'optional' => array('sqlprj' => '*', 'escparam' => array(), 'errormsg' => 'Error in Database', 'check' => true)
 		);
 	}
 	
