@@ -9,6 +9,7 @@ require_once(SBSERVICE);
  *	@param parent long int Reference ID [memory]
  *	@param level integer Web level [memory] optional default 0
  *	@param owner long int Owner Key ID [memory] optional default keyid
+ *	@param authorize string Authorize control value [memory] optional default 'edit:child:list'
  *	@param root string Collation root [memory] optional default '/masterkey'
  *	@param path string Collation path [memory] optional default '/'
  *	@param leaf string Collation leaf [memory] optional default 'Child ID'
@@ -26,7 +27,7 @@ class ReferenceAddWorkflow implements Service {
 	public function input(){
 		return array(
 			'required' => array('keyid', 'parent'),
-			'optional' => array('level' => 0, 'owner' => false, 'root' => false, 'path' => '/', 'leaf' => false)
+			'optional' => array('level' => 0, 'owner' => false, 'root' => false, 'path' => '/', 'leaf' => false, 'authorize' => 'edit:child:list')
 		);
 	}
 	
