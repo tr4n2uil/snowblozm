@@ -77,6 +77,8 @@ class SecureReadWorkflow implements Service {
 			if(isset($memory['result']['challenge'])) unset($memory['result']['challenge']);
 			if(isset($memory['result']['message'])) unset($memory['result']['message']);
 			if(isset($memory['result']['hash'])) unset($memory['result']['hash']);
+			if(isset($memory['result']['keyid'])) unset($memory['result']['keyid']);
+			
 			if($flag) 
 				$memory['result']['keyid'] = $memory['keyid'];
 		}
