@@ -29,7 +29,7 @@ class ReferenceCreateWorkflow implements Service {
 	public function input(){
 		return array(
 			'required' => array('keyid', 'parent', 'email', 'keyvalue'),
-			'optional' => array('level' => 0, 'root' => false, 'path' => '/', 'leaf' => false, 'authorize' => 'edit:child:list')
+			'optional' => array('level' => 0, 'root' => false, 'path' => '/', 'leaf' => false, 'authorize' => 'edit:add:remove:list')
 		);
 	}
 	
@@ -45,7 +45,7 @@ class ReferenceCreateWorkflow implements Service {
 		array(
 			'service' => 'sb.reference.authorize.workflow',
 			'input' => array('id' => 'parent'),
-			'action' => 'child'
+			'action' => 'add'
 		),
 		array(
 			'service' => 'sb.key.available.workflow'
