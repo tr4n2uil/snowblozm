@@ -43,13 +43,16 @@ class SecureWriteWorkflow implements Service {
 			$args = array('valid', 'msg', 'status', 'details', 'message', 'hash');
 		else
 			$args = array('user', 'challenge', 'message', 'hash', 'valid', 'msg', 'status', 'details');
+		 
+		$type = ($memory['crypt'] == 'none') ? 'none' : $memory['type'];
 		
 		$workflow = array(
 		array(
 			'service' => 'sb.key.identify.workflow'
 		),
 		array(
-			'service' => 'sbcore.data.encode.service'
+			'service' => 'sbcore.data.encode.service',
+			'type' => $type
 		),
 		array(
 			'service' => 'sbcore.data.encrypt.service',

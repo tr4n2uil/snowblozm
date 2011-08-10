@@ -8,6 +8,7 @@ require_once(SBMYSQL);
  *
  *	@param args[0] string Key to resultset as array [args]
  *	@param attr string/integer Key to use for accessing value to be included in list [memory] optional default 0
+ *	@param default array Initialize array for result [memory] optinal default array()
  *
  *	@return list string Resultant list as string [memory]
  *	@return result array Resultant array [memory]
@@ -22,7 +23,7 @@ class DataListService implements Service {
 	**/
 	public function input(){
 		return array(
-			'optional' => array('attr' => 0)
+			'optional' => array('attr' => 0, 'default' => array())
 		);
 	}
 	
@@ -32,7 +33,7 @@ class DataListService implements Service {
 	public function run($memory){
 		$args = $memory['args'];
 		$attr = $memory['attr'];
-		$list = array();
+		$list = $memory['default'];
 		
 		if(isset($args[0])){
 			$key = $args[0];

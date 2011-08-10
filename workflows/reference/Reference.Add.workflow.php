@@ -52,7 +52,8 @@ class ReferenceAddWorkflow implements Service {
 		),
 		array(
 			'service' => 'sb.web.add.workflow',
-			'input' => array('child' => 'id')
+			'input' => array('child' => 'id'),
+			'output' => array('id' => 'webid')
 		));
 		
 		return $kernel->execute($workflow, $memory);

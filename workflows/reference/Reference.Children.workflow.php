@@ -35,7 +35,6 @@ class ReferenceChildrenWorkflow implements Service {
 		$workflow = array(
 		array(
 			'service' => 'sb.reference.authorize.workflow',
-			'input' => array('chainid' => 'id'),
 			'action' => 'list'
 		),
 		array(

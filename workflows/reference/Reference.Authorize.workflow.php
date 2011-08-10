@@ -8,8 +8,10 @@ require_once(SBSERVICE);
  *	@param keyid long int Usage Key ID [memory]
  *	@param id long int Reference ID [memory]
  *	@param action string Action to authorize [memory] optional default 'edit'
+ *	@param admin boolean Is return admin flag [memory] optional default false
  *
  *	@return masterkey long int Master key ID [memory]
+ *	@return admin boolean Is admin [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -22,7 +24,7 @@ class ReferenceAuthorizeWorkflow implements Service {
 	public function input(){
 		return array(
 			'required' => array('keyid', 'id'),
-			'optional' => array('action' => 'edit')
+			'optional' => array('action' => 'edit', 'admin' => false)
 		);
 	}
 	
@@ -51,7 +53,7 @@ class ReferenceAuthorizeWorkflow implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array('masterkey');
+		return array('masterkey', 'admin');
 	}
 	
 }

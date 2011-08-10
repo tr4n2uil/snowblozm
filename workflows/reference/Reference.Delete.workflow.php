@@ -34,7 +34,6 @@ class ReferenceDeleteWorkflow implements Service {
 		$workflow = array(
 		array(
 			'service' => 'sb.reference.authorize.workflow',
-			'input' => array('chainid' => 'parent'),
 			'action' => 'child'
 		),
 		array(

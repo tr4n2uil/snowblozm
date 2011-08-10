@@ -36,7 +36,7 @@ class QueryExecuteService implements Service {
 		$query = $memory['query'];
 		$rstype = $memory['rstype'];
 		
-		$result = $conn->getResult($query, $rstype, MYSQL_ASSOC);
+		$result = $conn->getResult($query, $rstype);
 		
 		if($result === false){
 			$memory['valid'] = false;

@@ -3,12 +3,15 @@ require_once(SBSERVICE);
 
 /**
  *	@class ChainAuthorizeWorkflow
- *	@desc Authorizes key for chain operations
+ *	@desc Authorizes key for chain operations and returns admin flag for action
  *
  *	@param chainid long int Chain ID [memory]
  *	@param keyid long int Key ID [memory]
  *	@param level integer Web level [memory] optional default 0
  *	@param action string Action to authorize [memory] optional default 'edit'
+ *	@param admin boolean Is return admin flag [memory] optional default false
+ *
+ *	@param return admin boolean Is admin [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -21,7 +24,7 @@ class ChainAuthorizeWorkflow implements Service {
 	public function input(){
 		return array(
 			'required' => array('keyid', 'chainid'),
-			'optional' => array('level' => 0, 'action' => 'edit')
+			'optional' => array('level' => 0, 'action' => 'edit', 'admin' => false)
 		);
 	}
 	
@@ -30,6 +33,8 @@ class ChainAuthorizeWorkflow implements Service {
 	**/
 	public function run($memory){
 		$kernel = new WorkflowKernel();
+		
+		$sqlprj = $memory['admin'] ? 'count(`chainid`) as `admin`' : '`chainid`';
 		
 		$level = $memory['level'];
 		
@@ -47,26 +52,35 @@ class ChainAuthorizeWorkflow implements Service {
 		
 		$memory['msg'] = 'Key authorized successfully';
 		
-		$service = array(
+		$workflow = array(
+		array(
 			'service' => 'sb.relation.unique.workflow',
 			'args' => array('keyid', 'chainid', 'action'),
 			'conn' => 'sbconn',
 			'relation' => '`chains`',
-			'sqlprj' => '`chainid`',
+			'sqlprj' => $sqlprj,
 			'sqlcnd' => "where `chainid`=\${chainid} and (`authorize` not like '%\${action}%' or $query)",
 			'escparam' => array('action'),
 			'errormsg' => 'Unable to Authorize',
 			'errstatus' => 403
-		);
+		));
 		
-		return $kernel->run($service, $memory);
+		if($memory['admin']){
+			array_push($workflow, array(
+				'service' => 'sbcore.data.select.service',
+				'args' => array('result'),
+				'params' => array('result.0.admin' => 'admin')
+			));
+		}
+		
+		return $kernel->execute($workflow, $memory);
 	}
 	
 	/**
 	 *	@interface Service
 	**/
 	public function output(){
-		return array();
+		return array('admin');
 	}
 	
 }
