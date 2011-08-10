@@ -8,6 +8,7 @@ require_once(SBMYSQL);
  *
  *	@param query string SQL Query [memory]
  *	@param rstype integer type of result [memory] optional default 0
+ *	@param rsboth boolean type of resultset [memory] optional default MYSQL_ASSOC
  *	@param conn resource DataService instance [memory]
  *
  *	@return sqlresult array SQL Query ResultSet [memory]
@@ -24,7 +25,7 @@ class QueryExecuteService implements Service {
 	public function input(){
 		return array(
 			'required' => array('query', 'conn'),
-			'optional' => array('rstype' => 0)
+			'optional' => array('rstype' => 0, 'rsboth' => false)
 		);
 	}
 	
@@ -35,8 +36,9 @@ class QueryExecuteService implements Service {
 		$conn = $memory['conn'];
 		$query = $memory['query'];
 		$rstype = $memory['rstype'];
+		$rsboth = $memory['rsboth'] ? MYSQL_BOTH : MYSQL_ASSOC;
 		
-		$result = $conn->getResult($query, $rstype);
+		$result = $conn->getResult($query, $rstype, $rsboth);
 		
 		if($result === false){
 			$memory['valid'] = false;
