@@ -54,7 +54,7 @@ class FileDownloadService implements Service {
 			$memory['valid'] = false;
 				$memory['msg'] = "File Not Found";
 				$memory['status'] = 504;
-				$memory['details'] = 'Error file not found : '.$file.' @file.upload.service';
+				$memory['details'] = 'Error file not found : '.$file.' @file.download.service';
 				return $memory;
 		}
 		
