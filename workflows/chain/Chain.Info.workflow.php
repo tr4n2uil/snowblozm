@@ -9,6 +9,7 @@ require_once(SBSERVICE);
  *
  *	@return masterkey long int Master key ID [memory]
  *	@return level integer Level [memory]
+ *	@return authorize string Authorization Control [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -38,14 +39,14 @@ class ChainInfoWorkflow implements Service {
 			'args' => array('chainid'),
 			'conn' => 'sbconn',
 			'relation' => '`chains`',
-			'sqlprj' => '`masterkey`, `level`',
+			'sqlprj' => '`masterkey`, `level`, `authorize`',
 			'sqlcnd' => "where `chainid`=\${chainid}",
 			'errormsg' => 'Invalid Chain ID'
 		),
 		array(
 			'service' => 'sbcore.data.select.service',
 			'args' => array('result'),
-			'params' => array('result.0.masterkey' => 'masterkey', 'result.0.level' => 'level')
+			'params' => array('result.0.masterkey' => 'masterkey', 'result.0.level' => 'level', 'result.0.authorize' => 'authorize')
 		));
 		
 		return $kernel->execute($workflow, $memory);
@@ -55,7 +56,7 @@ class ChainInfoWorkflow implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array('masterkey', 'level');
+		return array('masterkey', 'level', 'authorize');
 	}
 	
 }

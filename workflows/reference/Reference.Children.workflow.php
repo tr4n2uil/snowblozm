@@ -9,6 +9,7 @@ require_once(SBSERVICE);
  *	@param id long int Reference ID [memory]
  *
  *	@return children array Chain children information [memory]
+ *	@return level integer Parent Authorization Level [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -49,7 +50,7 @@ class ReferenceChildrenWorkflow implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array('children');
+		return array('children', 'level');
 	}
 	
 }
