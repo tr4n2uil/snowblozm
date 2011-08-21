@@ -7,9 +7,9 @@ require_once(SBSERVICE);
  *
  *	@param keyid long int Usage Key ID [memory]
  *	@param parent long int Reference ID [memory]
- *	@param level integer Web level [memory] optional default 0
+ *	@param level integer Web level [memory] optional default (inherit)
  *	@param owner long int Owner Key ID [memory] optional default keyid
- *	@param authorize string Authorize control value [memory] optional default 'edit:child:list'
+ *	@param authorize string Authorize control value [memory] optional default (inherit)
  *	@param root string Collation root [memory] optional default '/masterkey'
  *	@param path string Collation path [memory] optional default '/'
  *	@param leaf string Collation leaf [memory] optional default 'Child ID'
@@ -27,7 +27,7 @@ class ReferenceAddWorkflow implements Service {
 	public function input(){
 		return array(
 			'required' => array('keyid', 'parent'),
-			'optional' => array('level' => 0, 'owner' => false, 'root' => false, 'path' => '/', 'leaf' => false, 'authorize' => 'edit:add:remove:list')
+			'optional' => array('level' => false, 'owner' => false, 'root' => false, 'path' => '/', 'leaf' => false, 'authorize' => false)
 		);
 	}
 	
@@ -39,12 +39,15 @@ class ReferenceAddWorkflow implements Service {
 		
 		$memory['owner'] = $memory['owner'] ? $memory['owner'] : $memory['keyid'];
 		$memory['msg'] = 'Reference added successfully';
+		$level = $memory['level'] ? 'inhlevel' : 'level';
+		$authorize = $memory['authorize'] ? 'inhauthorize' : 'authorize';
 		
 		$workflow = array(
 		array(
 			'service' => 'sb.reference.authorize.workflow',
 			'input' => array('id' => 'parent'),
-			'action' => 'add'
+			'action' => 'add',
+			'output' => array('level' => $level, 'authorize' => $authorize)
 		),
 		array(
 			'service' => 'sb.chain.create.workflow',

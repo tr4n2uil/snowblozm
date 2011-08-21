@@ -12,7 +12,8 @@ require_once(SBSERVICE);
  *	@param init boolean init flag [memory] optional default true
  *	@param admin boolean Is return admin flag [memory] optional default false
  *
- *	@param return admin boolean Is admin [memory]
+ *	@return admin boolean Is admin [memory]
+ *	@return level integer Web level [memory]
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
@@ -37,7 +38,7 @@ class ChainAuthorizeWorkflow implements Service {
 		
 		$sqlprj = $memory['admin'] ? 'count(`chainid`) as `admin`' : '`chainid`';
 		
-		$level = $memory['level'];
+		$next = $level = $memory['level'];
 		
 		$join = '`chainid` in ';
 		$master = "(select `chainid` from `chains` where `masterkey`=\${keyid})";
@@ -53,6 +54,7 @@ class ChainAuthorizeWorkflow implements Service {
 		}
 		
 		$memory['msg'] = 'Key authorized successfully';
+		$memory['level'] = $next + 1;
 		
 		$workflow = array(
 		array(
@@ -82,7 +84,7 @@ class ChainAuthorizeWorkflow implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array('admin');
+		return array('admin', 'level');
 	}
 	
 }
