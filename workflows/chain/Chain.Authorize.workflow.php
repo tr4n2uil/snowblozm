@@ -40,7 +40,21 @@ class ChainAuthorizeWorkflow implements Service {
 		
 		$next = $level = $memory['level'];
 		
-		$join = '`chainid` in ';
+		$init = "(\${chainid})";
+		$master = "(select `masterkey` from `chains` where `chainid` in ";
+		$masterend = " and `masterkey`=\${keyid})";
+		$chain = "(select `keyid` from `members` where `chainid` in ";
+		$chainend = " and `keyid`=\${keyid})";
+		$child = 'select `parent` from `webs` where `child` in ';
+		
+		$query = $memory['init'] ? ($master.$init.$masterend.' or '.$chain.$init.$chainend) : '';
+		
+		while($level--){
+			$init = '('.$child.$init.')';
+			$query = $query.' or '.$master.$init.$masterend.' or '.$chain.$init.$chainend;
+		}
+		
+		/*$join = '`chainid` in ';
 		$master = "(select `chainid` from `chains` where `masterkey`=\${keyid})";
 		$chain = "(select `chainid` from `members` where `keyid`=\${keyid})";
 		$child = 'select `child` from `webs` where `parent` in ';
@@ -51,7 +65,7 @@ class ChainAuthorizeWorkflow implements Service {
 			$chain = '('.$child.$chain.')';
 			$master = '('.$child.$master.')';
 			$query = $query.' or '.$join.$master.' or '.$join.$chain;
-		}
+		}*/
 		
 		$memory['msg'] = 'Key authorized successfully';
 		$memory['level'] = $next + 1;

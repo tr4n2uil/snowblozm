@@ -37,7 +37,7 @@ class QueryExecuteService implements Service {
 		$query = $memory['query'];
 		$rstype = $memory['rstype'];
 		$rsboth = $memory['rsboth'] ? MYSQL_BOTH : MYSQL_ASSOC;
-		
+	
 		$result = $conn->getResult($query, $rstype, $rsboth);
 		
 		if($result === false){
