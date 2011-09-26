@@ -48,15 +48,15 @@ class Mysql implements DataService {
 		if($resultset === false) 
 			return false;
 		switch($type){
-			case 0 :
+			case 0 : // Select
 				$result = array();
 				while( $rowset = mysql_fetch_array($resultset, $resulttype) ) {
 					array_push( $result, $rowset );
 				}
 				return $result;
-			case 1 :
+			case 1 : // Update Delete
 				return mysql_affected_rows($this->conn);
-			case 2 : 
+			case 2 :  // Insert
 				return mysql_insert_id($this->conn);
 		}
 	}
