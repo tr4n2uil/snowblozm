@@ -58,7 +58,7 @@ char *input=NULL, *output=NULL, *cdpath=NULL;
 int lmt_memory=64*1024*1024, lmt_stack=8*1024*1024, lmt_fsize=50*1024*1024, lmt_time=2;
 int lmt_file=16, lmt_nproc=1, lmt_time_max=0;
 
-int cdstatus=1, euid=0, egid=0, selfroot=1, status=0, signal=0, exit_status=0;
+int cdstatus=1, euid=0, egid=0, selfroot=1, status=0, sig=0, exit_status=0;
 double usertime=0.0, systime=0.0, totaltime=0.0;
 long memory=0, major_page_faults=0, minor_page_faults=0, voluntary_context_switches=0, involuntary_context_switches=0, file_system_inputs=0, file_system_outputs=0, socket_messages_received=0, socket_messages_sent=0, signals=0;
 
@@ -68,7 +68,7 @@ void fail(char *msg, char *details){
 }
 
 void success(char *msg, char *details){
-	printf("{\"valid\":\"true\", \"status\":200, \"msg\":\"%s\", \"details\":\"%s\", \"cdstatus\":\"%s\", \"euid\":%d, \"egid\":%d, \"selfroot\":\"%s\", \"status\":%d, \"signal\":%d, \"exit_status\":%d, \"totaltime\":%f, \"usertime\":%f, \"systime\":%f, \"memory\":\%l, \"mjpf\":%l, \"mnpf\":%l, \"vcsw\":%l, \"ivcsw\":%l, \"fsin\":%l, \"fsout\":%f, \"msgrcv\":%l, \"msgsnd\":%f, \"signals\":%l}\n", msg, details, (cdstatus ? "true" : "false"), euid, egid, (selfroot ? "true" : "false"), status, signal, exit_status, totaltime, usertime, systime ,memory, major_page_faults, minor_page_faults, voluntary_context_switches, involuntary_context_switches, file_system_inputs, file_system_outputs, socket_messages_received, socket_messages_sent, signals);
+	printf("{\"valid\":\"true\", \"status\":200, \"msg\":\"%s\", \"details\":\"%s\", \"cdstatus\":\"%s\", \"euid\":%d, \"egid\":%d, \"selfroot\":\"%s\", \"status\":%d, \"signal\":%d, \"exit_status\":%d, \"totaltime\":%f, \"usertime\":%f, \"systime\":%f, \"memory\":\%l, \"mjpf\":%l, \"mnpf\":%l, \"vcsw\":%l, \"ivcsw\":%l, \"fsin\":%l, \"fsout\":%f, \"msgrcv\":%l, \"msgsnd\":%f, \"signals\":%l}\n", msg, details, (cdstatus ? "true" : "false"), euid, egid, (selfroot ? "true" : "false"), status, sig, exit_status, totaltime, usertime, systime ,memory, major_page_faults, minor_page_faults, voluntary_context_switches, involuntary_context_switches, file_system_inputs, file_system_outputs, socket_messages_received, socket_messages_sent, signals);
 	exit(0);
 }
 
@@ -162,8 +162,8 @@ int execute_cmd(int argc, char *argv[]){
 		selfroot = 0;
 	
 	rl.rlim_cur = rl.rlim_max = lmt_nproc;  
-	if (setrlimit(RLIMIT_NPROC,&rl)) 
-		fail("Error setting Process limit", "Error @setrlimit/RLIMIT_NPROC");
+	//if (setrlimit(RLIMIT_NPROC,&rl)) 
+	//	fail("Error setting Process limit", "Error @setrlimit/RLIMIT_NPROC");
 	
 	if (!geteuid() || !getegid())
 		fail("Invalid to run as root", "Running as root is disallowed");
@@ -221,9 +221,9 @@ int main(int argc, char *argv[]){
 	signals = usage.ru_nsignals;
 	
 	if(WIFSIGNALED(status)){
-		signal = WTERMSIG(status);
+		sig = WTERMSIG(status);
 		
-		switch(signal){
+		switch(sig){
 			case SIGXCPU :
 				fail("Time Limit Exceeded", "SIGXCPU TLE");
 				break;
