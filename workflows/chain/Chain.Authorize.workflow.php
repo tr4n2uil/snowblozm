@@ -47,7 +47,7 @@ class ChainAuthorizeWorkflow implements Service {
 		$chainend = " and `keyid`=\${keyid})";
 		$child = 'select `parent` from `webs` where `child` in ';
 		
-		$query = $memory['init'] ? ($master.$init.$masterend.' or '.$chain.$init.$chainend) : '';
+		$query = $memory['init'] ? ($master.$init.$masterend.' or '.$chain.$init.$chainend) : 'false';
 		
 		while($level--){
 			$init = '('.$child.$init.')';

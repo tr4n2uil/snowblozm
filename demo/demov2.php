@@ -5,7 +5,7 @@
 	Snowblozm::$setmime = 'html'; 
 	
 	if(!isset($_GET['type'])){
-		echo "Please specify request.response.secure type using GET param type";
+		echo "Please specify request.response.crypt.hash type using GET param type";
 		exit;
 	}
 	
@@ -68,7 +68,7 @@
 		'restype' => $restype,
 		'crypt' => $crypt,
 		'hash' => $hash,
-		'email' => 'vibhaj@gmail.com',
+		'email' => false,
 		'access' => array(
 			'root' => array('sbdemo', 'sb'),
 			'service' => array('cloudcore.test'),

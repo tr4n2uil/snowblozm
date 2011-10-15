@@ -109,11 +109,18 @@ class WorkflowKernel {
 		foreach($sinreq as $key){
 			if(!isset($message[$key])){
 				$param = isset($input[$key]) ? $input[$key] : $key;
-				if(!isset($memory[$param])){				
+				if(!isset($memory[$param])){	
+					if($key == 'keyid'){
+						$memory['msg'] = 'Session Expired. Please Login.';
+						$memory['status'] = 407;
+						$memory['details'] = 'Value not found for '.$key.' @'.$message['service'];
+					}
+					else {
+						$memory['msg'] = 'Invalid Service Input Parameters';
+						$memory['status'] = 500;
+						$memory['details'] = 'Value not found for '.$key.' @'.$message['service'];
+					}
 					$memory['valid'] = false;
-					$memory['msg'] = 'Invalid Service Input Parameters';
-					$memory['status'] = 500;
-					$memory['details'] = 'Value not found for '.$key.' @'.$message['service'];
 					return $memory;
 				}
 				$message[$key] = $memory[$param];
