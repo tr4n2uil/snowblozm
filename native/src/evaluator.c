@@ -3,7 +3,9 @@
  *	@desc evaluates the performance of any program
  *
  *	@author Vibhaj Rajan <vibhaj8@gmail.com>
- *	@acknowledgments Chennai Mathematical Institute Online Programming Contest Judge
+ *	@acknowledgments 
+ *		1. Chennai Mathematical Institute for Online Programming Contest Judge <runner.c>
+ *		2. Ian Wienand <ianw@ieee.org>  for <http://www.wienand.org/junkcode/linux/stopper.c>
  *
  *	@param i string input file
  *	@param o string output file
@@ -47,10 +49,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <unistd.h>
 
 #include <sys/resource.h>
+#include <sys/time.h>
+#include <sys/ptrace.h>
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
+/**
+ *	@constants options set using PTRACE_SETOPTIONS
+**/
+#define PTRACE_O_TRACESYSGOOD   		0x00000001
+#define PTRACE_O_TRACEFORK      			0x00000002
+#define PTRACE_O_TRACEVFORK     		0x00000004
+#define PTRACE_O_TRACECLONE     		0x00000008
+#define PTRACE_O_TRACEEXEC      			0x00000010
+#define PTRACE_O_TRACEVFORKDONE 	0x00000020
+#define PTRACE_O_TRACEEXIT      			0x00000040
+#define PTRACE_O_MASK           				0x0000007f
+
+/**
+ *	@constants wait extended result codes for the above trace options  
+**/
+#define PTRACE_EVENT_FORK       		1
+#define PTRACE_EVENT_VFORK      		2
+#define PTRACE_EVENT_CLONE      		3
+#define PTRACE_EVENT_EXEC       		4
+#define PTRACE_EVENT_VFORK_DONE 	5
+#define PTRACE_EVENT_EXIT       		6
 
 enum { true, false } bool;
 
@@ -68,14 +97,14 @@ void fail(char *msg, char *details){
 }
 
 void success(char *msg, char *details){
-	printf("{\"valid\":\"true\", \"status\":200, \"msg\":\"%s\", \"details\":\"%s\", \"cdstatus\":\"%s\", \"euid\":%d, \"egid\":%d, \"selfroot\":\"%s\", \"status\":%d, \"signal\":%d, \"exit_status\":%d, \"totaltime\":%f, \"usertime\":%f, \"systime\":%f, \"memory\":\%l, \"mjpf\":%l, \"mnpf\":%l, \"vcsw\":%l, \"ivcsw\":%l, \"fsin\":%l, \"fsout\":%f, \"msgrcv\":%l, \"msgsnd\":%f, \"signals\":%l}\n", msg, details, (cdstatus ? "true" : "false"), euid, egid, (selfroot ? "true" : "false"), status, sig, exit_status, totaltime, usertime, systime ,memory, major_page_faults, minor_page_faults, voluntary_context_switches, involuntary_context_switches, file_system_inputs, file_system_outputs, socket_messages_received, socket_messages_sent, signals);
+	printf("{\"valid\":\"true\", \"status\":200, \"msg\":\"%s\", \"details\":\"%s\", \"cdstatus\":\"%s\", \"euid\":%d, \"egid\":%d, \"selfroot\":\"%s\", \"status\":%d, \"signal\":%d, \"exit_status\":%d, \"totaltime\":%f, \"usertime\":%f, \"systime\":%f, \"memory\":\%ld, \"mjpf\":%ld, \"mnpf\":%ld, \"vcsw\":%ld, \"ivcsw\":%ld, \"fsin\":%ld, \"fsout\":%ld, \"msgrcv\":%ld, \"msgsnd\":%ld, \"signals\":%ld}\n", msg, details, (cdstatus ? "true" : "false"), euid, egid, (selfroot ? "true" : "false"), status, sig, exit_status, totaltime, usertime, systime ,memory, major_page_faults, minor_page_faults, voluntary_context_switches, involuntary_context_switches, file_system_inputs, file_system_outputs, socket_messages_received, socket_messages_sent, signals);
 	exit(0);
 }
 
 int parse_cmd_line(int argc, char *argv[]){
 	int i;
 	
-	for(i=1; argv[i][1] != ':'; i++){
+	for(i=1; argv[i][1] == ':'; i++){
 		switch(argv[i][0]){
 			case 'i' :
 				input = &argv[i][2];
@@ -162,8 +191,8 @@ int execute_cmd(int argc, char *argv[]){
 		selfroot = 0;
 	
 	rl.rlim_cur = rl.rlim_max = lmt_nproc;  
-	//if (setrlimit(RLIMIT_NPROC,&rl)) 
-	//	fail("Error setting Process limit", "Error @setrlimit/RLIMIT_NPROC");
+	if (setrlimit(RLIMIT_NPROC,&rl)) 
+		fail("Error setting Process limit", "Error @setrlimit/RLIMIT_NPROC");
 	
 	if (!geteuid() || !getegid())
 		fail("Invalid to run as root", "Running as root is disallowed");
@@ -178,7 +207,9 @@ int main(int argc, char *argv[]){
 	int cmd_index, i;
 	pid_t pid, watcher;
 	struct rusage usage;
-	clock_t begin=0, end=0;
+	struct timeval begin, end;
+	char ps[32], buf[32];
+	FILE *fp;
 	
 	cmd_index = parse_cmd_line(argc, argv);
 	
@@ -188,28 +219,66 @@ int main(int argc, char *argv[]){
 	for (i = 3; i < (1<<16); i++)
 		close(i);
 	
-	begin = clock();
+	gettimeofday(&begin, NULL);
 	pid = fork();
+	
 	if (pid == 0) {
-		return execute_cmd(argc - cmd_index, argv + cmd_index);
+		if(ptrace(PTRACE_TRACEME, 0, 0, 0) < 0){
+			fail("Tracing Failed", "PTRACE_TRACEME failure");
+		}
+		else
+			return execute_cmd(argc - cmd_index, argv + cmd_index);
 	}
 	
+	wait(NULL);
+	if (ptrace(PTRACE_SETOPTIONS, pid, 0, PTRACE_O_TRACEEXIT))
+		fail("Tracing Failed", "PTRACE_SETOPTIONS failure");
+	
+	if (ptrace(PTRACE_CONT, pid, 0, (void*)0))
+		fail("Tracing Failed", "PTRACE_CONT failure");
+		
 	watcher = fork ();
-	if (watcher == 0) {
+	if (watcher == 0){
 		sleep(4*lmt_time_max);
 		kill (pid, 9);
 		fail("Program Hanged", "Recoverd from hang using watcher");
 	}
 	
+	while(1){
+		waitpid(pid, &status, 0);
+		if((WSTOPSIG(status) == SIGTRAP) && (status & (PTRACE_EVENT_EXIT << 8)))
+			break;
+			
+		if (ptrace(PTRACE_CONT, pid, 0, WSTOPSIG(status)))
+			fail("Tracing Failed", "WSTOPSIG failure");
+	}
+	
+	sprintf(ps, "/proc/%d/statm", pid);
+	fp = fopen(ps, "r");
+	if(fp){
+		fread(buf, 1, 32, fp);
+		sscanf(buf, "%d", &memory);
+		//printf("%s %d BUF[%s]", ps, fp, buf);
+		//fflush(stdout);
+		fclose(fp);
+	}
+	
+	if(ptrace(PTRACE_CONT, pid, 0, 0))
+		fail("Tracing Failed", "PTRACE_CONT failure");
+	
 	wait4(pid,&status, 0, &usage);
-	end = clock();
+	gettimeofday(&end, NULL);
 	kill(watcher, 9);
 	waitpid(watcher, NULL, 0);
+
+	//printf("%f,%f %s %d BUF[%s]", (double)(begin.tv_sec*1000000 + begin.tv_usec), (double)(end.tv_sec*1000000 + end.tv_usec), ps, fp, buf);fflush(stdout);
+	//fclose(fp);
+	//while(ch = fgetc(fp)) putchar(ch);
 	
-	totaltime = (double) (end - begin) / CLOCKS_PER_SEC;
+	totaltime = (double)(end.tv_sec*1000000 + end.tv_usec - begin.tv_sec*1000000 + begin.tv_usec)/1000000;
 	usertime = (double) (usage.ru_utime.tv_sec) + ((double) usage.ru_utime.tv_usec)/1000000;
 	systime = (double) (usage.ru_stime.tv_sec) + ((double)usage.ru_stime.tv_usec)/1000000;
-	memory = usage.ru_maxrss;
+	memory *= getpagesize();
 	major_page_faults = usage.ru_majflt;
 	minor_page_faults = usage.ru_minflt;
 	voluntary_context_switches = usage.ru_nvcsw;
@@ -268,5 +337,6 @@ int main(int argc, char *argv[]){
 		fail("Program Returned Non-zero Return Value", "WEXITSTATUS");
 	
 	success("Successfully Executed", "Program ran successfully");
+	
 	return 0;
 }

@@ -7,11 +7,11 @@ require_once(SBSERVICE);
  *
  *	@param cmd string Command [memory]
  *	@param intype integer Input type [memory] (0=pipe 1=file) optional default 0
- *	@param input string Input [memory] optional default false (pipe='', file="/dev/null")
+ *	@param stdin string Input [memory] optional default false (pipe='', file="/dev/null")
  *	@param outtype integer Output type [memory] (0=pipe 1=file) optional default 0
- *	@param output string Output [memory] optional default false (pipe=returned output, file="/dev/null")
+ *	@param stdout string Output [memory] optional default false (pipe=returned output, file="/dev/null")
  *	@param errtype integer Error type [memory] (0=pipe 1=file) optional default 0
- *	@param error string Error [memory] optional default false (pipe=returned error, file="/dev/null")
+ *	@param stderr string Error [memory] optional default false (pipe=returned error, file="/dev/null")
  *	@param cwd string Directory absolute path [memory] optional default null
  *
  *	@return result integer Return value [memory]	
@@ -27,7 +27,7 @@ class ProcessRunService implements Service {
 	public function input(){
 		return array(
 			'required' => array('cmd'),
-			'optional' => array('intype' => 0, 'input' => false, 'outtype' => 0, 'output' => false, 'errtype' => 0, 'error' => false, 'cwd' => null)
+			'optional' => array('intype' => 0, 'stdin' => false, 'outtype' => 0, 'stdout' => false, 'errtype' => 0, 'stderr' => false, 'cwd' => null)
 		);
 	}
 	
@@ -37,9 +37,9 @@ class ProcessRunService implements Service {
 	public function run($memory){
 		$cmd = escapeshellarg($memory['cmd']);
 		$cwd = $memory['cwd'];
-		$stdin = $memory['intype'] ? (array('file', $memory['input'] ? $memory['input'] : '/dev/null', 'r') : array('pipe', 'r');
-		$stdout = $memory['outtype'] ? (array('file', $memory['output'] ? $memory['output'] : '/dev/null', 'w') : array('pipe', 'w');
-		$stderr = $memory['errtype'] ? (array('file', $memory['error'] ? $memory['error'] : '/dev/null', 'a') : array('pipe', 'w');
+		$stdin = $memory['intype'] ? array('file', $memory['stdin'] ? $memory['stdin'] : '/dev/null', 'r') : array('pipe', 'r');
+		$stdout = $memory['outtype'] ? array('file', $memory['stdout'] ? $memory['stdout'] : '/dev/null', 'w') : array('pipe', 'w');
+		$stderr = $memory['errtype'] ? array('file', $memory['stderr'] ? $memory['stderr'] : '/dev/null', 'a') : array('pipe', 'w');
 		
 		$desc = array(
 			0 => $stdin,
@@ -50,17 +50,17 @@ class ProcessRunService implements Service {
 		$process = proc_open($cmd, $desc, $pipes, $cwd);
 		if(is_resource($process)) {
 			if(!$memory['intype']){
-				fwrite($pipes[0], $memory['input'] ? $memory['input'] : '');
+				fwrite($pipes[0], $memory['stdin'] ? $memory['stdin'] : '');
 				fclose($pipes[0]);
 			}
 			
 			if(!$memory['outtype']){
-				$memory['output'] = stream_get_contents($pipes[1]);
+				$memory['stdout'] = stream_get_contents($pipes[1]);
 				fclose($pipes[1]);
 			}
 			
 			if(!$memory['errtype']){
-				$memory['error'] = stream_get_contents($pipes[2]);
+				$memory['stderr'] = stream_get_contents($pipes[2]);
 				fclose($pipes[2]);
 			}
 			
@@ -85,7 +85,7 @@ class ProcessRunService implements Service {
 	 *	@interface Service
 	**/
 	public function output(){
-		return array('result');
+		return array('result', 'stdout');
 	}
 	
 }
