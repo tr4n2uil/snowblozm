@@ -1,105 +1,16 @@
-SnowBlozm 
-PHP Service Computing Platform
-http://snowblozm.blogspot.com/
+SnowBlozm
+Service Computing Platform Kernel
 
-Simplified Service Oriented Architecture
-Vibhaj Rajan
-vibhaj8@gmail.com
+Vibhaj Rajan <vibhaj8@gmail.com>
 
-Features 
-	Snowblozm Experimental Service Computing Platform
-						for executing services and workflows
-	Snowblozm Reference Framework
-						for managing application entities
-	Snowblozm Key-Chain-Web Mechanism
-						for access control
-	Snowblozm Tracking & Collation Extension
-						for access ease
-	Snowblozm Application Layer Security
-						for access security
+JavaScript platform developed in support of :
+	Google Summer of Code 2011
+	DSpace RESTClient
+	https://wiki.duraspace.org/display/GSOC/DSpace+ClientUI+built+on+RESTful+API+-+GSoC+2011
 
-Enhanced (v2)
-	Classes	
-		Snowblozm
-		WorkflowKernel
-		RemoteWorkflow (to be deprecated in view of launch.remote service/workflow)
-	DataServices
-		Mysql
-	Services	
-		curl.execute
-		data.decode
-		data.decrypt
-		data.encode
-		data.encrypt
-		data.equal
-		data.hash
-		data.numeric
-		data.prepare
-		data.select
-		file.download
-		file.upload
-		launch.message
-		mail.send
-		mail.smtp
-		query.escape
-		query.execute
-		random.number
-		random.string
-		request.read
-		response.write
-		string.substitute
-		system.client
-		system.time
-	Workflows
-		chain.add
-		chain.authenticate
-		chain.authorize
-		chain.create
-		chain.delete
-		chain.info
-		chain.member
-		chain.remove
-		key.add
-		key.authenticate
-		key.available
-		key.edit
-		key.identify
-		key.remove
-		launch.message
-		query.execute
-		reference.add
-		reference.authorize
-		reference.available
-		reference.chain
-		reference.create
-		reference.delete
-		reference.grant
-		reference.master
-		reference.remove
-		reference.revoke
-		relation.delete
-		relation.insert
-		relation.select
-		relation.unique
-		relation.update
-		secure.read
-		secure.write
-		web.add
-		web.remove
-		
-Initial (v1)
-	Classes
-		ServiceKernel
-		ComponentLoader
-	Services 
-		base.adapter
-	DataServices
-		Mysql
-	Utility
-		Curl
-		Mail
-		Random
-		Time
+PHP platform developed in support of :
+	IITBHUCSE
+	https://github.com/tr4n2uil/iitbhucse
 
-Acknowledgements
-RC4 -- http://farhadi.ir/works/rc4
+Java platform developed in support of :
+	TGMC 2011
