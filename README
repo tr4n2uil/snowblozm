@@ -15,3 +15,8 @@ PHP platform developed in support of :
 
 Java platform developed in support of :
 	TGMC 2011
+
+Acknowldegements 
+	Java JSON
+		Douglas Crockford<douglas@crockford.com>
+		https://github.com/douglascrockford/JSON-java

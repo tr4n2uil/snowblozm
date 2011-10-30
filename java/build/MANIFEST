@@ -1,0 +1,2 @@
+Main-Class: Demo
+Class-Path: ../lib/mail.jar ../lib/mysql.jar ../lib/additional.jar ../lib/activation.jar

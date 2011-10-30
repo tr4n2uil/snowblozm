@@ -160,7 +160,8 @@ class Snowblozm {
 	 *
 	**/
 	public static function execute($workflow, $memory = array()){
-		$memory['valid'] = isset($memory['valid']) ? $memory['valid'] : true;
+		if(!isset($memory['valid'])) 
+			$memory['valid'] = true;
 		
 		foreach($workflow as $message){
 			/**
@@ -204,7 +205,9 @@ class Snowblozm {
 	 *
 	**/
 	public static function run($message, $memory = array()){
-		$memory['valid'] = isset($memory['valid']) ? $memory['valid'] : true;
+		if(!isset($memory['valid'])) 
+			$memory['valid'] = true;
+			
 		$default = array('valid', 'msg', 'status', 'details');
 		
 		/**
