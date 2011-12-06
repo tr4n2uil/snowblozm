@@ -112,7 +112,7 @@ class Snowblozm {
 		list($sproot, $service, $operation, $stype) = explode('.' ,$uri);
 		
 		if(!isset(self::$sparray[$sproot])){
-			echo 'Unable to identify Service Provider';
+			echo 'Unable to identify Service Provider : '.$sproot;
 			exit;
 		}
 		
