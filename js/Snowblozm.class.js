@@ -120,6 +120,21 @@ var Snowblozm = (function(){
 			},
 			
 			/**
+			 *	@method load
+			 *	@desc loads a Navigator root workflow
+			 *
+			 *	@param root string
+			 *
+			 *	@return workflow object
+			 *
+			**/
+			load : function($root){
+				if($navigators[$root] || false) 
+					return $navigators[$root];
+				return false;
+			},
+			
+			/**
 			 *	@method removeNavigator
 			 *	@desc removes a Navigator root
 			 *
@@ -222,6 +237,7 @@ var Snowblozm = (function(){
 					$message[$key] = $message[$key] || $memory[$param] || false;
 					if($message[$key] === false){
 						$memory['valid'] = false;
+						//alert("Value not found for " + $key);
 						return $memory;
 					}
 				}
