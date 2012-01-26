@@ -93,7 +93,7 @@ var Snowblozm = (function(){
 			 *
 			**/
 			get : function($index){
-				return $references[$index];
+				return $references[$index] || 0;
 			},
 			
 			/**
@@ -237,7 +237,7 @@ var Snowblozm = (function(){
 					$message[$key] = $message[$key] || $memory[$param] || false;
 					if($message[$key] === false){
 						$memory['valid'] = false;
-						//alert("Value not found for " + $key);
+						alert("Value not found for " + $key);
 						return $memory;
 					}
 				}
@@ -291,7 +291,7 @@ var Snowblozm = (function(){
 			 *	@param escaped boolean optional default false
 			 *
 			**/
-			launch : function($navigator, $escaped){
+			launch : function($navigator, $escaped, $root){
 				
 				/**
 				 *	Process escaped navigator
@@ -302,30 +302,51 @@ var Snowblozm = (function(){
 				}
 				//$navigator = $navigator.replace(/\+/g, '%20');
 				
-				/**
-				 *	Parse navigator
-				 **/
-				var $req = $navigator.split(':');
-				var $index = $req[0];
-				
-				/**
-				 *	Construct message for workflow
-				**/
-				var $message = {};
-				for(var $i=1, $len=$req.length; $i<$len; $i++){
-					var $param = ($req[$i]).split('=');
-					var $arg = $param[1];
-					$arg = $arg.replace(/~/g, '=');
-					//$arg = unescape($arg);
-					$message[$param[0]] = $arg;
+				switch($navigator.charAt(1)){
+					case '/' :
+						/**
+						 *	Parse navigator
+						 **/
+						var $req = $navigator.split('/');
+						var $index = $req[0] + $req[1];
+						
+						/**
+						 *	Construct message for workflow
+						**/
+						var $message = {};
+						for(var $i=2, $len=$req.length; $i<$len; $i+=2)
+							//$req[$i + 1] = unescape($req[$i + 1]);
+							$message[$req[$i]] = $req[$i + 1];
+						}
+					
+					default :
+						/**
+						 *	Parse navigator
+						 **/
+						var $req = $navigator.split(':');
+						var $index = $req[0];
+						
+						/**
+						 *	Construct message for workflow
+						**/
+						var $message = {};
+						for(var $i=1, $len=$req.length; $i<$len; $i++){
+							var $param = ($req[$i]).split('=');
+							var $arg = $param[1];
+							$arg = $arg.replace(/~/g, '=');
+							//$arg = unescape($arg);
+							$message[$param[0]] = $arg;
+						}
 				}
+				
+				
 				
 				/**
 				 *	Run the workflow and return the valid value
 				**/
 				if($navigators[$index] || false){
 					$message['service'] = $navigators[$index];
-					$message = this.run($message, {});
+					$message = this.run($message, { root : $root });
 					return $message['valid'];
 				}
 				
