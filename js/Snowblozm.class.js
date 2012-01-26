@@ -303,7 +303,7 @@ var Snowblozm = (function(){
 				//$navigator = $navigator.replace(/\+/g, '%20');
 				
 				switch($navigator.charAt(1)){
-					case '/' :
+					case '/' : 
 						/**
 						 *	Parse navigator
 						 **/
@@ -314,10 +314,11 @@ var Snowblozm = (function(){
 						 *	Construct message for workflow
 						**/
 						var $message = {};
-						for(var $i=2, $len=$req.length; $i<$len; $i+=2)
+						for(var $i=2, $len=$req.length; $i<$len; $i+=2){
 							//$req[$i + 1] = unescape($req[$i + 1]);
 							$message[$req[$i]] = $req[$i + 1];
 						}
+						break;
 					
 					default :
 						/**
@@ -336,7 +337,9 @@ var Snowblozm = (function(){
 							$arg = $arg.replace(/~/g, '=');
 							//$arg = unescape($arg);
 							$message[$param[0]] = $arg;
-						}
+						}					
+						break;
+
 				}
 				
 				
