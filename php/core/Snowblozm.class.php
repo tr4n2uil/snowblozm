@@ -216,6 +216,13 @@ class Snowblozm {
 		$service = self::load($message['service']);
 		
 		/**
+		 *	@debug
+		**/
+		if(self::$debug){
+			echo 'LOAD '.$message['service']."<br /><br />\n\n";
+		}
+		
+		/**
 		 *	Read the service arguments
 		**/
 		$args = isset($message['args']) ? $message['args'] : $message['args'] = array();
