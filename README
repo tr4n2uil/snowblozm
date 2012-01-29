@@ -1,6 +1,5 @@
 SnowBlozm
 Service Computing Platform Kernel Engine
-http://snowblozm.blogspot.com/
 
 Vibhaj Rajan <vibhaj8@gmail.com>
 
@@ -10,13 +9,20 @@ JavaScript platform developed in support of :
 	https://wiki.duraspace.org/display/GSOC/DSpace+ClientUI+built+on+RESTful+API+-+GSoC+2011
 
 PHP platform developed in support of :
-	IITBHUCSE
-	https://github.com/tr4n2uil/iitbhucse
+	OrbitNote 
+	Open Collaboration Services
+	http://orbitnote.com
+
+C/C++ platform developed in support of :
+	StellarBeam
+	Execute Grid System
+	https://github.com/tr4n2uil/stellarbeam
 
 Java platform developed in support of :
 	TGMC 2011
 	ValourZen OfficeNG
 	http://officeng.blogspot.com
+
 
 Acknowldegements 
 	Java JSON
