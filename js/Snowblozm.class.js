@@ -206,6 +206,13 @@ var Snowblozm = (function(){
 				 *	Read the service instance
 				**/
 				var $service = $message['service'];
+				if($service.run || false){
+				} else {
+					$service = Snowblozm.Resistry.get($message['service']) || false;
+					if(!$service){
+						window.alert("Invalid Service : " + $message['service']);
+					}
+				}
 				
 				/**
 				 *	Read the service arguments

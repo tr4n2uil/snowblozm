@@ -324,7 +324,7 @@ class Snowblozm {
 		 *	Copy default output if not exists
 		**/
 		foreach($default as $key){
-			if(!isset($memory[$key]) && isset($message[$key])){
+			if(/*!isset($memory[$key]) && */isset($message[$key])){
 				$memory[$key] = $message[$key];
 			}
 		}
