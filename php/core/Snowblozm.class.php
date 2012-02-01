@@ -311,6 +311,7 @@ class Snowblozm {
 		 *	Copy default output and return if not valid
 		**/
 		$memory['valid'] = $message['valid'];
+		
 		if(!$memory['valid']){
 			foreach($default as $key){
 				if(isset($message[$key])){
@@ -324,6 +325,7 @@ class Snowblozm {
 		 *	Copy default output if not exists
 		**/
 		foreach($default as $key){
+			if($key == 'msg' && isset($memory[$key])) continue;
 			if(/*!isset($memory[$key]) && */isset($message[$key])){
 				$memory[$key] = $message[$key];
 			}
