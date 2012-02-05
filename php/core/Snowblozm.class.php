@@ -318,6 +318,8 @@ class Snowblozm {
 					$memory[$key] = $message[$key];
 				}
 			}
+			
+			$memory['details'] .= ' @'.$message['service'];
 			return $memory;
 		}
 		
