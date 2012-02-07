@@ -93,7 +93,7 @@ var Snowblozm = (function(){
 			 *
 			**/
 			get : function($index){
-				return $references[$index] || 0;
+				return $references[$index] || false;
 			},
 			
 			/**
