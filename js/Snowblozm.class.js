@@ -313,18 +313,29 @@ var Snowblozm = (function(){
 					case '/' : 
 						/**
 						 *	Parse navigator
-						 **/
-						var $req = $navigator.split('/');
-						var $index = $req[0] + $req[1];
+						**/
+						var $message = {};
+						var $parts = $navigator.split('?');
+						
+						var $path = $parts[0].split('/');
+						var $index = $path.shift() + $path.shift();
 						
 						/**
 						 *	Construct message for workflow
 						**/
-						var $message = {};
-						for(var $i=2, $len=$req.length; $i<$len; $i+=2){
-							//$req[$i + 1] = unescape($req[$i + 1]);
-							$message[$req[$i]] = $req[$i + 1];
+						for(var $j in $path){
+							//$path[$j] = unescape($path[$j]);
+							$message[$j] = $path[$j];
 						}
+						
+						if($parts[1] || false){
+							var $req = $parts[1].split('/');
+							for(var $i = 1, $len=$req.length; $i<$len; $i+=2){
+								//$req[$i + 1] = unescape($req[$i + 1]);
+								$message[$req[$i]] = $req[$i + 1];
+							}
+						}
+
 						break;
 					
 					default :
