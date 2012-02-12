@@ -298,7 +298,7 @@ var Snowblozm = (function(){
 			 *	@param escaped boolean optional default false
 			 *
 			**/
-			launch : function($navigator, $escaped, $root){
+			launch : function($navigator, $escaped, $memory){
 				
 				/**
 				 *	Process escaped navigator
@@ -367,7 +367,7 @@ var Snowblozm = (function(){
 				**/
 				if($navigators[$index] || false){
 					$message['service'] = $navigators[$index];
-					$message = this.run($message, { root : $root });
+					$message = this.run($message, $memory || {});
 					return $message['valid'];
 				}
 				
