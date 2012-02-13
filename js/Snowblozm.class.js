@@ -315,7 +315,7 @@ var Snowblozm = (function(){
 						 *	Parse navigator
 						**/
 						var $message = {};
-						var $parts = $navigator.split('?');
+						var $parts = $navigator.split('~');
 						
 						var $path = $parts[0].split('/');
 						var $index = $path.shift() + $path.shift();
