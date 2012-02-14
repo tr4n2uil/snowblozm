@@ -48,7 +48,6 @@
  *	@escapes advanced (not implemented yet) using URL encoding
  *	
 **/
-
 var Snowblozm = (function(){
 	/**
 	 *	@var references array
@@ -208,7 +207,7 @@ var Snowblozm = (function(){
 				var $service = $message['service'];
 				if($service.run || false){
 				} else {
-					$service = Snowblozm.Resistry.get($message['service']) || false;
+					$service = Snowblozm.Registry.get($message['service']) || false;
 					if(!$service){
 						window.alert("Invalid Service : " + $message['service']);
 					}
@@ -300,6 +299,10 @@ var Snowblozm = (function(){
 			**/
 			launch : function($navigator, $escaped, $memory){
 				
+				var $message = {
+					navigator : $navigator
+				};
+				
 				/**
 				 *	Process escaped navigator
 				**/
@@ -314,7 +317,6 @@ var Snowblozm = (function(){
 						/**
 						 *	Parse navigator
 						**/
-						var $message = {};
 						var $parts = $navigator.split('~');
 						
 						var $path = $parts[0].split('/');
@@ -348,7 +350,6 @@ var Snowblozm = (function(){
 						/**
 						 *	Construct message for workflow
 						**/
-						var $message = {};
 						for(var $i=1, $len=$req.length; $i<$len; $i++){
 							var $param = ($req[$i]).split('=');
 							var $arg = $param[1];
@@ -359,8 +360,6 @@ var Snowblozm = (function(){
 						break;
 
 				}
-				
-				
 				
 				/**
 				 *	Run the workflow and return the valid value
