@@ -245,22 +245,36 @@ class Snowblozm {
 		$sinopt = isset($sin['optional']) ? $sin['optional'] : array();
 		
 		/**
+		 *	Set the index values
+		**/
+		if(isset($sin['set'])){
+			$sinset = $sin['set'];
+			$max = count($sinset);
+			for($i=0; $i<$max; $i++){
+				$key = $sinset[$i];
+				if(!isset($message[$key]) && isset($memory[$i])){
+					$message[$key] = $memory[$i];
+				}
+			}
+		}
+		
+		/**
 		 *	Copy required input if not exists
 		**/
 		foreach($sinreq as $key){
 			if(!isset($message[$key])){
 				$param = isset($input[$key]) ? $input[$key] : $key;
 				if(!isset($memory[$param])){	
-					if($key == 'keyid'){
+					/*if($key == 'keyid'){
 						$memory['msg'] = 'Session Expired. Please Login.';
 						$memory['status'] = 407;
 						$memory['details'] = 'Value not found for '.$key.' @'.$message['service'];
 					}
-					else {
+					else {*/
 						$memory['msg'] = 'Invalid Service Input Parameters';
 						$memory['status'] = 500;
 						$memory['details'] = 'Value not found for '.$key.' @'.$message['service'];
-					}
+					//}
 					$memory['valid'] = false;
 					return $memory;
 				}
