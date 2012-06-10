@@ -377,3 +377,22 @@ var Snowblozm = (function(){
 		}
 	};
 })();
+
+/**
+ *	@short codes SB
+**/
+var SB = {
+	R : {
+		s : Snowblozm.Registry.save,
+		g : Snowblozm.Registry.get,
+		r : Snowblozm.Registry.remove,
+		a : Snowblozm.Registry.add,
+		l : Snowblozm.Registry.load,
+		rN : Snowblozm.Registry.removeNavigator
+	},
+	K : {
+		e : Snowblozm.Kernel.execute,
+		r : Snowblozm.Kernel.run,
+		l : Snowblozm.Kernel.launch
+	}
+};
