@@ -1,8 +1,12 @@
 /**
- *	@type iObject
- *	@desc intelliObject: universal message object, workflow array and navigator string container
+ *	@module snowblozm	
+ *
+ *	@type iObject, iArray, iString, iRegistry
+ *	@desc universal message object, workflow array, navigator string and reference registry container
  *
  *	@extend Object, Array and String
+ *
+ *	@author Vibhaj Rajan <vibhaj8@gmail.com>
  *
 **/
 ( function( window, undefined ){
@@ -195,13 +199,13 @@
 					break;
 				
 				default :
-					navigator = this
-					navigator = navigator.replace(/_/g, '#');
-					navigator = navigator.replace(/\./g, '=');
+					$navigator = this
+					$navigator = $navigator.replace(/_/g, '#');
+					$navigator = $navigator.replace(/\./g, '=');
 					/**
 					 *	Parse navigator
 					 **/
-					var req = navigator.split(':');
+					var req = $navigator.split(':');
 					var index = req[0];
 					
 					/**
@@ -224,6 +228,35 @@
 			**/
 			memory = message.run( memory );
 			return memory[ 'valid' ];
+		}
+	} );
+	
+	var registry = {};
+	
+	/**
+	 *	Save a reference string
+	**/
+	Object.defineProperty( String.prototype, "save", { 
+		value: function( val ){
+			registry[ this ] = val;
+		}
+	} );
+	
+	/**
+	 *	Get value of a reference
+	**/
+	Object.defineProperty( String.prototype, "get", { 
+		value: function(){
+			return registry[ this ] || undefined;
+		}
+	} );
+	
+	/**
+	 *	Delete a reference string
+	**/
+	Object.defineProperty( String.prototype, "del", { 
+		value: function(){
+			registry[ this ] = 0;
 		}
 	} );
 	
