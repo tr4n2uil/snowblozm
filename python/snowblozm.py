@@ -1,8 +1,8 @@
 ###
  #	@module snowblozm
  #
- #	@type iObject, iArray, iString, iRegistry
- #	@desc universal message object, workflow array, navigator string and reference registry container
+ #	@type iObject, iArray, iString, iRegistry, iService
+ #	@desc universal message object, workflow array, navigator string, reference registry and scalable service container
  #
  #	@author Vibhaj Rajan <vibhaj8@gmail.com>
  #
@@ -14,18 +14,34 @@ import types
 debug = False
 registry = {}
 
+#	snowblozm iservice
+class iService():
+	
+	#	Input parameters
+	def input( self ):
+		raise "Not Implemented Yet"
+	
+	#	Service functionality
+	def run( self, memory ):
+		raise "Not Implemented Yet"
+	
+	#	Output parameters
+	def output( self ):
+		raise "Not Implemented Yet"
+
 # 	snowblozm iobject
-class iobject( dict ):
+class iObject( dict ):
 
 	#	Runs a message object
 	def run( self, memory = {} ):
-		if not self.get( 'service', None ):
+		service = self.get( 'service', None )
+		if not service:
 			print 'No Service Specified'
 			return { 'valid': False }
 		
 		#	Read the service instance
-		if type( self.service ) is not types.StringType:
-			self.service.load()
+		if type( service ) is types.StringType:
+			service = iRegistry( service ).load()
 		
 		#	Read the service arguments
 		self.args = self.get( 'args', [] )
@@ -33,11 +49,11 @@ class iobject( dict ):
 		#	Copy arguments if necessary
 		for i in self.args:
 			key = self.args[ i ]
-			self[ key ] = self.get( key, memory.get( key, None ) )
+			self.setdefault( key, memory.get( key, None ) )
 		
 		#	Read the service input
 		self.input = self.get( 'input', {} )
-		sin = self.service.input()
+		sin = service.input()
 		sinreq = sin.get( 'required', [] )
 		sinopt = sin.get( 'optional', {} )
 		
@@ -47,13 +63,13 @@ class iobject( dict ):
 			max = len( sinset )
 			for i in range(0, max):
 				key = sinset[ i ]
-				self[ key ] = self.get( key, self.get( i, memory.get( i, None ) ) )
+				self.setdefault( key, self.get( i, memory.get( i, None ) ) )
 		
 		#	Copy required input if not exists (return valid false if value not found)
-		for i in sinreq:
-			key = sinreq[ i ]
+		for key in sinreq:
+			# key = sinreq[ i ]
 			param = self.input.get( key, key )
-			self[ key ] = self.get( key, memory.get( param, None ) )
+			self.setdefault( key, memory.get( param, None ) )
 			if not self[ key ]:
 				memory[ 'valid' ] = False
 				if debug:
@@ -63,14 +79,14 @@ class iobject( dict ):
 		#	Copy optional input if not exists
 		for key in sinopt:
 			param = self.input.get( key, key )
-			self[ key ] = self.get( key, memory.get( param, sinopt.get( key, None ) ) )
+			self.setdefault( key, memory.get( param, sinopt.get( key, None ) ) )
 		
 		#	Run the service with the message as memory
 		try:
-			result = self.service.run( self )
+			result = service.run( self )
 		except:
 			print "Exception:", sys.exc_info()[0]
-			return { 'valid': false }
+			return { 'valid': False }
 		
 		#	Read the service output and return if not valid
 		memory[ 'valid' ] = result.get( 'valid', False )
@@ -78,27 +94,33 @@ class iobject( dict ):
 			self.output = self.get( 'output', [] )
 		else:
 			return memory
-		sout = self.service.output()
+		sout = service.output() + [ 'msg', 'details', 'status' ]
 		
 		#	Copy output
-		for i in sout:
-			key = sout[ i ]
+		self.output = self.get( 'output', {} )
+		for key in sout:
 			param = self.output.get( key, key )
 			memory[ param ] = result.get( key, False )
 		
 		#	Return the memory
 		return memory
+		
+	# 	setdefault override
+	def setdefault( self, key, value = None ):
+		if key not in self or not self[ key ]:
+			self[ key ] = value
+		return self[ key ]
 
 # 	snowblozm iarray
-class iarray( list ):
+class iArray( list ):
 
 	#	Executes a workflow array
 	def execute( self, memory = {} ):
 		#	initialize memory if not
 		memory[ 'valid' ] = memory.get( 'valid', True )
 
-		for i in self:
-			message = self[ i ]
+		for message in self:
+			#message = self[ i ]
 			
 			#	Check for non strictness
 			nonstrict = message.get( 'nonstrict', False )
@@ -108,18 +130,18 @@ class iarray( list ):
 				continue
 			
 			#	run the service with the message and memory
-			memory = message.run( memory )
+			memory = iObject( message ).run( memory )
 		
 		return memory
 
 # 	snowblozm istring
-class istring( str ):
+class iString( str ):
 
 	#	Launches a navigator string
-	def launch( self, memory ):
-		message = { 'navigator' : self }
+	def launch( self, memory = {} ):
+		message = iObject( { 'navigator' : self } )
 		
-		if self[ 1 ] == '/':
+		if self[ 0 ] == '/':
 			#	Parse navigator
 			parts = self.split('~')
 			
@@ -128,13 +150,15 @@ class istring( str ):
 			
 			#	Construct message for workflow
 			message[ 'service' ] = index
-			for j in path:
+			j = 0
+			for val in path:
 				#	path[j] = unescape(path[j])
-				message[ j ] = path[ j ]
+				message[ j ] = val
+				j = j + 1
 			
-			if parts.get( 1 ):
+			if len( parts ) > 1:
 				req = parts[ 1 ].split('/')
-				for i in range( 1, len( req ), 2 ):
+				for i in range( 1, len( req ) - 1, 2 ):
 					#	req[i + 1] = unescape(req[i + 1])
 					message[ req[ i ] ] = req[ i + 1 ]
 		
@@ -161,7 +185,7 @@ class istring( str ):
 		return memory[ 'valid' ]
 
 # 	snowblozm iregistry
-class iregistry( str ):
+class iRegistry( str ):
 
 	#	Saves a reference
 	def save( self, value ):
@@ -183,3 +207,11 @@ class iregistry( str ):
 	#	Delete a reference
 	def rem( self ):
 		del registry[ self ]
+
+#	snowblozm utils		
+def utils( memory = {}, valid = True, msg = 'Successfully Executed', details = 'Successfully Executed', status = 200 ):
+	memory[ 'valid' ] = valid
+	memory[ 'msg' ] = msg
+	memory[ 'details' ] = details
+	memory[ 'status' ] = status
+	return memory
