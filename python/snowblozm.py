@@ -64,7 +64,7 @@ class iObject( dict ):
 			for i in range(0, max):
 				key = sinset[ i ]
 				self.setdefault( key, self.get( i, memory.get( i, None ) ) )
-		
+				
 		#	Copy required input if not exists (return valid false if value not found)
 		for key in sinreq:
 			# key = sinreq[ i ]
@@ -81,11 +81,19 @@ class iObject( dict ):
 			param = self.input.get( key, key )
 			self.setdefault( key, memory.get( param, sinopt.get( key, None ) ) )
 		
+		# 	Remove numeric keys
+		nkeys = []
+		for key in self:
+			if type( key ) is not types.StringType:
+				nkeys.append( key )
+		for key in nkeys:
+				del self[ key ]
+		
 		#	Run the service with the message as memory
 		try:
-			result = service.run( self )
+			result = service.run( **self )
 		except:
-			print "Exception:", sys.exc_info()[0]
+			print "Exception:", sys.exc_info()
 			return { 'valid': False }
 		
 		#	Read the service output and return if not valid
